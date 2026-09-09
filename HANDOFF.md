@@ -41,11 +41,11 @@ repositório. Ponto de retorno limpo: `git reset --hard cfa016f`.
 | `b4feb1f` | correção de baseline: erro de lint em App.tsx |
 | `d2f8efe` | emendas do scan pré-voo ao plano (F1, F2, F3) |
 | `11df414` | **Task 1 completa**, revisada e aprovada limpa |
-| `c1a0b73` | **Task 2 implementada**, revisão NÃO concluída |
+| `c1a0b73` | Task 2 implementada — a revisão reprovou |
+| `c098c95` | Task 2, rodada de correção 1: bug do `pendingAtRule` |
+| `22e9323` | correção do plano + limitações conhecidas do minificador |
 
-**Comece por aqui:** revise o commit `c1a0b73` (Task 2) antes de seguir para a
-Task 3. A revisão foi despachada mas a sessão anterior terminou antes do
-resultado chegar. Não assuma que passou.
+**Task 2 está completa e revisada limpa.** Comece pela Task 3.
 
 Falta implementar: Tasks 3 a 10.
 
@@ -73,7 +73,17 @@ Falta implementar: Tasks 3 a 10.
    `scripts/migrate-presets.ts` fazendo o trabalho mecânico. O compilador
    **continua emitindo CSS plano** nessa tarefa; `@layer` só entra na Task 8.
 
-5. **A Task 7 não é polimento, é bloqueio.** `readStoredTheme()` descarta em
+5. **O minificador tem 5 limitações conhecidas, registradas como `it.skip`**
+   no fim de `tests/minify.test.ts`, cada uma com comentário explicando o
+   mecanismo. Nenhuma é alcançável pela saída atual de `compileTheme()`, mas
+   três ficam no caminho do roadmap: `@font-face` (que a spec nomeia como
+   lacuna a preencher), CSS nesting (que pode chegar pelo campo de seletor
+   livre) e comentário entre tokens (alcançável assim que o catálogo exaustivo
+   permitir valores digitados). A mais grave é a última — apagar um comentário
+   entre dois tokens funde os dois, trocando um seletor descendente por um
+   seletor de tipo. **Resolver antes da entrega do catálogo de propriedades.**
+
+6. **A Task 7 não é polimento, é bloqueio.** `readStoredTheme()` descarta em
    silêncio qualquer `schemaVersion` diferente de 1. Sem a Task 7, a Task 6
    faz todo usuário existente perder o tema ao abrir o app.
 
