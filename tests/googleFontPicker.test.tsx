@@ -51,7 +51,7 @@ describe('seletor de Google Fonts', () => {
     useStudioStore.getState().applyPreset('Porcelain')
     render(<TypographyEditor />)
     const group = screen.getByRole('group', { name: 'Heading webfont' })
-    const sample = within(group).getByText('Ag 123 açaí')
+    const sample = within(group).getByText('AaBbGg 123')
     expect(sample.style.fontFamily).toContain('Fraunces')
   })
 })

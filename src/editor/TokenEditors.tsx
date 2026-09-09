@@ -170,7 +170,7 @@ function GoogleFontField({ role }: { role: FontRole }) {
       {face && <label><input type="checkbox" checked={face.italic ?? false} onChange={toggleItalic} />Italic</label>}
       {face && <button type="button" className="link-button" aria-label={`Clear ${label.toLowerCase()} webfont`} onClick={() => setFontFace(role, null)}>Clear</button>}
     </div>
-    <p className="font-sample" style={{ fontFamily: stack }}>Ag 123 açaí</p>
+    <p className="font-sample" style={{ fontFamily: stack }}>AaBbGg 123</p>
     {status === 'loading' && <p className="font-status">Buscando no Google Fonts…</p>}
     {status === 'loaded' && <p className="font-status ok">Carregada e aplicada ao preview.</p>}
     {status === 'failed' && <p className="font-status bad">Não encontrada — confira o nome ou a conexão.</p>}
