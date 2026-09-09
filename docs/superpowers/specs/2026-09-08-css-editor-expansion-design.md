@@ -118,8 +118,9 @@ só que visível e editável. `layers.responsive` nasce com as regras de
 substituídos por tokens novos, o que corrige a sobrescrita silenciosa sem
 alterar a aparência padrão. Os tokens novos entram nos grupos existentes:
 `bodyPaddingSm` (1rem, no tablet), `bodyPaddingXs` (0.8rem, no mobile) e
-`sectionSpacingSm` (2rem, no tablet) em `LayoutTokens`; `space2xlSm` (2.5rem,
-no mobile) em `SpacingTokens`.
+`sectionSpacingSm` (2rem, no tablet) em `LayoutTokens`; `space2xlXs` (2.5rem,
+no mobile) em `SpacingTokens`. O sufixo e estrito: `Sm` marca override de
+tablet, `Xs` marca override de mobile.
 
 ### Tokens de scroll
 
