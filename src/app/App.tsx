@@ -37,7 +37,8 @@ export default function App() {
       if (isTyping) return
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
         event.preventDefault()
-        event.shiftKey ? redo() : undo()
+        if (event.shiftKey) redo()
+        else undo()
       }
     }
     window.addEventListener('keydown', handler)
