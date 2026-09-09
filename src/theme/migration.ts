@@ -26,14 +26,26 @@ export function validateTheme(candidate: Partial<Theme>): asserts candidate is T
 
 const SCHEMA_VERSION_V2 = 2
 
-/** `states[el][state]` vira a chave `"el:state"`. Conversão sem perda. */
+/**
+ * `states[el][state]` vira a chave `"el:state"`. Sem perda para entrada
+ * bem-formada (seletor de elemento e nome de estado sem ':'); uma chave
+ * combinada ambigua e recusada em vez de mesclada.
+ */
 function flattenStates(states: ThemeV1['states']): RuleMap {
   const flat: RuleMap = {}
   for (const [element, byState] of Object.entries(states ?? {})) {
     for (const [state, declarations] of Object.entries(byState ?? {})) {
-      if (declarations && Object.keys(declarations).length > 0) {
-        flat[`${element}:${state}`] = { ...declarations }
+      if (!declarations || Object.keys(declarations).length === 0) continue
+      const key = `${element}:${state}`
+      // A chave combinada e ambigua quando o seletor ou o nome do estado ja
+      // contem ':'. Preferimos falhar alto a sobrescrever em silencio: perder
+      // regra do usuario sem aviso e pior que recusar o arquivo.
+      if (key in flat) {
+        throw new Error(
+          `Colisao ao achatar estados: a chave "${key}" foi produzida por mais de um par elemento/estado.`,
+        )
       }
+      flat[key] = { ...declarations }
     }
   }
   return flat

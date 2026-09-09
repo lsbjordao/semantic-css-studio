@@ -86,4 +86,13 @@ describe('migrateThemeV2', () => {
     migrated.layers.responsive.watch = { h1: { fontSize: '1rem' } }
     expect(() => migrateThemeV2(migrated)).toThrow(/breakpoint/i)
   })
+
+  it('recusa colisao de chave em vez de sobrescrever em silencio', () => {
+    const colliding = structuredClone(themeV1)
+    colliding.states = {
+      'a:b': { c: { color: 'x' } },
+      a: { 'b:c': { color: 'y' } },
+    }
+    expect(() => migrateThemeV2(colliding)).toThrow(/colis/i)
+  })
 })
