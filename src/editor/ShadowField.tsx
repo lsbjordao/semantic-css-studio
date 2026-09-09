@@ -4,18 +4,22 @@ import { defaultShadowValue, formatShadowValue, parseShadowValue, type ParsedSha
 export function ShadowField({
   label,
   value,
+  resolvedValue,
   onChange,
   hint,
   usage,
 }: {
   label: string
   value: string
+  resolvedValue?: string
   onChange: (value: string) => void
   hint?: string
   usage?: string[]
 }) {
-  const parsed = parseShadowValue(value)
-  const disabled = !value || value.trim() === 'none'
+  const workingValue = resolvedValue ?? value
+  const parsed = parseShadowValue(workingValue)
+  const disabled = !workingValue || workingValue.trim() === 'none'
+  const resolvedFromToken = Boolean(resolvedValue && resolvedValue !== value)
 
   const patch = (change: Partial<ParsedShadow>) => {
     const base = parsed ?? parseShadowValue(defaultShadowValue)
@@ -40,9 +44,10 @@ export function ShadowField({
     </div>
 
     <div className="shadow-sample-wrap">
-      <div className="shadow-sample" style={{ boxShadow: disabled ? 'none' : value }} />
+      <div className="shadow-sample" style={{ boxShadow: disabled ? 'none' : workingValue }} />
       <div className="shadow-sample-meta">
         <strong>{disabled ? 'No shadow' : 'Live preview'}</strong>
+        {resolvedFromToken && <small>Resolved from <code>{value}</code>. Visual changes create a concrete element override.</small>}
         {usage && <small>{usage.length ? `Used by: ${usage.join(', ')}` : 'Not currently referenced by any semantic selector.'}</small>}
       </div>
     </div>
