@@ -1,3 +1,5 @@
+import { tokenName } from '../theme/tokenNames'
+
 export type ParsedShadow = {
   x: string
   y: string
@@ -95,6 +97,20 @@ export function formatShadowValue(shadow: ParsedShadow): string {
     shadow.color,
   ].filter(Boolean)
   return parts.join(' ')
+}
+
+/**
+ * Resolve a direct reference to one of the semantic shadow tokens. Element
+ * rules normally store `var(--shadow-sm)` rather than the concrete shadow;
+ * resolving it here lets the visual editor parse and preview the real value
+ * without changing what is stored in the theme until the user edits it.
+ */
+export function resolveShadowTokenValue(value: string, tokens: Record<string, string>): string {
+  const trimmed = value.trim()
+  for (const [key, tokenValue] of Object.entries(tokens)) {
+    if (trimmed === `var(--${tokenName('shadow', key)})`) return tokenValue
+  }
+  return value
 }
 
 export const defaultShadowValue = '0 8px 24px 0px rgb(0 0 0 / 0.14)'
