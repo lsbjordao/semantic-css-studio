@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { Theme } from '../src/theme/schema'
 import { compileTheme, minifyCss } from '../src/compiler'
 import { webfontImportRule } from '../src/compiler/webfonts'
 import { presets } from '../src/theme/presets'
@@ -48,7 +49,7 @@ describe('webfontImportRule', () => {
 
 describe('compilador com webfonts', () => {
   it('emite o @import antes da declaracao de camadas', () => {
-    const theme = structuredClone(presets.Minimal)
+    const theme: Theme = structuredClone(presets.Minimal)
     theme.fonts = { heading: { family: 'Fraunces', weights: [600] } }
     const css = compileTheme(theme)
     const atImport = css.indexOf('@import')
@@ -61,7 +62,7 @@ describe('compilador com webfonts', () => {
   })
 
   it('minifica preservando o @import', () => {
-    const theme = structuredClone(presets.Minimal)
+    const theme: Theme = structuredClone(presets.Minimal)
     theme.fonts = { heading: { family: 'Fraunces', weights: [400, 700], italic: true } }
     const minified = minifyCss(compileTheme(theme))
     expect(minified).toContain('@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;1,400;1,700&display=swap");')

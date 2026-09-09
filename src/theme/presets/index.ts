@@ -388,7 +388,7 @@ export const minimalPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const editorialPreset = {
   schemaVersion: 2,
@@ -781,7 +781,7 @@ export const editorialPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const documentationPreset = {
   schemaVersion: 2,
@@ -1174,7 +1174,7 @@ export const documentationPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const academicPreset = {
   schemaVersion: 2,
@@ -1564,7 +1564,7 @@ export const academicPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const terminalPreset = {
   schemaVersion: 2,
@@ -1958,7 +1958,7 @@ export const terminalPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const simpleCssPreset = {
   schemaVersion: 2,
@@ -2553,7 +2553,7 @@ export const simpleCssPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const noirPreset = {
   schemaVersion: 2,
@@ -2948,7 +2948,7 @@ export const noirPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const porcelainPreset = {
   schemaVersion: 2,
@@ -3348,7 +3348,7 @@ export const porcelainPreset = {
       italic: true,
     },
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const sagePreset = {
   schemaVersion: 2,
@@ -3741,7 +3741,7 @@ export const sagePreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const acaiPreset = {
   schemaVersion: 2,
@@ -4137,7 +4137,7 @@ export const acaiPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const acaiBananaPreset = {
   schemaVersion: 2,
@@ -4532,7 +4532,7 @@ export const acaiBananaPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const limaLimaoPreset = {
   schemaVersion: 2,
@@ -4925,7 +4925,7 @@ export const limaLimaoPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const morangoPreset = {
   schemaVersion: 2,
@@ -5318,7 +5318,7 @@ export const morangoPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const melanciaPreset = {
   schemaVersion: 2,
@@ -5710,7 +5710,7 @@ export const melanciaPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const frutaDoCondePreset = {
   schemaVersion: 2,
@@ -6103,7 +6103,7 @@ export const frutaDoCondePreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const mognoPreset = {
   schemaVersion: 2,
@@ -6501,7 +6501,7 @@ export const mognoPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const carvalhoPreset = {
   schemaVersion: 2,
@@ -6893,7 +6893,7 @@ export const carvalhoPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const jacarandaPreset = {
   schemaVersion: 2,
@@ -7287,7 +7287,7 @@ export const jacarandaPreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme
 
 export const presets = {
   Minimal: minimalPreset,

@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import type { Theme } from '../src/theme/schema'
 import { defaultTheme } from '../src/theme/defaults'
 import { migrateThemeV2 } from '../src/theme/migration'
 import { presets } from '../src/theme/presets'
@@ -106,7 +107,7 @@ describe('normalizacao de pre code em tema ja salvo', () => {
   // lugar errado, entao a leitura tem que move-la — senao o tema do usuario
   // continua quebrado ate ele apagar o armazenamento.
   it('move pre code de base para elements num v2 salvo', () => {
-    const theme = structuredClone(defaultTheme)
+    const theme: Theme = structuredClone(defaultTheme)
     theme.layers.base['pre code'] = { background: 'transparent', color: 'inherit', padding: '0' }
     delete theme.layers.elements['pre code']
 
@@ -120,7 +121,7 @@ describe('normalizacao de pre code em tema ja salvo', () => {
   })
 
   it('nao sobrescreve um pre code que o tema ja define em elements', () => {
-    const theme = structuredClone(defaultTheme)
+    const theme: Theme = structuredClone(defaultTheme)
     theme.layers.base['pre code'] = { background: 'transparent' }
     theme.layers.elements['pre code'] = { padding: '0', color: 'var(--color-code-text)' }
 
@@ -199,7 +200,7 @@ describe('validacao estrutural do v2', () => {
   // Guarda contra validacao rigida demais: o tema bem formado tem que
   // atravessar sem alteracao nenhuma.
   it('deixa um v2 bem formado passar identico', () => {
-    const theme = structuredClone(defaultTheme)
+    const theme: Theme = structuredClone(defaultTheme)
     expect(migrateThemeV2(theme)).toEqual(theme)
   })
 

@@ -388,4 +388,4 @@ export const defaultTheme = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
-} as unknown as Theme
+} satisfies Theme

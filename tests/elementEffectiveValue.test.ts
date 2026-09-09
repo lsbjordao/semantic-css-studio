@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { Theme } from '../src/theme/schema'
 import {
   effectiveValueFor,
   hasElementOverride,
@@ -38,7 +39,7 @@ describe('valor efetivo no painel de elementos', () => {
   })
 
   it('prefere o override da camada elements sobre a base', () => {
-    const theme = structuredClone(presets.Minimal)
+    const theme: Theme = structuredClone(presets.Minimal)
     theme.layers.elements.button = { backgroundColor: '#ff0000' }
     expect(effectiveValueFor(theme, 'button', definitionFor('button', 'Control background')))
       .toBe('#ff0000')
@@ -46,7 +47,7 @@ describe('valor efetivo no painel de elementos', () => {
 
   it('distingue override proprio de valor herdado da base para o botao limpar', () => {
     expect(hasElementOverride(presets.Minimal, 'button', definitionFor('button', 'Control background'))).toBe(false)
-    const theme = structuredClone(presets.Minimal)
+    const theme: Theme = structuredClone(presets.Minimal)
     theme.layers.elements.button = { backgroundColor: '#ff0000' }
     expect(hasElementOverride(theme, 'button', definitionFor('button', 'Control background'))).toBe(true)
   })
