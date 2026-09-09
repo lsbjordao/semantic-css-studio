@@ -126,12 +126,3 @@ export function compileTheme(theme: Theme): string {
   ].filter(Boolean)
   return `${blocks.join('\n\n')}\n`
 }
-
-export function minifyCss(css: string): string {
-  return css
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\s+/g, ' ')
-    .replace(/\s*([{}:;,])\s*/g, '$1')
-    .replace(/;}/g, '}')
-    .trim()
-}

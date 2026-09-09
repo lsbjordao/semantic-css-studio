@@ -1,1 +1,2 @@
-export { compileTheme, minifyCss } from './compileTheme'
+export { compileTheme } from './compileTheme'
+export { minifyCss } from './minify'
