@@ -184,15 +184,7 @@ Expected: FAIL nos seis presets — o `:root` agora emite `--space-2xl` no lugar
 Regerar cada snapshot:
 
 ```bash
-npx vite-node -e "
-import { writeFileSync } from 'node:fs'
-import { compileTheme } from './src/compiler/index.ts'
-import { presets } from './src/theme/presets/index.ts'
-for (const [name, theme] of Object.entries(presets)) {
-  const file = 'tests/snapshots/presets/' + name.toLowerCase().replaceAll('.', '-').replaceAll(' ', '-') + '.css'
-  writeFileSync(file, compileTheme(theme))
-}
-"
+npx vite-node scripts/regenerate-snapshots.ts
 git diff --stat tests/snapshots/
 git diff tests/snapshots/presets/minimal.css
 ```
@@ -912,13 +904,22 @@ A nova função é adicionada **ao lado** da existente, para que `src/app/Topbar
 Precisa acontecer **antes** da Task 6, que converte `defaults.ts` para v2.
 
 ```bash
-mkdir -p tests/fixtures
-npx vite-node -e "
+mkdir -p tests/fixtures scripts
+cat > scripts/dump-v1-fixture.ts <<'EOF'
 import { writeFileSync } from 'node:fs'
-import { defaultTheme } from './src/theme/defaults.ts'
-writeFileSync('tests/fixtures/theme-v1.json', JSON.stringify(defaultTheme, null, 2) + '\n')
-"
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { defaultTheme } from '../src/theme/defaults'
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+writeFileSync(
+  join(root, 'tests', 'fixtures', 'theme-v1.json'),
+  JSON.stringify(defaultTheme, null, 2) + '\n',
+)
+EOF
+npx vite-node scripts/dump-v1-fixture.ts
 head -5 tests/fixtures/theme-v1.json
+rm scripts/dump-v1-fixture.ts
 ```
 
 Expected: o arquivo começa com `"schemaVersion": 1`.
@@ -1347,15 +1348,7 @@ Run: `npx vitest run tests/presets.test.ts`
 Expected: FAIL nos seis presets.
 
 ```bash
-npx vite-node -e "
-import { writeFileSync } from 'node:fs'
-import { compileTheme } from './src/compiler/index.ts'
-import { presets } from './src/theme/presets/index.ts'
-for (const [name, theme] of Object.entries(presets)) {
-  const file = 'tests/snapshots/presets/' + name.toLowerCase().replaceAll('.', '-').replaceAll(' ', '-') + '.css'
-  writeFileSync(file, compileTheme(theme))
-}
-"
+npx vite-node scripts/regenerate-snapshots.ts
 git diff tests/snapshots/presets/minimal.css
 ```
 
@@ -1631,15 +1624,7 @@ Expected: PASS
 - [ ] **Step 5: Regerar os snapshots e auditar**
 
 ```bash
-npx vite-node -e "
-import { writeFileSync } from 'node:fs'
-import { compileTheme } from './src/compiler/index.ts'
-import { presets } from './src/theme/presets/index.ts'
-for (const [name, theme] of Object.entries(presets)) {
-  const file = 'tests/snapshots/presets/' + name.toLowerCase().replaceAll('.', '-').replaceAll(' ', '-') + '.css'
-  writeFileSync(file, compileTheme(theme))
-}
-"
+npx vite-node scripts/regenerate-snapshots.ts
 npx vitest run tests/presets.test.ts
 grep -c "@layer" tests/snapshots/presets/minimal.css
 ```
