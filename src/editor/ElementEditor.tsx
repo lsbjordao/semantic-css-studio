@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
 import { selectorGroups } from '../theme/schema'
 import { useStudioStore } from '../theme/store'
+import { swatchColor } from './colorPreview'
 import { ColorField, SelectField, StepperField, TextField } from './Field'
-import { propertyGroupsForElement, targetList, type PropertyDef } from './elementProfiles'
+import { effectiveValueFor, hasElementOverride, propertyGroupsForElement, targetList, type PropertyDef } from './elementProfiles'
 import { ShadowField } from './ShadowField'
 
-function PropertyControl({ definition, value, onChange }: { definition: PropertyDef; value: string; onChange: (value: string) => void }) {
+function PropertyControl({ definition, value, swatch, onChange }: { definition: PropertyDef; value: string; swatch?: string; onChange: (value: string) => void }) {
   if (definition.kind === 'select') {
     return <SelectField label={definition.label} value={value} options={definition.options ?? []} hint={definition.hint} onChange={onChange} />
   }
@@ -13,7 +14,7 @@ function PropertyControl({ definition, value, onChange }: { definition: Property
     return <StepperField label={definition.label} value={value} placeholder="CSS value" hint={definition.hint} defaultUnit={definition.defaultUnit} step={definition.step} onChange={onChange} />
   }
   if (definition.kind === 'color') {
-    return <ColorField label={definition.label} value={value} hint={definition.hint} onChange={onChange} />
+    return <ColorField label={definition.label} value={value} hint={definition.hint} swatch={swatch} onChange={onChange} />
   }
   if (definition.kind === 'shadow') {
     return <ShadowField label={definition.label} value={value} hint={definition.hint} onChange={onChange} />
@@ -41,14 +42,9 @@ export function ElementEditor() {
     setElement(tag)
   }
 
-  const valueFor = (definition: PropertyDef) => {
-    const targets = targetList(element, definition)
-    for (const target of targets) {
-      const value = theme.layers.elements[target.selector]?.[target.property]
-      if (value) return value
-    }
-    return ''
-  }
+  const valueFor = (definition: PropertyDef) => effectiveValueFor(theme, element, definition)
+
+  const hasOverride = (definition: PropertyDef) => hasElementOverride(theme, element, definition)
 
   const changeProperty = (definition: PropertyDef, next: string) => {
     setTargets(targetList(element, definition), next)
@@ -88,9 +84,10 @@ export function ElementEditor() {
         <div className="field-grid">
           {group.properties.map((definition) => {
             const value = valueFor(definition)
+            const swatch = definition.kind === 'color' ? swatchColor(value, theme) : undefined
             return <div key={`${definition.property}-${definition.label}`} className={`property-row ${definition.kind === 'shadow' ? 'property-row-wide' : ''}`}>
-              <PropertyControl definition={definition} value={value} onChange={(next) => changeProperty(definition, next)} />
-              {value && <button className="tiny-button" aria-label={`Clear ${definition.label}`} onClick={() => changeProperty(definition, '')}>×</button>}
+              <PropertyControl definition={definition} value={value} swatch={swatch} onChange={(next) => changeProperty(definition, next)} />
+              {hasOverride(definition) && <button className="tiny-button" aria-label={`Clear ${definition.label}`} onClick={() => changeProperty(definition, '')}>×</button>}
             </div>
           })}
         </div>

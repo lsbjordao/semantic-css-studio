@@ -14,16 +14,18 @@ export function ColorField({
   value,
   onChange,
   hint,
+  swatch,
 }: {
   label: string
   value: string
   onChange: (value: string) => void
   hint?: string
+  swatch?: string
 }) {
-  const swatch = /^#[0-9a-f]{6}$/i.test(value) ? value : '#000000'
+  const swatchValue = swatch ?? (/^#[0-9a-f]{6}$/i.test(value) ? value : '#000000')
   return <Field label={label} hint={hint}>
     <div className="color-control">
-      <input aria-label={`${label} picker`} type="color" value={swatch} onChange={(e) => onChange(e.target.value)} />
+      <input aria-label={`${label} picker`} type="color" value={swatchValue} onChange={(e) => onChange(e.target.value)} />
       <input aria-label={`${label} value`} type="text" value={value} placeholder="hex / rgb / var(--token)" onChange={(e) => onChange(e.target.value)} />
     </div>
   </Field>

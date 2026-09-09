@@ -1,3 +1,4 @@
+import type { CssPropertyMap, Theme } from '../theme/schema'
 import { fontStackOptions } from './fontOptions'
 
 export type PropertyTarget = {
@@ -245,4 +246,77 @@ export function propertyGroupsForElement(element: string): PropertyGroup[] {
 
 export function targetList(element: string, definition: PropertyDef): PropertyTarget[] {
   return definition.targets ?? [{ selector: element, property: definition.property }]
+}
+
+/**
+ * Longhands que o painel procura, mas que os presets costumam guardar como
+ * shorthand (`background`, `border`, `margin`, `padding`). Sem esta ponte, um
+ * `background: var(--color-primary)` nunca apareceria no controle
+ * "Control background", que procura por `backgroundColor`.
+ */
+const shorthandFallback: Record<string, string[]> = {
+  backgroundColor: ['background'],
+  borderWidth: ['border'],
+  borderStyle: ['border'],
+  borderColor: ['border'],
+  marginTop: ['margin'],
+  marginRight: ['margin'],
+  marginBottom: ['margin'],
+  marginLeft: ['margin'],
+  paddingTop: ['padding'],
+  paddingRight: ['padding'],
+  paddingBottom: ['padding'],
+  paddingLeft: ['padding'],
+}
+
+function readRule(declarations: CssPropertyMap | undefined, property: string): string {
+  if (!declarations) return ''
+  if (declarations[property]) return declarations[property]
+  for (const shorthand of shorthandFallback[property] ?? []) {
+    if (declarations[shorthand]) return declarations[shorthand]
+  }
+  return ''
+}
+
+/**
+ * Uma regra da camada base vale para o elemento quando o seletor e o proprio
+ * elemento ou uma lista que o contem como membro (`input, textarea, select,
+ * button` vale para `button`). Seletores compostos (`pre code`,
+ * `input:not(...)`) deliberadamente nao casam: exigiriam um motor de
+ * seletores, e o painel edita por tag.
+ */
+function baseRuleApplies(ruleSelector: string, element: string): boolean {
+  return ruleSelector.split(',').some((part) => part.trim() === element)
+}
+
+/**
+ * O valor que o controle deve exibir: o override da camada `elements` quando
+ * existir, senao o que a camada `base` ja aplica ao elemento. Antes deste
+ * fallback, todo estilo vindo de preset via base (o botao azul de
+ * `base.button.background`, por exemplo) aparecia como controle vazio.
+ */
+export function effectiveValueFor(theme: Theme, element: string, definition: PropertyDef): string {
+  const targets = targetList(element, definition)
+  for (const target of targets) {
+    const value = readRule(theme.layers.elements[target.selector], target.property)
+    if (value) return value
+  }
+  for (const target of targets) {
+    let found = ''
+    for (const [ruleSelector, declarations] of Object.entries(theme.layers.base)) {
+      if (ruleSelector === target.selector || baseRuleApplies(ruleSelector, element)) {
+        const value = readRule(declarations, target.property)
+        if (value) found = value
+      }
+    }
+    if (found) return found
+  }
+  return ''
+}
+
+/** Se o valor exibido e override proprio (`elements`) ou herdado da base. */
+export function hasElementOverride(theme: Theme, element: string, definition: PropertyDef): boolean {
+  return targetList(element, definition).some((target) =>
+    Boolean(readRule(theme.layers.elements[target.selector], target.property)),
+  )
 }
