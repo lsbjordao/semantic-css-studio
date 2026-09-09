@@ -46,4 +46,12 @@ describe('seletor de Google Fonts', () => {
     expect(theme.fonts?.heading).toBeUndefined()
     expect(theme.tokens.typography.fontHeading).toContain('Fraunces')
   })
+
+  it('mostra a amostra na pilha real do token', () => {
+    useStudioStore.getState().applyPreset('Porcelain')
+    render(<TypographyEditor />)
+    const group = screen.getByRole('group', { name: 'Heading webfont' })
+    const sample = within(group).getByText('Ag 123 açaí')
+    expect(sample.style.fontFamily).toContain('Fraunces')
+  })
 })

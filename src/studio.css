@@ -221,3 +221,7 @@ button:disabled { cursor: not-allowed; opacity: .45; }
 .font-role-row input { accent-color:#7773fb; }
 .link-button { border:0; background:transparent; color:#8f98ff; font-size:11px; padding:0; cursor:pointer; }
 .link-button:hover { color:white; }
+.font-sample { font-size:26px; line-height:1.2; color:#eef1f7; margin:10px 0 0; overflow-wrap:anywhere; }
+.font-status { font-size:10px; margin:6px 0 0; color:#8b95a7; }
+.font-status.ok { color:#7ee2a1; }
+.font-status.bad { color:#ffaaa3; }

@@ -17,6 +17,12 @@ function cleanWeights(weights: number[] | undefined): number[] {
  * parar na URL. Sem famílias válidas, devolve '' e o CSS segue portátil.
  */
 export function webfontImportRule(fonts: ThemeFonts | undefined): string {
+  const href = googleFontsHref(fonts)
+  return href ? `@import url("${href}");` : ''
+}
+
+/** A URL crua do css2, para o preview do painel injetar via <link>. */
+export function googleFontsHref(fonts: ThemeFonts | undefined): string {
   if (!fonts) return ''
   const merged = new Map<string, { family: string; weights: Set<number>; italic: boolean }>()
   for (const spec of [fonts.body, fonts.heading, fonts.mono]) {
@@ -38,5 +44,5 @@ export function webfontImportRule(fonts: ThemeFonts | undefined): string {
     const tuples = [...weights.map((weight) => `0,${weight}`), ...weights.map((weight) => `1,${weight}`)]
     return `family=${slug}:ital,wght@${tuples.join(';')}`
   })
-  return `@import url("https://fonts.googleapis.com/css2?${params.join('&')}&display=swap");`
+  return `https://fonts.googleapis.com/css2?${params.join('&')}&display=swap`
 }

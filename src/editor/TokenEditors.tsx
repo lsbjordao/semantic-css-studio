@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import { colorTokenKeys, type ColorTokenKey, type FontRole, type ThemeTokens } from '../theme/schema'
 import { useStudioStore } from '../theme/store'
+import { googleFontsHref } from '../compiler/webfonts'
 import { Field, NativeSelectField, StepperField, TextField } from './Field'
 import { fontPairings, fontStackOptions, type FontPairingName } from './fontOptions'
 import { defaultsFor, stackFor, suggestionsFor } from './googleFonts'
@@ -66,12 +68,24 @@ const fontRoleLabels: Record<FontRole, string> = {
   mono: 'Monospace',
 }
 
+const fontRoleTokens = {
+  body: 'fontBody',
+  heading: 'fontHeading',
+  mono: 'fontMono',
+} as const
+
+type FontStatus = 'idle' | 'loading' | 'loaded' | 'failed'
+
 function GoogleFontField({ role }: { role: FontRole }) {
   const theme = useStudioStore((s) => s.theme)
   const setFontFace = useStudioStore((s) => s.setFontFace)
   const face = theme.fonts?.[role]
+  const [status, setStatus] = useState<FontStatus>('idle')
   const label = fontRoleLabels[role]
   const datalistId = `google-fonts-${role}`
+  // A amostra reflete a pilha real do token — o mesmo valor que o preview usa.
+  const stack = theme.tokens.typography[fontRoleTokens[role]]
+  const statusHref = googleFontsHref(theme.fonts)
 
   const applyFamily = (value: string) => {
     const family = value.trim()
@@ -100,6 +114,41 @@ function GoogleFontField({ role }: { role: FontRole }) {
     setFontFace(role, { ...face, italic: !face.italic })
   }
 
+  // Sem a API FontFaceSet (jsdom, navegador antigo), o status segue idle.
+  // Espera a folha de preview (efeito do TypographyControls, que roda depois
+  // deste): consultar document.fonts.load antes do <link> existir resolve
+  // vazio e marcaria "failed" para uma fonte válida.
+  useEffect(() => {
+    if (!face?.family) {
+      setStatus('idle')
+      return
+    }
+    if (typeof document === 'undefined' || typeof document.fonts?.load !== 'function') return
+    let cancelled = false
+    let timer = 0
+    setStatus('loading')
+    const started = Date.now()
+    const waitForSheet = () => {
+      if (cancelled) return
+      // O <link> nasce no efeito do TypographyControls, que roda depois
+      // deste: ausência dele também é motivo para esperar, não para concluir.
+      const link = document.getElementById('studio-font-preview') as HTMLLinkElement | null
+      if ((!link || link.sheet === null) && Date.now() - started < 4000) {
+        timer = window.setTimeout(waitForSheet, 60)
+        return
+      }
+      document.fonts.load(`16px "${face.family}"`).then(
+        (loaded) => { if (!cancelled) setStatus(loaded.length ? 'loaded' : 'failed') },
+        () => { if (!cancelled) setStatus('failed') },
+      )
+    }
+    waitForSheet()
+    return () => {
+      cancelled = true
+      window.clearTimeout(timer)
+    }
+  }, [face?.family, statusHref])
+
   return <div className="font-role" role="group" aria-label={`${label} webfont`}>
     <TextField
       label={`${label} webfont family`}
@@ -121,11 +170,32 @@ function GoogleFontField({ role }: { role: FontRole }) {
       {face && <label><input type="checkbox" checked={face.italic ?? false} onChange={toggleItalic} />Italic</label>}
       {face && <button type="button" className="link-button" aria-label={`Clear ${label.toLowerCase()} webfont`} onClick={() => setFontFace(role, null)}>Clear</button>}
     </div>
+    <p className="font-sample" style={{ fontFamily: stack }}>Ag 123 açaí</p>
+    {status === 'loading' && <p className="font-status">Buscando no Google Fonts…</p>}
+    {status === 'loaded' && <p className="font-status ok">Carregada e aplicada ao preview.</p>}
+    {status === 'failed' && <p className="font-status bad">Não encontrada — confira o nome ou a conexão.</p>}
   </div>
 }
 
 function TypographyControls() {
   const setToken = useStudioStore((s) => s.setToken)
+  const fonts = useStudioStore((s) => s.theme.fonts)
+
+  // A amostra de cada cartão vive no documento do app, então o <link> de
+  // preview mora aqui — o iframe do preview usa o @import do próprio CSS.
+  // Dependência na URL (não no objeto): edição alheia não recria o <link>.
+  const previewHref = googleFontsHref(fonts)
+  useEffect(() => {
+    const id = 'studio-font-preview'
+    document.getElementById(id)?.remove()
+    if (!previewHref) return
+    const link = document.createElement('link')
+    link.id = id
+    link.rel = 'stylesheet'
+    link.href = previewHref
+    document.head.appendChild(link)
+    return () => { document.getElementById(id)?.remove() }
+  }, [previewHref])
 
   const applyPairing = (name: FontPairingName) => {
     const pairing = fontPairings[name]
