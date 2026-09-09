@@ -100,9 +100,22 @@ export function ShadowsEditor() {
 
   const usageFor = (token: keyof typeof labels) => {
     const cssVar = `var(--${token.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`)})`
-    return Object.entries(theme.layers.elements)
-      .filter(([, styles]) => Object.values(styles).some((value) => value.includes(cssVar)))
-      .map(([selector]) => selector)
+    const selectors = new Set<string>()
+    const collect = (rules: Record<string, Record<string, string>>, prefix = '') => {
+      for (const [selector, styles] of Object.entries(rules)) {
+        if (Object.values(styles).some((value) => value.includes(cssVar))) {
+          selectors.add(prefix ? `${selector} (${prefix})` : selector)
+        }
+      }
+    }
+
+    collect(theme.layers.base)
+    collect(theme.layers.elements)
+    collect(theme.layers.states)
+    for (const [breakpoint, rules] of Object.entries(theme.layers.responsive)) {
+      collect(rules, breakpoint)
+    }
+    return [...selectors].sort()
   }
 
   return <div className="editor-panel">
