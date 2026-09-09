@@ -712,7 +712,7 @@ describe('seedResponsiveRules', () => {
     })
     expect(responsive.mobile[':root']).toEqual({
       '--body-padding': 'var(--body-padding-xs)',
-      '--space-2xl': 'var(--space-2xl-sm)',
+      '--space-2xl': 'var(--space-2xl-xs)',
     })
   })
 
@@ -772,7 +772,7 @@ export interface ScrollTokens {
 }
 
 export interface SpacingTokensV2 extends SpacingTokens {
-  space2xlSm: string
+  space2xlXs: string
 }
 
 export interface LayoutTokensV2 extends LayoutTokens {
@@ -913,7 +913,7 @@ export function seedResponsiveRules(): Record<string, RuleMap> {
     mobile: {
       ':root': {
         '--body-padding': 'var(--body-padding-xs)',
-        '--space-2xl': 'var(--space-2xl-sm)',
+        '--space-2xl': 'var(--space-2xl-xs)',
       },
       h1: { overflowWrap: 'anywhere' },
     },
@@ -1029,7 +1029,7 @@ describe('migrateThemeV2', () => {
   it('adiciona tokens de scroll e os tokens novos de espacamento e layout', () => {
     const { tokens } = migrateThemeV2(themeV1)
     expect(tokens.scroll.scrollbarSize).toBe('12px')
-    expect(tokens.spacing.space2xlSm).toBe('2.5rem')
+    expect(tokens.spacing.space2xlXs).toBe('2.5rem')
     expect(tokens.layout.bodyPaddingSm).toBe('1rem')
     expect(tokens.layout.bodyPaddingXs).toBe('0.8rem')
     expect(tokens.layout.sectionSpacingSm).toBe('2rem')
@@ -1151,7 +1151,7 @@ function upgradeFromV1(theme: ThemeV1): ThemeV2 {
       typography: structuredClone(theme.tokens.typography),
       radius: structuredClone(theme.tokens.radius),
       shadow: structuredClone(theme.tokens.shadow),
-      spacing: { ...structuredClone(theme.tokens.spacing), space2xlSm: '2.5rem' },
+      spacing: { ...structuredClone(theme.tokens.spacing), space2xlXs: '2.5rem' },
       layout: {
         ...structuredClone(theme.tokens.layout),
         bodyPaddingSm: '1rem',
@@ -1437,7 +1437,7 @@ git diff tests/snapshots/presets/minimal.css
 Expected: **exatamente quatro** categorias de diferença, e nenhuma outra:
 
 1. dez linhas `--overscroll-behavior`, `--scroll-behavior`, `--scroll-padding-top`, `--scrollbar-*` acrescentadas ao `:root` — os tokens de scroll novos;
-2. quatro linhas `--body-padding-sm`, `--body-padding-xs`, `--section-spacing-sm`, `--space-2xl-sm` acrescentadas ao `:root`;
+2. quatro linhas `--body-padding-sm`, `--body-padding-xs`, `--section-spacing-sm`, `--space-2xl-xs` acrescentadas ao `:root`;
 3. reordenação alfabética das declarações em exatamente duas regras — `html` passa a `background` antes de `color-scheme`, e `input, textarea, select, button` passa a ter `background` antes de `border`. As regras semeadas passam por `declarations()`, que ordena alfabeticamente, enquanto as strings literais antigas não eram ordenadas;
 4. o par `:root[data-theme="light"]` / `:root[data-theme="dark"]` desce da terceira posição do bloco base para o fim dele, porque passa a ser emitido depois do laço sobre `layers.base`. É inerte: `:root[data-theme]` tem especificidade 0,1,1 e vence `html` 0,0,1 em qualquer ordem.
 
