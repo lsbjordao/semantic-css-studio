@@ -71,7 +71,7 @@
     --scrollbar-thumb-hover: var(--color-text-muted);
     --scrollbar-radius: var(--radius-full);
     --scrollbar-gutter: auto;
-    --scroll-behavior: auto;
+    --scroll-behavior: smooth;
     --scroll-padding-top: 0;
     --overscroll-behavior: auto;
   }
@@ -589,7 +589,6 @@
     background: initial;
     color-scheme: normal;
     font-family: var(--font-body);
-    scroll-behavior: smooth;
   }
 
   pre code {

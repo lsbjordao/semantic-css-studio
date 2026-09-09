@@ -72,6 +72,15 @@ describe('layered theme compilation', () => {
     // propriedades normais seguem kebabizadas
     expect(css).toContain('background-color: red;')
   })
+
+  it('o scroll-behavior do Simple.css passa pelo token, nao por regra de elemento', () => {
+    const css = compileTheme(presets['Simple.css'])
+    // Camada vence especificidade: uma regra de elemento aqui tornaria o token
+    // inerte e o controle do painel silenciosamente inoperante.
+    const elementsSlice = css.slice(css.indexOf('@layer elements'), css.indexOf('@layer states'))
+    expect(elementsSlice).not.toContain('scroll-behavior')
+    expect(css).toContain('--scroll-behavior: smooth;')
+  })
 })
 
 describe('camadas', () => {

@@ -2045,7 +2045,7 @@ export const simpleCssPreset = {
       scrollbarThumbHover: 'var(--color-text-muted)',
       scrollbarRadius: 'var(--radius-full)',
       scrollbarGutter: 'auto',
-      scrollBehavior: 'auto',
+      scrollBehavior: 'smooth',
       scrollPaddingTop: '0',
       overscrollBehavior: 'auto',
     },
@@ -2348,7 +2348,6 @@ export const simpleCssPreset = {
       },
       html: {
         fontFamily: 'var(--font-body)',
-        scrollBehavior: 'smooth',
         colorScheme: 'normal',
         background: 'initial',
       },
