@@ -1,5 +1,6 @@
 import { supportedElements, type CssPropertyMap, type Theme, type ThemeTokensV2 } from '../theme/schema'
 import { tokenName } from '../theme/tokenNames'
+import { scrollRules } from './scrollRules'
 import { webfontImportRule } from './webfonts'
 
 const legacyElementOrder = [
@@ -84,6 +85,7 @@ function baseRules(theme: Theme): string[] {
     const emitted = rule(`:where(${selector})`, styles)
     if (emitted) rules.push(emitted)
   }
+  rules.push(...scrollRules(theme))
   // Estrutural, nao escolha de estilo: continua gerado pelo compilador e fora
   // do :where() — :root[data-theme] precisa da especificidade de atributo
   // para vencer os tokens claros.

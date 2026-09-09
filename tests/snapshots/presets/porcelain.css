@@ -122,6 +122,38 @@
     color: var(--color-primary-text);
   }
 
+  :where(html) {
+    overscroll-behavior: var(--overscroll-behavior);
+    scroll-behavior: var(--scroll-behavior);
+    scroll-padding-top: var(--scroll-padding-top);
+    scrollbar-gutter: var(--scrollbar-gutter);
+  }
+
+  :where(html)::-webkit-scrollbar {
+    height: var(--scrollbar-size);
+    width: var(--scrollbar-size);
+  }
+
+  :where(html)::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+
+  :where(html)::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--scrollbar-radius);
+  }
+
+  :where(html)::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    :where(html) {
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+      scrollbar-width: var(--scrollbar-width);
+    }
+  }
+
   :root[data-theme="light"] { color-scheme: light; }
   :root[data-theme="dark"] { color-scheme: dark; }
 
