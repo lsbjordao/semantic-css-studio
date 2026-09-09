@@ -3,7 +3,7 @@ import { seedBaseRules } from './baseRules'
 import { defaultTheme } from './defaults'
 import { presets, type PresetName } from './presets'
 import { migrateThemeV2 } from './migration'
-import type { ColorTokenKey, FontRole, InteractionState, Theme, ThemeFontFace, ThemeTokens } from './schema'
+import type { ColorTokenKey, CssPropertyMap, FontRole, InteractionState, RuleMap, Theme, ThemeFontFace, ThemeTokens } from './schema'
 
 const STORAGE_KEY = 'semantic-css-studio/theme-v1'
 const HISTORY_LIMIT = 60
@@ -79,6 +79,39 @@ export function isBaseRuleModified(theme: Theme, selector: string): boolean {
   if (!seeded) return true
   if (!current) return true
   return JSON.stringify(current) !== JSON.stringify(seeded)
+}
+
+/**
+ * Reinsere `selector` em `base` na posicao que ele ocupa na semente.
+ *
+ * O compilador emite a camada base na ordem de insercao do objeto, e la dentro
+ * toda regra sai embrulhada em `:where()`, com especificidade 0 — a ordem do
+ * fonte e o unico criterio de desempate. Uma reatribuicao simples poe a chave
+ * no fim do objeto: religar `input, textarea, select, button` o emitiria depois
+ * de `button`, e o `background: var(--color-surface)` dos campos passaria a
+ * vencer o `var(--color-primary)` do botao.
+ *
+ * Chaves que nao estao na semente (vindas de um tema importado) mantem a
+ * posicao relativa: a regra religada entra logo antes da primeira sucessora
+ * que a semente conhece.
+ */
+function withSeedPosition(base: RuleMap, selector: string, rules: CssPropertyMap): RuleMap {
+  const seedKeys = Object.keys(seedBaseRules())
+  const target = seedKeys.indexOf(selector)
+  const remaining = { ...base }
+  delete remaining[selector]
+
+  const ordered: RuleMap = {}
+  let inserted = false
+  for (const [key, value] of Object.entries(remaining)) {
+    if (!inserted && seedKeys.indexOf(key) > target) {
+      ordered[selector] = rules
+      inserted = true
+    }
+    ordered[key] = value
+  }
+  if (!inserted) ordered[selector] = rules
+  return ordered
 }
 
 function commit(state: StudioState, nextTheme: Theme, notice?: string): Partial<StudioState> {
@@ -174,7 +207,7 @@ export const useStudioStore = create<StudioState>((set) => ({
     if (enabled) {
       const seeded = seedBaseRules()[selector]
       if (!seeded) return state
-      next.layers.base[selector] = { ...seeded }
+      next.layers.base = withSeedPosition(next.layers.base, selector, { ...seeded })
     } else {
       delete next.layers.base[selector]
     }
