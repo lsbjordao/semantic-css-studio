@@ -25,11 +25,31 @@ describe('valor efetivo no painel de elementos', () => {
       .toBe('var(--color-primary-text)')
   })
 
-  it('resolve o shorthand border da regra de grupo para os longhands', () => {
+  it('decompoe o shorthand border da regra de grupo para controles focados', () => {
     expect(effectiveValueFor(presets.Minimal, 'button', definitionFor('button', 'Border width')))
-      .toBe('1px solid var(--color-border)')
+      .toBe('1px')
     expect(effectiveValueFor(presets.Minimal, 'button', definitionFor('button', 'Border style')))
-      .toBe('1px solid var(--color-border)')
+      .toBe('solid')
+    expect(effectiveValueFor(presets.Minimal, 'button', definitionFor('button', 'Border color')))
+      .toBe('var(--color-border)')
+  })
+
+  it('decompoe a barra inline-start do blockquote em largura, estilo e cor', () => {
+    expect(effectiveValueFor(presets.Minimal, 'blockquote', definitionFor('blockquote', 'Start border width')))
+      .toBe('4px')
+    expect(effectiveValueFor(presets.Minimal, 'blockquote', definitionFor('blockquote', 'Start border style')))
+      .toBe('solid')
+    expect(effectiveValueFor(presets.Minimal, 'blockquote', definitionFor('blockquote', 'Start border color')))
+      .toBe('var(--color-primary)')
+  })
+
+  it('decompoe padding de quatro lados sem enviar o shorthand inteiro ao stepper', () => {
+    const theme = structuredClone(presets.Minimal)
+    theme.layers.elements.article = { padding: '1rem 2rem 3rem 4rem' }
+    expect(effectiveValueFor(theme, 'article', definitionFor('article', 'Padding top'))).toBe('1rem')
+    expect(effectiveValueFor(theme, 'article', definitionFor('article', 'Padding right'))).toBe('2rem')
+    expect(effectiveValueFor(theme, 'article', definitionFor('article', 'Padding bottom'))).toBe('3rem')
+    expect(effectiveValueFor(theme, 'article', definitionFor('article', 'Padding left'))).toBe('4rem')
   })
 
   it('resolve a regra de grupo para os demais controles do grupo', () => {
