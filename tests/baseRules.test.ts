@@ -45,7 +45,7 @@ describe('seedResponsiveRules', () => {
     })
     expect(responsive.mobile[':root']).toEqual({
       '--body-padding': 'var(--body-padding-xs)',
-      '--space-2xl': 'var(--space-2xl-sm)',
+      '--space-2xl': 'var(--space-2xl-xs)',
     })
   })
 

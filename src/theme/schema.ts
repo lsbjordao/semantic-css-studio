@@ -154,7 +154,7 @@ export interface ScrollTokens {
 }
 
 export interface SpacingTokensV2 extends SpacingTokens {
-  space2xlSm: string
+  space2xlXs: string
 }
 
 export interface LayoutTokensV2 extends LayoutTokens {

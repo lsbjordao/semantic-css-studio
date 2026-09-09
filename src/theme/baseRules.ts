@@ -71,7 +71,7 @@ export function seedResponsiveRules(): Record<string, RuleMap> {
     mobile: {
       ':root': {
         '--body-padding': 'var(--body-padding-xs)',
-        '--space-2xl': 'var(--space-2xl-sm)',
+        '--space-2xl': 'var(--space-2xl-xs)',
       },
       h1: { overflowWrap: 'anywhere' },
     },
