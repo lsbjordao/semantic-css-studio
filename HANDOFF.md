@@ -44,10 +44,13 @@ repositório. Ponto de retorno limpo: `git reset --hard cfa016f`.
 | `c1a0b73` | Task 2 implementada — a revisão reprovou |
 | `c098c95` | Task 2, rodada de correção 1: bug do `pendingAtRule` |
 | `22e9323` | correção do plano + limitações conhecidas do minificador |
+| `99231c3` … `297026a` | Tasks 3 a 6 (validador de seletor, tipos v2, migração v1→v2, a troca atômica) |
+| `a0ae5f3` | **Task 7**: cobertura de `readStoredTheme` via `migrateThemeV2` (implementação já havia entrado na Task 6) |
+| `20ac9dc` | **Task 8**: compilador emite `@layer` com base em `:where()` |
+| `79eaa9d` | **Task 9**: `resetBaseRule` / `toggleBaseRule` / `isBaseRuleModified` |
+| `3bce51d` | **Task 10**: painel da camada base + sidebar por grupo + `aria-current` |
 
-**Task 2 está completa e revisada limpa.** Comece pela Task 3.
-
-Falta implementar: Tasks 3 a 10.
+**Tasks 1 a 10 completas e verdes** (100 passed, 5 skipped, lint limpo, build OK, e2e 3/3).
 
 ## Armadilhas já pagas — não caia nelas de novo
 
