@@ -1,3 +1,5 @@
+import { tokenName } from '../theme/tokenNames'
+
 export type ParsedShadow = {
   x: string
   y: string
@@ -95,6 +97,15 @@ export function formatShadowValue(shadow: ParsedShadow): string {
     shadow.color,
   ].filter(Boolean)
   return parts.join(' ')
+}
+
+/** Resolve direct var(--shadow-*) references without mutating the stored rule. */
+export function resolveShadowTokenValue(value: string, tokens: object): string {
+  const trimmed = value.trim()
+  for (const [key, tokenValue] of Object.entries(tokens)) {
+    if (trimmed === `var(--${tokenName('shadow', key)})`) return String(tokenValue)
+  }
+  return value
 }
 
 export const defaultShadowValue = '0 8px 24px 0px rgb(0 0 0 / 0.14)'
