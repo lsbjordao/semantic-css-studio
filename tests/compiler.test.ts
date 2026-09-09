@@ -38,7 +38,9 @@ describe('layered theme compilation', () => {
 
   it('emits every rule of layers.base, in insertion order', () => {
     const css = compileTheme(presets.Minimal)
-    const positions = Object.keys(presets.Minimal.layers.base).map((selector) => css.indexOf(`${selector} {`))
+    const positions = Object.keys(presets.Minimal.layers.base).map((selector) =>
+      css.indexOf(`:where(${selector}) {`),
+    )
     expect(positions.every((position) => position !== -1)).toBe(true)
     expect([...positions].sort((a, b) => a - b)).toEqual(positions)
   })
@@ -69,5 +71,46 @@ describe('layered theme compilation', () => {
     expect(css).not.toContain('--other-var')
     // propriedades normais seguem kebabizadas
     expect(css).toContain('background-color: red;')
+  })
+})
+
+describe('camadas', () => {
+  const css = compileTheme(presets.Minimal)
+
+  it('declara a ordem das camadas antes de qualquer regra', () => {
+    const declaration = css.indexOf('@layer reset, base, elements, states, responsive;')
+    expect(declaration).toBeGreaterThan(-1)
+    expect(declaration).toBeLessThan(css.indexOf('@layer base'))
+  })
+
+  it('envolve as regras-base em :where()', () => {
+    expect(css).toContain(':where(pre code) {')
+    expect(css).toContain(':where(h1, h2, h3, h4, h5, h6) {')
+  })
+
+  it('mantem os tokens no :root sem :where, para que o usuario sobrescreva', () => {
+    expect(css).toContain(':root {')
+    expect(css).not.toContain(':where(:root)')
+  })
+
+  it('nao envolve elements e states em :where()', () => {
+    expect(css).toContain('\n  article {')
+    expect(css).not.toContain(':where(article)')
+  })
+
+  it('agrupa cada camada em um bloco', () => {
+    for (const layer of ['base', 'elements', 'states', 'responsive']) {
+      expect(css, layer).toContain(`@layer ${layer} {`)
+    }
+  })
+
+  it('continua deterministico', () => {
+    expect(compileTheme(presets.Minimal)).toBe(compileTheme(structuredClone(presets.Minimal)))
+  })
+
+  it('minifica sem quebrar as camadas', () => {
+    const minified = minifyCss(css)
+    expect(minified).toContain('@layer reset,base,elements,states,responsive;')
+    expect(minified).toContain(':where(pre code){')
   })
 })
