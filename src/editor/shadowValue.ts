@@ -105,10 +105,10 @@ export function formatShadowValue(shadow: ParsedShadow): string {
  * resolving it here lets the visual editor parse and preview the real value
  * without changing what is stored in the theme until the user edits it.
  */
-export function resolveShadowTokenValue(value: string, tokens: Record<string, string>): string {
+export function resolveShadowTokenValue(value: string, tokens: object): string {
   const trimmed = value.trim()
   for (const [key, tokenValue] of Object.entries(tokens)) {
-    if (trimmed === `var(--${tokenName('shadow', key)})`) return tokenValue
+    if (trimmed === `var(--${tokenName('shadow', key)})`) return String(tokenValue)
   }
   return value
 }
