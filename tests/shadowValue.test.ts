@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatShadowValue, parseShadowValue } from '../src/editor/shadowValue'
+import { formatShadowValue, parseShadowValue, resolveShadowTokenValue } from '../src/editor/shadowValue'
 
 describe('shadow value editor', () => {
   it('parses CSS Color 4 rgb values without splitting the color function', () => {
@@ -20,5 +20,22 @@ describe('shadow value editor', () => {
 
   it('falls back to raw editing for multiple shadow layers', () => {
     expect(parseShadowValue('0 1px 2px #000, 0 6px 18px #0003')).toBeNull()
+  })
+
+  it('resolves a semantic shadow token before visual parsing', () => {
+    const tokens = {
+      shadowSm: '0 2px 8px rgb(0 0 0 / 0.10)',
+      shadowMd: '0 8px 24px rgb(0 0 0 / 0.14)',
+      shadowLg: '0 16px 48px rgb(0 0 0 / 0.18)',
+    }
+
+    const resolved = resolveShadowTokenValue('var(--shadow-sm)', tokens)
+    expect(resolved).toBe('0 2px 8px rgb(0 0 0 / 0.10)')
+    expect(parseShadowValue(resolved)).not.toBeNull()
+  })
+
+  it('keeps custom shadow expressions untouched', () => {
+    const tokens = { shadowSm: '0 2px 8px #0002' }
+    expect(resolveShadowTokenValue('var(--custom-shadow)', tokens)).toBe('var(--custom-shadow)')
   })
 })
