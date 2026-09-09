@@ -32,10 +32,20 @@ describe('scrollRules', () => {
     expect(dentro).toContain('scrollbar-width: var(--scrollbar-width);')
   })
 
-  it('NAO emite scrollbar-color fora do gate', () => {
+  it('scrollbar-color e scrollbar-width existem SO dentro do gate', () => {
     const out = css()
     const gate = out.indexOf('@supports not selector(::-webkit-scrollbar)')
-    expect(out.slice(0, gate)).not.toContain('scrollbar-color')
+    const antes = out.slice(0, gate)
+    const dentro = out.slice(gate)
+
+    // Exclusividade nos dois sentidos: fora do gate nenhuma das duas aparece, e
+    // dentro do gate ambas aparecem exatamente uma vez. Um emissor que
+    // duplicasse scrollbar-width nos dois blocos passaria por uma checagem que
+    // so olhasse ausencia.
+    for (const prop of ['scrollbar-color', 'scrollbar-width']) {
+      expect(antes, `${prop} fora do gate`).not.toContain(prop)
+      expect(dentro.split(`${prop}:`).length - 1, `${prop} dentro do gate`).toBe(1)
+    }
   })
 
   it('e deterministico', () => {
