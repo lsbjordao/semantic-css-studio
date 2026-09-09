@@ -2545,6 +2545,1179 @@ export const simpleCssPreset = {
   },
 } as unknown as Theme
 
+export const noirPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Noir',
+    description:
+      'A dark, editorial theme with champagne accents and serif display type.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#141210',
+      surface: '#1d1a16',
+      surfaceAlt: '#26211b',
+      text: '#ece5d8',
+      textMuted: '#a89c86',
+      primary: '#d9b36a',
+      primaryHover: '#e8c987',
+      primaryText: '#1a1409',
+      secondary: '#8a7f6a',
+      border: '#38312a',
+      success: '#9dc08b',
+      warning: '#d9a441',
+      danger: '#e08073',
+      codeBackground: '#0d0b09',
+      codeText: '#f0e8d5',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Didot, "Bodoni MT", "Playfair Display", Georgia, serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.7',
+      lineHeightHeading: '1.1',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '750',
+    },
+    radius: {
+      radiusSm: '0.25rem',
+      radiusMd: '0.5rem',
+      radiusLg: '0.9rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(0 0 0 / 0.35)',
+      shadowMd: '0 12px 32px rgb(0 0 0 / 0.38)',
+      shadowLg: '0 24px 60px rgb(0 0 0 / 0.45)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#100e0c',
+        surface: '#171310',
+        surfaceAlt: '#201a14',
+        text: '#ece5d8',
+        textMuted: '#a89c86',
+        primary: '#d9b36a',
+        primaryHover: '#e8c987',
+        primaryText: '#1a1409',
+        border: '#2e2822',
+        codeBackground: '#0d0b09',
+        codeText: '#f0e8d5',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+    },
+    elements: {
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.4rem, 7vw, 4.5rem)',
+        letterSpacing: '-0.02em',
+      },
+      h2: {
+        fontSize: 'clamp(1.8rem, 4.5vw, 2.9rem)',
+        letterSpacing: '-0.015em',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '2px solid var(--color-primary)',
+        color: 'var(--color-text)',
+        fontSize: '1.15em',
+        fontStyle: 'italic',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} as unknown as Theme
+
+export const porcelainPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Porcelain',
+    description:
+      'Warm paper, terracotta accents and serif headlines for long reads.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#faf7f1',
+      surface: '#f3eee4',
+      surfaceAlt: '#e9e1d2',
+      text: '#2b2620',
+      textMuted: '#6a5c48',
+      primary: '#b4552d',
+      primaryHover: '#93431f',
+      primaryText: '#fffaf3',
+      secondary: '#7d7466',
+      border: '#ded4c2',
+      success: '#5d7f4f',
+      warning: '#a86e12',
+      danger: '#b03a2e',
+      codeBackground: '#2b2620',
+      codeText: '#f5efe2',
+    },
+    typography: {
+      fontBody: 'Georgia, Cambria, Times New Roman, serif',
+      fontHeading:
+        '"Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '18px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.75',
+      lineHeightHeading: '1.05',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '750',
+    },
+    radius: {
+      radiusSm: '0.25rem',
+      radiusMd: '0.75rem',
+      radiusLg: '1.25rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(80 60 30 / 0.10)',
+      shadowMd: '0 10px 28px rgb(80 60 30 / 0.12)',
+      shadowLg: '0 24px 55px rgb(80 60 30 / 0.16)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '66ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#1c1814',
+        surface: '#241f18',
+        surfaceAlt: '#2e271d',
+        text: '#efe7d7',
+        textMuted: '#b3a48c',
+        primary: '#d08a4e',
+        primaryHover: '#df9c60',
+        primaryText: '#241207',
+        border: '#3a3227',
+        codeBackground: '#100d0a',
+        codeText: '#f2e9d6',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+    },
+    elements: {
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'transparent',
+        border: '0',
+        padding: '0',
+        boxShadow: 'none',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.8rem, 8vw, 5.8rem)',
+        letterSpacing: '-0.02em',
+      },
+      h2: {
+        fontSize: 'clamp(2rem, 5vw, 3.4rem)',
+        letterSpacing: '-0.03em',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        fontSize: '1.2em',
+        fontStyle: 'italic',
+        borderInlineStart: '3px solid var(--color-primary)',
+        borderBlock: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} as unknown as Theme
+
+export const sagePreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Sage',
+    description:
+      'A cool botanical light theme with deep-green accents and crisp grotesque type.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#f4f6f3',
+      surface: '#e9ede6',
+      surfaceAlt: '#dde4d8',
+      text: '#232b24',
+      textMuted: '#57685b',
+      primary: '#3f6b4f',
+      primaryHover: '#2f5440',
+      primaryText: '#f4f8f2',
+      secondary: '#64766a',
+      border: '#cfd8cc',
+      success: '#3f6b4f',
+      warning: '#96702a',
+      danger: '#a8443a',
+      codeBackground: '#232b24',
+      codeText: '#e6eee4',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.65',
+      lineHeightHeading: '1.15',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '750',
+    },
+    radius: {
+      radiusSm: '0.375rem',
+      radiusMd: '0.625rem',
+      radiusLg: '1rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(30 50 35 / 0.10)',
+      shadowMd: '0 10px 28px rgb(30 50 35 / 0.12)',
+      shadowLg: '0 24px 55px rgb(30 50 35 / 0.16)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#131814',
+        surface: '#1a211c',
+        surfaceAlt: '#232c25',
+        text: '#e4eae2',
+        textMuted: '#9fada1',
+        primary: '#8fbf9a',
+        primaryHover: '#aad4b4',
+        primaryText: '#0f1a12',
+        border: '#2c362e',
+        codeBackground: '#0c100d',
+        codeText: '#e8f0e6',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+    },
+    elements: {
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.2rem, 7vw, 4.25rem)',
+        letterSpacing: '-0.025em',
+      },
+      h2: {
+        fontSize: 'clamp(1.7rem, 5vw, 2.6rem)',
+        letterSpacing: '-0.02em',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '4px solid var(--color-primary)',
+        color: 'var(--color-text-muted)',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} as unknown as Theme
+
 export const presets = {
   Minimal: minimalPreset,
   Editorial: editorialPreset,
@@ -2552,6 +3725,9 @@ export const presets = {
   Academic: academicPreset,
   Terminal: terminalPreset,
   'Simple.css': simpleCssPreset,
+  Noir: noirPreset,
+  Porcelain: porcelainPreset,
+  Sage: sagePreset,
 } as const
 
 export type PresetName = keyof typeof presets
