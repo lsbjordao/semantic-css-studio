@@ -187,6 +187,29 @@ export interface ThemeV2 {
     includeMinimalReset: boolean
     reducedMotion: boolean
   }
+  /**
+   * Webfonts opcionais (hoje: Google Fonts). Ausente = tema 100% portátil,
+   * sem nenhuma requisição de rede. Presente = o compilador emite um
+   * `@import` e as pilhas de fonte devem citar a família com fallbacks
+   * do sistema, para o tema degradar offline.
+   */
+  fonts?: ThemeFonts
+}
+
+/** Uma família hospedada no Google Fonts. */
+export interface ThemeFontFace {
+  /** Nome da família, ex. 'Fraunces'. Validado na emissão; resto é descartado. */
+  family: string
+  /** Pesos 100–900. Padrão [400, 700]. */
+  weights?: number[]
+  /** Inclui o eixo itálico. Padrão false. */
+  italic?: boolean
+}
+
+export interface ThemeFonts {
+  body?: ThemeFontFace
+  heading?: ThemeFontFace
+  mono?: ThemeFontFace
 }
 
 export type Theme = ThemeV2

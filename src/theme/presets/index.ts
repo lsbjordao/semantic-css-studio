@@ -2965,8 +2965,7 @@ export const porcelainPreset = {
     },
     typography: {
       fontBody: 'Georgia, Cambria, Times New Roman, serif',
-      fontHeading:
-        '"Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif',
+        fontHeading: 'Fraunces, Georgia, serif',
       fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
       fontSizeBase: '18px',
       fontSizeXs: '0.75rem',
@@ -3325,6 +3324,13 @@ export const porcelainPreset = {
   options: {
     includeMinimalReset: true,
     reducedMotion: true,
+  },
+  fonts: {
+    heading: {
+      family: 'Fraunces',
+      weights: [400, 600, 700],
+      italic: true,
+    },
   },
 } as unknown as Theme
 
