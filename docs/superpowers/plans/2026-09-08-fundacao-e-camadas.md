@@ -279,6 +279,19 @@ describe('minifyCss', () => {
     expect(minifyCss('@media print {\n  a :hover { color: red }\n}'))
       .toBe('@media print{a :hover{color:red}}')
   })
+
+  it('at-rule sem bloco no topo nao contamina a regra seguinte', () => {
+    expect(minifyCss('@layer reset, base, elements;\na { color: red }'))
+      .toBe('@layer reset,base,elements;a{color:red}')
+  })
+
+  it('at-rule sem bloco aninhada nao contamina a regra irma', () => {
+    // Com um guard `blocks.length === 0` no reset, o `;` interno nao zeraria
+    // a flag e o `a {}` seguinte seria tratado como corpo de at-rule,
+    // deixando 'color: red' sem minificar.
+    expect(minifyCss('@layer components { @layer buttons, cards; a { color: red } }'))
+      .toBe('@layer components{@layer buttons,cards;a{color:red}}')
+  })
 })
 ```
 
@@ -379,7 +392,12 @@ export function minifyCss(css: string): string {
     }
 
     if (char === '@') pendingAtRule = true
-    if (char === ';' && blocks.length === 0) pendingAtRule = false
+    // Reset incondicional: `pendingAtRule` e ligado por qualquer `@`, em
+    // qualquer profundidade. Um guard `blocks.length === 0` aqui faria uma
+    // at-rule sem bloco ANINHADA (`@layer a { @layer b, c; ... }`) vazar a
+    // flag para o proximo `{`, classificando um bloco de declaracoes como
+    // corpo de at-rule e desligando a minificacao dele em silencio.
+    if (char === ';') pendingAtRule = false
 
     out.push(char)
     i += 1
@@ -392,7 +410,7 @@ export function minifyCss(css: string): string {
 - [ ] **Step 4: Rodar para verificar que passa**
 
 Run: `npx vitest run tests/minify.test.ts`
-Expected: PASS, 9 testes
+Expected: PASS, 11 testes
 
 - [ ] **Step 5: Trocar a implementação antiga**
 
@@ -582,7 +600,7 @@ export function selectorWarnings(selector: string): string[] {
 - [ ] **Step 4: Rodar para verificar que passa**
 
 Run: `npx vitest run tests/selectorValidation.test.ts`
-Expected: PASS, 9 testes
+Expected: PASS, 11 testes
 
 - [ ] **Step 5: Rodar a suíte inteira e commitar**
 

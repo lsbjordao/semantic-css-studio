@@ -63,3 +63,56 @@ describe('minifyCss', () => {
     expect(minifyCss(css)).toBe('@layer components{@layer buttons,cards;a{color:red}}')
   })
 })
+
+/**
+ * Limitacoes conhecidas do minificador, descobertas por sondagem durante a
+ * revisao da Task 2 e deliberadamente NAO corrigidas nela: estao fora do
+ * escopo do brief daquela tarefa.
+ *
+ * Nenhuma e alcancavel pela saida atual de compileTheme(). Os seis presets nao
+ * emitem url(), nem CSS nesting, nem at-rule de declaracao, e o unico
+ * comentario e o cabecalho. Mas tres ficam no caminho do roadmap:
+ *
+ *  - @font-face e nomeada na spec como lacuna a preencher;
+ *  - nesting pode chegar pelo campo de seletor livre;
+ *  - comentario entre tokens fica alcancavel quando o catalogo exaustivo de
+ *    propriedades permitir valores digitados livremente.
+ *
+ * A mais grave e a ultima: apagar um comentario entre dois tokens funde os
+ * dois, trocando um seletor descendente por um seletor de tipo. Corrigir antes
+ * da entrega do catalogo de propriedades.
+ */
+describe('minifyCss — limitacoes conhecidas (nao corrigidas)', () => {
+  it.skip('preserva parenteses escapados dentro de url() sem aspas', () => {
+    const css = String.raw`a { background: url(foo\)/**/bar) }`
+    expect(minifyCss(css)).toBe(String.raw`a{background:url(foo\)/**/bar)}`)
+  })
+
+  it.skip('preserva espaco escapado dentro de url() sem aspas', () => {
+    // O caminho rapido de url() faz replace(/\s+/g, ''), que apaga tambem o
+    // espaco escapado, significativo em nome de arquivo.
+    const css = String.raw`a { background: url(foo\ bar) }`
+    expect(minifyCss(css)).toBe(String.raw`a{background:url(foo\ bar)}`)
+  })
+
+  it.skip('preserva o combinador descendente em seletor aninhado', () => {
+    // Mesma classe do bug de at-rule, agora para CSS nesting nativo:
+    // '& :hover' (descendente) e '&:hover' (composto) sao seletores diferentes.
+    expect(minifyCss('a { & :hover { color: red } }')).toBe('a{& :hover{color:red}}')
+  })
+
+  it.skip('minifica declaracoes dentro de at-rules de declaracao', () => {
+    // @font-face, @property, @page e @counter-style tem corpo de DECLARACOES,
+    // nao de regras, mas o classificador os trata como at-rule e desliga a
+    // remocao de espaco em torno de ':'. Sub-minificacao, nao corrupcao.
+    expect(minifyCss('@font-face { font-family: x; src: url(font.woff2); }'))
+      .toBe('@font-face{font-family:x;src:url(font.woff2)}')
+  })
+
+  it.skip('mantem separacao entre tokens adjacentes a comentario removido', () => {
+    // O mais grave dos cinco: em CSS o comentario separa tokens. Apaga-lo sem
+    // repor um espaco funde 'a' e 'b' num unico identificador, trocando um
+    // seletor descendente por um seletor de tipo.
+    expect(minifyCss('a/**/b { color: red }')).toBe('a b{color:red}')
+  })
+})
