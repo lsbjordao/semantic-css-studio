@@ -12,11 +12,12 @@ export function StateEditor() {
   const setSpecimen = useStudioStore((s) => s.setSpecimen)
   const state = useStudioStore((s) => s.selectedState)
   const setState = useStudioStore((s) => s.setSelectedState)
-  const setProperty = useStudioStore((s) => s.setStateProperty)
-  const removeProperty = useStudioStore((s) => s.removeStateProperty)
+  const setProperty = useStudioStore((s) => s.setLayerProperty)
+  const removeProperty = useStudioStore((s) => s.removeLayerProperty)
   const selectedElement = elements.includes(element) ? element : 'button'
-  const styles = theme.states[selectedElement]?.[state] ?? {}
-  const change = (property: string, value: string) => value ? setProperty(selectedElement,state,property,value) : removeProperty(selectedElement,state,property)
+  const key = `${selectedElement}:${state}`
+  const styles = theme.layers.states[key] ?? {}
+  const change = (property: string, value: string) => value ? setProperty('states', key, property, value) : removeProperty('states', key, property)
 
   return <div className="editor-panel">
     <div className="panel-heading"><div><h2>Interaction states</h2><p>Style native pseudo-classes for interactive elements.</p></div></div>

@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { defaultTheme } from '../src/theme/defaults'
-import { migrateTheme, migrateThemeV2 } from '../src/theme/migration'
+import { migrateThemeV2 } from '../src/theme/migration'
 
 // O ambiente jsdom substitui o URL global, e `new URL(rel, import.meta.url)`
 // resolve para http://localhost:3000/... em vez de um caminho de arquivo.
@@ -12,16 +12,16 @@ import { migrateTheme, migrateThemeV2 } from '../src/theme/migration'
 const here = dirname(fileURLToPath(import.meta.url))
 
 describe('theme migration / validation', () => {
-  it('accepts schema v1', () => {
-    expect(migrateTheme(defaultTheme).metadata.name).toBe('Minimal')
+  it('accepts the bundled default theme', () => {
+    expect(migrateThemeV2(defaultTheme).metadata.name).toBe('Minimal')
   })
 
   it('rejects invalid data', () => {
-    expect(() => migrateTheme({ schemaVersion: 1 })).toThrow(/metadata/i)
+    expect(() => migrateThemeV2({ schemaVersion: 1 })).toThrow(/metadata/i)
   })
 
   it('rejects future schemas', () => {
-    expect(() => migrateTheme({ ...defaultTheme, schemaVersion: 999 })).toThrow(/newer/i)
+    expect(() => migrateThemeV2({ ...defaultTheme, schemaVersion: 999 })).toThrow(/newer/i)
   })
 })
 

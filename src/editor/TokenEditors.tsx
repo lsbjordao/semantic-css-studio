@@ -100,7 +100,7 @@ export function ShadowsEditor() {
 
   const usageFor = (token: keyof typeof labels) => {
     const cssVar = `var(--${token.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`)})`
-    return Object.entries(theme.elements)
+    return Object.entries(theme.layers.elements)
       .filter(([, styles]) => Object.values(styles).some((value) => value.includes(cssVar)))
       .map(([selector]) => selector)
   }

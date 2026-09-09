@@ -13,7 +13,7 @@ export function AccessibilityEditor() {
   const base = theme.tokens.colors
   const dark = theme.modes.dark?.colors ?? {}
   const c = (key: keyof typeof base) => mode === 'dark' ? dark[key] ?? base[key] : base[key]
-  const hasFocus = Object.values(theme.states).some((state) => Boolean(state['focus-visible'] && Object.keys(state['focus-visible']!).length))
+  const hasFocus = Object.entries(theme.layers.states).some(([selector, styles]) => selector.endsWith(':focus-visible') && Object.keys(styles).length > 0)
 
   return <div className="editor-panel">
     <div className="panel-heading"><div><h2>Accessibility</h2><p>Basic contrast and focus checks for the current palette.</p></div></div>

@@ -44,7 +44,7 @@ export function ElementEditor() {
   const valueFor = (definition: PropertyDef) => {
     const targets = targetList(element, definition)
     for (const target of targets) {
-      const value = theme.elements[target.selector]?.[target.property]
+      const value = theme.layers.elements[target.selector]?.[target.property]
       if (value) return value
     }
     return ''
@@ -60,7 +60,7 @@ export function ElementEditor() {
       for (const target of targetList(element, definition)) relevantSelectors.add(target.selector)
     }
   }
-  const overrideCount = [...relevantSelectors].reduce((count, selector) => count + Object.keys(theme.elements[selector] ?? {}).length, 0)
+  const overrideCount = [...relevantSelectors].reduce((count, selector) => count + Object.keys(theme.layers.elements[selector] ?? {}).length, 0)
 
   return <div className="editor-panel element-editor">
     <div className="panel-heading"><div><h2>Selector stories</h2><p>Each HTML element now exposes a curated set of relevant CSS properties instead of one generic property sheet.</p></div></div>

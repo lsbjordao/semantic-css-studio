@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { exportCss, exportDemo, exportJson, exportMinCss, exportPackage } from '../export/exporters'
-import { migrateTheme } from '../theme/migration'
+import { migrateThemeV2 } from '../theme/migration'
 import { presets, type PresetName } from '../theme/presets'
 import { useStudioStore } from '../theme/store'
 
@@ -25,7 +25,7 @@ export function Topbar() {
     if (!file) return
     try {
       const raw = await file.text()
-      importTheme(migrateTheme(JSON.parse(raw)))
+      importTheme(migrateThemeV2(JSON.parse(raw)))
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Could not import theme.')
     } finally {

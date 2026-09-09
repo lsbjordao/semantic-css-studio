@@ -1,17 +1,13 @@
 import { create } from 'zustand'
 import { defaultTheme } from './defaults'
 import { presets, type PresetName } from './presets'
-import type {
-  ColorTokenKey,
-  CssPropertyMap,
-  InteractionState,
-  Theme,
-  ThemeTokens,
-} from './schema'
+import { migrateThemeV2 } from './migration'
+import type { ColorTokenKey, InteractionState, Theme, ThemeTokens } from './schema'
 
 const STORAGE_KEY = 'semantic-css-studio/theme-v1'
 const HISTORY_LIMIT = 60
 
+export type LayerName = 'base' | 'elements' | 'states'
 export type ThemeModeName = 'light' | 'dark'
 export type PreviewMode = 'light' | 'dark' | 'auto'
 export type ViewportName = 'desktop' | 'tablet' | 'mobile' | 'custom'
@@ -35,11 +31,9 @@ interface StudioState {
   updateMetadata: (key: 'name' | 'version' | 'description', value: string) => void
   setColor: (key: ColorTokenKey, value: string) => void
   setToken: <K extends Exclude<keyof ThemeTokens, 'colors'>>(category: K, key: keyof ThemeTokens[K], value: string) => void
-  setElementProperty: (element: string, property: string, value: string) => void
-  removeElementProperty: (element: string, property: string) => void
+  setLayerProperty: (layer: LayerName, selector: string, property: string, value: string) => void
+  removeLayerProperty: (layer: LayerName, selector: string, property: string) => void
   setElementTargets: (targets: Array<{ selector: string; property: string }>, value: string) => void
-  setStateProperty: (element: string, state: InteractionState, property: string, value: string) => void
-  removeStateProperty: (element: string, state: InteractionState, property: string) => void
   setReset: (enabled: boolean) => void
   setEditMode: (mode: ThemeModeName) => void
   setPreviewMode: (mode: PreviewMode) => void
@@ -58,13 +52,14 @@ interface StudioState {
   clearNotice: () => void
 }
 
+// A chave mantem o sufixo `-v1` de proposito: renomea-la orfanaria o tema que
+// o usuario ja tem salvo. O conteudo passa por `migrateThemeV2`, entao um tema
+// v1 gravado antes desta versao e elevado em vez de descartado.
 function readStoredTheme(): Theme {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return structuredClone(defaultTheme)
-    const parsed = JSON.parse(raw) as Theme
-    if (parsed.schemaVersion !== 1 || !parsed.tokens || !parsed.elements) return structuredClone(defaultTheme)
-    return parsed
+    return migrateThemeV2(JSON.parse(raw))
   } catch {
     return structuredClone(defaultTheme)
   }
@@ -123,46 +118,36 @@ export const useStudioStore = create<StudioState>((set) => ({
     return commit(state, next)
   }),
 
-  setElementProperty: (element, property, value) => set((state) => {
+  setLayerProperty: (layer, selector, property, value) => set((state) => {
     const next = clone(state.theme)
-    next.elements[element] ??= {}
-    next.elements[element][property] = value
+    next.layers[layer][selector] ??= {}
+    next.layers[layer][selector][property] = value
     return commit(state, next)
   }),
 
-  removeElementProperty: (element, property) => set((state) => {
+  removeLayerProperty: (layer, selector, property) => set((state) => {
     const next = clone(state.theme)
-    delete next.elements[element]?.[property]
+    delete next.layers[layer][selector]?.[property]
+    if (next.layers[layer][selector] && Object.keys(next.layers[layer][selector]).length === 0) {
+      delete next.layers[layer][selector]
+    }
     return commit(state, next)
   }),
 
   setElementTargets: (targets, value) => set((state) => {
     const next = clone(state.theme)
+    const elements = next.layers.elements
     for (const target of targets) {
       if (value) {
-        next.elements[target.selector] ??= {}
-        next.elements[target.selector][target.property] = value
+        elements[target.selector] ??= {}
+        elements[target.selector][target.property] = value
       } else {
-        delete next.elements[target.selector]?.[target.property]
-        if (next.elements[target.selector] && Object.keys(next.elements[target.selector]).length === 0) {
-          delete next.elements[target.selector]
+        delete elements[target.selector]?.[target.property]
+        if (elements[target.selector] && Object.keys(elements[target.selector]).length === 0) {
+          delete elements[target.selector]
         }
       }
     }
-    return commit(state, next)
-  }),
-
-  setStateProperty: (element, interactionState, property, value) => set((state) => {
-    const next = clone(state.theme)
-    next.states[element] ??= {}
-    next.states[element][interactionState] ??= {}
-    ;(next.states[element][interactionState] as CssPropertyMap)[property] = value
-    return commit(state, next)
-  }),
-
-  removeStateProperty: (element, interactionState, property) => set((state) => {
-    const next = clone(state.theme)
-    delete next.states[element]?.[interactionState]?.[property]
     return commit(state, next)
   }),
 

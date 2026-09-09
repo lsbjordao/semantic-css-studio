@@ -1,4 +1,4 @@
-import type { ThemeTokens } from './schema'
+import type { ThemeTokensV2 } from './schema'
 
 /**
  * Prefixo aplicado ao nome kebab de cada grupo. Apenas cores recebem prefixo;
@@ -6,13 +6,14 @@ import type { ThemeTokens } from './schema'
  * `spaceMd`, `radiusSm`). Uma chave nova em qualquer grupo é nomeada
  * corretamente sem precisar entrar em tabela de exceções.
  */
-const groupPrefix: Record<keyof ThemeTokens, string> = {
+const groupPrefix: Record<keyof ThemeTokensV2, string> = {
   colors: 'color-',
   typography: '',
   spacing: '',
   radius: '',
   shadow: '',
   layout: '',
+  scroll: '',
 }
 
 /**
@@ -27,6 +28,6 @@ function kebabToken(value: string): string {
     .toLowerCase()
 }
 
-export function tokenName(group: keyof ThemeTokens, key: string): string {
+export function tokenName(group: keyof ThemeTokensV2, key: string): string {
   return `${groupPrefix[group]}${kebabToken(key)}`
 }

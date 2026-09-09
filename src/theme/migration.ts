@@ -1,21 +1,9 @@
 import { isValidSelector } from '../compiler/selectorValidation'
 import { seedBaseRules, seedResponsiveRules } from './baseRules'
 import { scrollDefaults } from './scrollDefaults'
-import { SCHEMA_VERSION, type RuleMap, type Theme, type ThemeV1, type ThemeV2 } from './schema'
+import { SCHEMA_VERSION, type RuleMap, type ThemeV1, type ThemeV2 } from './schema'
 
-export function migrateTheme(input: unknown): Theme {
-  if (!input || typeof input !== 'object') throw new Error('Theme must be a JSON object.')
-  const candidate = input as Partial<Theme>
-  if (typeof candidate.schemaVersion !== 'number') throw new Error('Missing schemaVersion.')
-  if (candidate.schemaVersion > SCHEMA_VERSION) {
-    throw new Error(`Theme schema ${candidate.schemaVersion} is newer than supported schema ${SCHEMA_VERSION}.`)
-  }
-  if (candidate.schemaVersion < 1) throw new Error('Unsupported theme schema.')
-  validateTheme(candidate)
-  return structuredClone(candidate as Theme)
-}
-
-export function validateTheme(candidate: Partial<Theme>): asserts candidate is Theme {
+export function validateTheme(candidate: Partial<ThemeV1>): asserts candidate is ThemeV1 {
   if (!candidate.metadata?.name || !candidate.metadata.version) throw new Error('Theme metadata is incomplete.')
   if (!candidate.tokens?.colors || !candidate.tokens.typography || !candidate.tokens.spacing) {
     throw new Error('Theme tokens are incomplete.')
@@ -23,8 +11,6 @@ export function validateTheme(candidate: Partial<Theme>): asserts candidate is T
   if (!candidate.elements || typeof candidate.elements !== 'object') throw new Error('Theme elements are missing.')
   if (!candidate.responsive) throw new Error('Responsive configuration is missing.')
 }
-
-const SCHEMA_VERSION_V2 = 2
 
 /**
  * `states[el][state]` vira a chave `"el:state"`. Sem perda para entrada
@@ -77,15 +63,15 @@ export function migrateThemeV2(input: unknown): ThemeV2 {
   const candidate = input as Partial<ThemeV2> & Partial<ThemeV1>
 
   if (typeof candidate.schemaVersion !== 'number') throw new Error('Missing schemaVersion.')
-  if (candidate.schemaVersion > SCHEMA_VERSION_V2) {
+  if (candidate.schemaVersion > SCHEMA_VERSION) {
     throw new Error(
-      `Theme schema ${candidate.schemaVersion} is newer than supported schema ${SCHEMA_VERSION_V2}.`,
+      `Theme schema ${candidate.schemaVersion} is newer than supported schema ${SCHEMA_VERSION}.`,
     )
   }
   if (candidate.schemaVersion < 1) throw new Error('Unsupported theme schema.')
 
   const upgraded =
-    candidate.schemaVersion === SCHEMA_VERSION_V2
+    candidate.schemaVersion === SCHEMA_VERSION
       ? structuredClone(candidate as ThemeV2)
       : upgradeFromV1(candidate as ThemeV1)
 
@@ -112,7 +98,7 @@ function upgradeFromV1(theme: ThemeV1): ThemeV2 {
   }
 
   return {
-    schemaVersion: SCHEMA_VERSION_V2,
+    schemaVersion: SCHEMA_VERSION,
     metadata: structuredClone(theme.metadata),
     tokens: {
       colors: structuredClone(theme.tokens.colors),

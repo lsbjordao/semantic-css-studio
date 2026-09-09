@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 1 as const
+export const SCHEMA_VERSION = 2 as const
 
 export const colorTokenKeys = [
   'background',
@@ -119,8 +119,6 @@ export interface ThemeV1 {
   }
 }
 
-export type Theme = ThemeV1
-
 export const selectorGroups = {
   Document: ['body', 'header', 'nav', 'main', 'section', 'article', 'aside', 'footer', 'address', 'search'],
   Headings: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hgroup'],
@@ -190,3 +188,5 @@ export interface ThemeV2 {
     reducedMotion: boolean
   }
 }
+
+export type Theme = ThemeV2

@@ -1,4 +1,4 @@
-import { supportedElements, type CssPropertyMap, type Theme, type ThemeTokens } from '../theme/schema'
+import { supportedElements, type CssPropertyMap, type Theme, type ThemeTokensV2 } from '../theme/schema'
 import { tokenName } from '../theme/tokenNames'
 
 const legacyElementOrder = [
@@ -24,7 +24,12 @@ function declarations(styles: CssPropertyMap, indent = '  '): string {
   return Object.entries(styles)
     .filter(([, value]) => value !== '')
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([property, value]) => `${indent}${kebab(property)}: ${value};`)
+    .map(([property, value]) => {
+      // Custom properties sao case-sensitive e ja vem no formato final;
+      // passar `--myVar` por kebab() corromperia o nome.
+      const name = property.startsWith('--') ? property : kebab(property)
+      return `${indent}${name}: ${value};`
+    })
     .join('\n')
 }
 
@@ -33,8 +38,8 @@ function rule(selector: string, styles: CssPropertyMap): string {
   return body ? `${selector} {\n${body}\n}` : ''
 }
 
-const tokenGroups: Array<keyof ThemeTokens> = [
-  'colors', 'typography', 'spacing', 'radius', 'shadow', 'layout',
+const tokenGroups: Array<keyof ThemeTokensV2> = [
+  'colors', 'typography', 'spacing', 'radius', 'shadow', 'layout', 'scroll',
 ]
 
 function tokenEntries(theme: Theme): Array<[string, string]> {
@@ -57,49 +62,78 @@ function baseRules(theme: Theme): string[] {
   if (theme.options.includeMinimalReset) {
     rules.push(`*,\n*::before,\n*::after {\n  box-sizing: border-box;\n}`)
   }
-  rules.push(`html {\n  color-scheme: light dark;\n  background: var(--color-background);\n}`)
+  for (const [selector, styles] of Object.entries(theme.layers.base)) {
+    const emitted = rule(selector, styles)
+    if (emitted) rules.push(emitted)
+  }
+  // Estrutural, nao escolha de estilo: continua gerado pelo compilador.
   rules.push(`:root[data-theme="light"] { color-scheme: light; }\n:root[data-theme="dark"] { color-scheme: dark; }`)
-  rules.push(`h1, h2, h3, h4, h5, h6 {\n  font-family: var(--font-heading);\n  font-weight: var(--font-weight-bold);\n  line-height: var(--line-height-heading);\n  margin-block: 1.25em 0.5em;\n}`)
-  rules.push(`p, ul, ol, dl, blockquote, pre, figure, table, form, details {\n  margin-block: 0 var(--space-lg);\n}`)
-  rules.push(`th, td {\n  padding: var(--space-sm) var(--space-md);\n  vertical-align: top;\n}`)
-  rules.push(`label {\n  display: block;\n  margin-block: var(--space-sm);\n}`)
-  rules.push(`input:not([type="checkbox"]):not([type="radio"]), textarea, select {\n  width: 100%;\n}`)
-  rules.push(`input, textarea, select, button {\n  border: 1px solid var(--color-border);\n  border-radius: var(--radius-sm);\n  background: var(--color-surface);\n  color: var(--color-text);\n  font: inherit;\n  padding: 0.65rem 0.8rem;\n}`)
-  rules.push(`button {\n  background: var(--color-primary);\n  color: var(--color-primary-text);\n}`)
-  rules.push(`pre code {\n  background: transparent;\n  color: inherit;\n  padding: 0;\n}`)
   return rules
 }
 
 function elementRules(theme: Theme): string[] {
-  const known = elementOrder.filter((key) => theme.elements[key])
-  const extras = Object.keys(theme.elements).filter((key) => !elementOrder.includes(key)).sort()
-  return [...known, ...extras].map((selector) => rule(selector, theme.elements[selector])).filter(Boolean)
+  const elements = theme.layers.elements
+  const known = elementOrder.filter((key) => elements[key])
+  const extras = Object.keys(elements).filter((key) => !elementOrder.includes(key)).sort()
+  return [...known, ...extras].map((selector) => rule(selector, elements[selector])).filter(Boolean)
+}
+
+/**
+ * As chaves de `layers.states` ja sao seletores completos (`button:hover`).
+ * A ordenacao continua sendo elemento (por `elementOrder`) e depois estado
+ * (por `stateOrder`): a ordem entre `:hover`, `:active` e `:disabled` do mesmo
+ * elemento decide quem vence com especificidade igual, entao ordenar em
+ * alfabetica trocaria o comportamento em vez de so mover linhas.
+ */
+function splitState(selector: string): [string, string] {
+  const at = selector.indexOf(':')
+  return at === -1 ? [selector, ''] : [selector.slice(0, at), selector.slice(at + 1)]
+}
+
+function stateRank(state: string): number {
+  const index = (stateOrder as readonly string[]).indexOf(state)
+  return index === -1 ? stateOrder.length : index
 }
 
 function stateRules(theme: Theme): string[] {
-  const selectors = Object.keys(theme.states).sort((a, b) => {
-    const ai = elementOrder.indexOf(a)
-    const bi = elementOrder.indexOf(b)
-    if (ai === -1 && bi === -1) return a.localeCompare(b)
-    if (ai === -1) return 1
-    if (bi === -1) return -1
-    return ai - bi
-  })
-  const result: string[] = []
-  for (const selector of selectors) {
-    for (const state of stateOrder) {
-      const styles = theme.states[selector]?.[state]
-      if (styles) result.push(rule(`${selector}:${state}`, styles))
+  const states = theme.layers.states
+  const selectors = Object.keys(states).sort((a, b) => {
+    const [aElement, aState] = splitState(a)
+    const [bElement, bState] = splitState(b)
+    const ai = elementOrder.indexOf(aElement)
+    const bi = elementOrder.indexOf(bElement)
+    if (ai !== bi) {
+      if (ai === -1) return 1
+      if (bi === -1) return -1
+      return ai - bi
     }
-  }
-  return result.filter(Boolean)
+    if (aElement !== bElement) return aElement.localeCompare(bElement)
+    const as = stateRank(aState)
+    const bs = stateRank(bState)
+    if (as !== bs) return as - bs
+    return a.localeCompare(b)
+  })
+  return selectors.map((selector) => rule(selector, states[selector])).filter(Boolean)
 }
 
 function responsiveRules(theme: Theme): string[] {
-  return [
-    `@media (max-width: ${theme.responsive.tablet}px) {\n  :root {\n    --body-padding: 1rem;\n    --section-spacing: 2rem;\n  }\n  table {\n    font-size: var(--font-size-sm);\n  }\n}`,
-    `@media (max-width: ${theme.responsive.mobile}px) {\n  :root {\n    --body-padding: 0.8rem;\n    --space-2xl: 2.5rem;\n  }\n  h1 {\n    overflow-wrap: anywhere;\n  }\n}`,
+  const order = ['tablet', 'mobile']
+  const keys = [
+    ...order.filter((key) => key in theme.layers.responsive),
+    ...Object.keys(theme.layers.responsive).filter((key) => !order.includes(key)).sort(),
   ]
+  return keys
+    .map((key) => {
+      const body = Object.entries(theme.layers.responsive[key])
+        .map(([selector, styles]) => {
+          const inner = declarations(styles, '    ')
+          return inner ? `  ${selector} {\n${inner}\n  }` : ''
+        })
+        .filter(Boolean)
+        .join('\n')
+      return body ? `@media (max-width: ${theme.breakpoints[key]}px) {\n${body}\n}` : ''
+    })
+    .filter(Boolean)
 }
 
 function darkModeRule(theme: Theme): string {
