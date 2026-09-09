@@ -85,7 +85,7 @@ export function minifyCss(css: string): string {
     }
 
     if (char === '@') pendingAtRule = true
-    if (char === ';' && blocks.length === 0) pendingAtRule = false
+    if (char === ';') pendingAtRule = false
 
     out.push(char)
     i += 1

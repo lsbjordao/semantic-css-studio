@@ -46,4 +46,20 @@ describe('minifyCss', () => {
     expect(minifyCss('@media print {\n  a :hover { color: red }\n}'))
       .toBe('@media print{a :hover{color:red}}')
   })
+
+  it('reseta pendingAtRule apos at-rule sem bloco no nivel superior', () => {
+    const css = '@layer reset, base, elements;\na { color: red }'
+    expect(minifyCss(css)).toBe('@layer reset,base,elements;a{color:red}')
+  })
+
+  it('reseta pendingAtRule apos at-rule sem bloco aninhada dentro de outra at-rule', () => {
+    // pendingAtRule e setado por qualquer '@', em qualquer profundidade. Se o
+    // reset por ';' so dispara em blocks.length === 0, uma at-rule sem bloco
+    // aninhada dentro de outra at-rule termina com ';' enquanto
+    // blocks.length > 0, o reset nao dispara, e a flag vaza para o proximo
+    // '{' irmao — classificando incorretamente um bloco de declaracoes como
+    // corpo de at-rule (o espaco em torno de ':' deixaria de ser removido).
+    const css = '@layer components { @layer buttons, cards; a { color: red } }'
+    expect(minifyCss(css)).toBe('@layer components{@layer buttons,cards;a{color:red}}')
+  })
 })
