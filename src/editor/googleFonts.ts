@@ -1,4 +1,4 @@
-import type { FontRole } from '../theme/schema'
+import type { FontRole, Theme } from '../theme/schema'
 
 export interface GoogleFontOption {
   family: string
@@ -41,4 +41,21 @@ export function stackFor(role: FontRole, family: string): string {
 export function defaultsFor(family: string): number[] {
   const known = googleFontOptions.find((option) => option.family.toLowerCase() === family.toLowerCase())
   return known ? [...known.defaultWeights] : [400, 700]
+}
+
+/**
+ * Pilhas das webfonts configuradas no tema, para os selects de família as
+ * oferecerem em qualquer controle — inclusive num elemento que não herda
+ * aquele papel. Sem isto, a fonte só aparecia onde já era o valor vigente.
+ */
+export function configuredStacks(theme: Theme, role?: FontRole): string[] {
+  const roles: readonly FontRole[] = role ? [role] : ['body', 'heading', 'mono']
+  const stacks: string[] = []
+  for (const item of roles) {
+    const family = theme.fonts?.[item]?.family
+    if (!family) continue
+    const stack = stackFor(item, family)
+    if (!stacks.includes(stack)) stacks.push(stack)
+  }
+  return stacks
 }

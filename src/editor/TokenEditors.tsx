@@ -4,7 +4,7 @@ import { useStudioStore } from '../theme/store'
 import { googleFontsHref } from '../compiler/webfonts'
 import { Field, NativeSelectField, StepperField, TextField } from './Field'
 import { fontPairings, fontStackOptions, type FontPairingName } from './fontOptions'
-import { defaultsFor, stackFor, suggestionsFor } from './googleFonts'
+import { defaultsFor, configuredStacks, stackFor, suggestionsFor } from './googleFonts'
 import { ShadowField } from './ShadowField'
 
 const colorLabels: Record<ColorTokenKey, string> = {
@@ -50,7 +50,8 @@ function GroupEditorInner<K extends Exclude<keyof ThemeTokens, 'colors'>>({ cate
       const fontToken = category === 'typography' && ['fontBody', 'fontHeading', 'fontMono'].includes(key)
 
       if (fontToken) {
-        return <NativeSelectField key={key} label={label} value={value} options={fontStackOptions} onChange={onChange} hint="Choose a portable CSS font stack or keep a custom value." />
+        const role = key === 'fontBody' ? 'body' : key === 'fontHeading' ? 'heading' : 'mono'
+        return <NativeSelectField key={key} label={label} value={value} options={[...configuredStacks(theme, role), ...fontStackOptions]} onChange={onChange} hint="Choose a portable CSS font stack or keep a custom value." />
       }
 
       return useStepper

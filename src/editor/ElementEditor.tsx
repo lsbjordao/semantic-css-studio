@@ -4,11 +4,16 @@ import { useStudioStore } from '../theme/store'
 import { swatchColor } from './colorPreview'
 import { ColorField, SelectField, StepperField, TextField } from './Field'
 import { effectiveValueFor, hasElementOverride, propertyGroupsForElement, targetList, type PropertyDef } from './elementProfiles'
+import { configuredStacks } from './googleFonts'
 import { ShadowField } from './ShadowField'
 
-function PropertyControl({ definition, value, swatch, onChange }: { definition: PropertyDef; value: string; swatch?: string; onChange: (value: string) => void }) {
+function PropertyControl({ definition, value, swatch, fontOptions, onChange }: { definition: PropertyDef; value: string; swatch?: string; fontOptions?: string[]; onChange: (value: string) => void }) {
   if (definition.kind === 'select') {
-    return <SelectField label={definition.label} value={value} options={definition.options ?? []} hint={definition.hint} onChange={onChange} />
+    // A família do elemento aceita as webfonts do tema além das portáteis.
+    const options = definition.property === 'fontFamily' && fontOptions?.length
+      ? [...fontOptions, ...(definition.options ?? [])]
+      : definition.options
+    return <SelectField label={definition.label} value={value} options={options ?? []} hint={definition.hint} onChange={onChange} />
   }
   if (definition.kind === 'size') {
     return <StepperField label={definition.label} value={value} placeholder="CSS value" hint={definition.hint} defaultUnit={definition.defaultUnit} step={definition.step} onChange={onChange} />
@@ -85,8 +90,9 @@ export function ElementEditor() {
           {group.properties.map((definition) => {
             const value = valueFor(definition)
             const swatch = definition.kind === 'color' ? swatchColor(value, theme) : undefined
+            const fontOptions = definition.property === 'fontFamily' ? configuredStacks(theme) : undefined
             return <div key={`${definition.property}-${definition.label}`} className={`property-row ${definition.kind === 'shadow' ? 'property-row-wide' : ''}`}>
-              <PropertyControl definition={definition} value={value} swatch={swatch} onChange={(next) => changeProperty(definition, next)} />
+              <PropertyControl definition={definition} value={value} swatch={swatch} fontOptions={fontOptions} onChange={(next) => changeProperty(definition, next)} />
               {hasOverride(definition) && <button className="tiny-button" aria-label={`Clear ${definition.label}`} onClick={() => changeProperty(definition, '')}>×</button>}
             </div>
           })}
