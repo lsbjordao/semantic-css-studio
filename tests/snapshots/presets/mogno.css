@@ -120,12 +120,6 @@
     color: var(--color-primary-text);
   }
 
-  :where(pre code) {
-    background: transparent;
-    color: inherit;
-    padding: 0;
-  }
-
   :root[data-theme="light"] { color-scheme: light; }
   :root[data-theme="dark"] { color-scheme: dark; }
 
@@ -367,6 +361,12 @@
   summary {
     cursor: pointer;
     font-weight: var(--font-weight-medium);
+  }
+
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
   }
 }
 

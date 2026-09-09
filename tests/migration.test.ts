@@ -48,7 +48,7 @@ describe('migrateThemeV2', () => {
 
   it('semeia base e responsive', () => {
     const { layers } = migrateThemeV2(themeV1)
-    expect(layers.base['pre code']).toBeDefined()
+    expect(layers.base['input, textarea, select, button']).toBeDefined()
     expect(layers.responsive.tablet).toBeDefined()
     expect(layers.responsive.mobile).toBeDefined()
   })
@@ -94,5 +94,49 @@ describe('migrateThemeV2', () => {
       a: { 'b:c': { color: 'y' } },
     }
     expect(() => migrateThemeV2(colliding)).toThrow(/colis/i)
+  })
+})
+
+describe('normalizacao de pre code em tema ja salvo', () => {
+  // `pre code` nasceu na camada base do v2. La ele sai como `:where(pre code)`,
+  // especificidade 0, e a ordem de camadas vence a especificidade: perde para
+  // `code` em @layer elements e nunca neutraliza o chrome do codigo inline.
+  // Um tema salvo no localStorage (ou exportado para JSON) carrega a regra no
+  // lugar errado, entao a leitura tem que move-la — senao o tema do usuario
+  // continua quebrado ate ele apagar o armazenamento.
+  it('move pre code de base para elements num v2 salvo', () => {
+    const theme = structuredClone(defaultTheme)
+    theme.layers.base['pre code'] = { background: 'transparent', color: 'inherit', padding: '0' }
+    delete theme.layers.elements['pre code']
+
+    const migrated = migrateThemeV2(theme)
+    expect(migrated.layers.base['pre code']).toBeUndefined()
+    expect(migrated.layers.elements['pre code']).toEqual({
+      background: 'transparent',
+      color: 'inherit',
+      padding: '0',
+    })
+  })
+
+  it('nao sobrescreve um pre code que o tema ja define em elements', () => {
+    const theme = structuredClone(defaultTheme)
+    theme.layers.base['pre code'] = { background: 'transparent' }
+    theme.layers.elements['pre code'] = { padding: '0', color: 'var(--color-code-text)' }
+
+    const migrated = migrateThemeV2(theme)
+    expect(migrated.layers.elements['pre code']).toEqual({
+      padding: '0',
+      color: 'var(--color-code-text)',
+    })
+  })
+
+  it('eleva um v1 com pre code em elements, nao em base', () => {
+    const { layers } = migrateThemeV2(themeV1)
+    expect(layers.base['pre code']).toBeUndefined()
+    expect(layers.elements['pre code']).toEqual({
+      background: 'transparent',
+      color: 'inherit',
+      padding: '0',
+    })
   })
 })

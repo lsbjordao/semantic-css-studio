@@ -1,5 +1,5 @@
 import { isValidSelector } from '../compiler/selectorValidation'
-import { seedBaseRules, seedResponsiveRules } from './baseRules'
+import { preCodeNeutraliser, seedBaseRules, seedResponsiveRules } from './baseRules'
 import { scrollDefaults } from './scrollDefaults'
 import { SCHEMA_VERSION, type RuleMap, type ThemeV1, type ThemeV2 } from './schema'
 
@@ -45,6 +45,28 @@ function assertSelectors(rules: RuleMap, layer: string): void {
   }
 }
 
+/**
+ * Move `pre code` de `layers.base` para `layers.elements`.
+ *
+ * A regra nasceu na camada base do v2 e ficava inerte: em `@layer base` ela sai
+ * como `:where(pre code)`, especificidade 0, e a ordem de camadas vence a
+ * especificidade sem exceção — `code`, em `@layer elements`, sempre ganhava, e
+ * o código dentro de um `<pre>` herdava o chrome do código inline.
+ *
+ * O código já publicado não carrega mais essa regra na semente, mas todo tema
+ * salvo no `localStorage` ou exportado para JSON antes desta correção carrega —
+ * e continuaria quebrado. É um caso especial para um seletor só, e assumimos
+ * isso conscientemente: a alternativa é o usuário limpar o armazenamento à mão.
+ * Só migramos quando `elements` ainda não define `pre code`; se define, a regra
+ * dele já é a que vence e não mexemos no que é dele.
+ */
+function normalisePreCode(theme: ThemeV2): void {
+  const fromBase = theme.layers.base['pre code']
+  if (!fromBase || theme.layers.elements['pre code']) return
+  delete theme.layers.base['pre code']
+  theme.layers.elements['pre code'] = fromBase
+}
+
 function assertBreakpointsMatch(theme: ThemeV2): void {
   for (const key of Object.keys(theme.layers.responsive)) {
     if (!(key in theme.breakpoints)) {
@@ -75,6 +97,8 @@ export function migrateThemeV2(input: unknown): ThemeV2 {
       ? structuredClone(candidate as ThemeV2)
       : upgradeFromV1(candidate as ThemeV1)
 
+  normalisePreCode(upgraded)
+
   assertSelectors(upgraded.layers.base, 'base')
   assertSelectors(upgraded.layers.elements, 'elements')
   assertSelectors(upgraded.layers.states, 'states')
@@ -96,6 +120,9 @@ function upgradeFromV1(theme: ThemeV1): ThemeV2 {
     }
     elements[selector] = { ...declarations }
   }
+  // O compilador v1 emitia `pre code` fixo, fora do modelo. Sem isto, elevar um
+  // tema v1 perderia a neutralização do código inline dentro de um `<pre>`.
+  elements['pre code'] ??= { ...preCodeNeutraliser }
 
   return {
     schemaVersion: SCHEMA_VERSION,

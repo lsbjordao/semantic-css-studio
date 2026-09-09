@@ -10,7 +10,7 @@ describe('seletor de Google Fonts', () => {
     useStudioStore.getState().resetTheme()
   })
 
-  it('aplica familia, pesos e pilha ao digitar', () => {
+  it('aplica familia, pesos e pilha ao escolher na lista', () => {
     render(<TypographyEditor />)
     const group = screen.getByRole('group', { name: 'Heading webfont' })
     fireEvent.change(within(group).getByLabelText('Heading webfont family'), { target: { value: 'Fraunces' } })
@@ -19,6 +19,30 @@ describe('seletor de Google Fonts', () => {
     expect(theme.fonts?.heading?.family).toBe('Fraunces')
     expect(theme.fonts?.heading?.weights).toContain(500)
     expect(theme.tokens.typography.fontHeading.startsWith('Fraunces,')).toBe(true)
+  })
+
+  it('a lista mostra sempre todas as opcoes, mesmo com valor escolhido', () => {
+    render(<TypographyEditor />)
+    const group = screen.getByRole('group', { name: 'Heading webfont' })
+    fireEvent.change(within(group).getByLabelText('Heading webfont family'), { target: { value: 'Fraunces' } })
+    const select = within(group).getByLabelText('Heading webfont family') as HTMLSelectElement
+    const values = [...select.options].map((option) => option.value)
+    expect(values).toContain('Playfair Display')
+    expect(values).toContain('__custom__')
+  })
+
+  it('modo custom aceita qualquer familia; limpar volta para a lista', () => {
+    render(<TypographyEditor />)
+    const group = screen.getByRole('group', { name: 'Heading webfont' })
+    fireEvent.change(within(group).getByLabelText('Heading webfont family'), { target: { value: '__custom__' } })
+    expect(within(group).getByRole('button', { name: 'Usar a lista' })).toBeInTheDocument()
+    fireEvent.change(within(group).getByLabelText('Heading webfont family'), { target: { value: 'Caveat' } })
+    expect(useStudioStore.getState().theme.fonts?.heading?.family).toBe('Caveat')
+    expect(useStudioStore.getState().theme.tokens.typography.fontHeading.startsWith('Caveat,')).toBe(true)
+    // com valor custom, voltar seria perda: o caminho e limpar o texto
+    expect(within(group).queryByRole('button', { name: 'Usar a lista' })).not.toBeInTheDocument()
+    fireEvent.change(within(group).getByLabelText('Heading webfont family'), { target: { value: '' } })
+    expect(within(group).getByLabelText('Heading webfont family').tagName).toBe('SELECT')
   })
 
   it('liga o italico do papel', () => {

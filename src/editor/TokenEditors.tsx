@@ -81,8 +81,13 @@ function GoogleFontField({ role }: { role: FontRole }) {
   const setFontFace = useStudioStore((s) => s.setFontFace)
   const face = theme.fonts?.[role]
   const [status, setStatus] = useState<FontStatus>('idle')
+  const [customizing, setCustomizing] = useState(false)
   const label = fontRoleLabels[role]
-  const datalistId = `google-fonts-${role}`
+  const options = suggestionsFor(role)
+  const isCustomValue = Boolean(
+    face?.family && !options.some((option) => option.family.toLowerCase() === face.family.toLowerCase()),
+  )
+  const showCustom = customizing || isCustomValue
   // A amostra reflete a pilha real do token — o mesmo valor que o preview usa.
   const stack = theme.tokens.typography[fontRoleTokens[role]]
   const statusHref = googleFontsHref(theme.fonts)
@@ -112,6 +117,20 @@ function GoogleFontField({ role }: { role: FontRole }) {
   const toggleItalic = () => {
     if (!face) return
     setFontFace(role, { ...face, italic: !face.italic })
+  }
+
+  const choose = (value: string) => {
+    if (value === '__custom__') {
+      setCustomizing(true)
+      return
+    }
+    setCustomizing(false)
+    applyFamily(value)
+  }
+
+  const typeCustom = (value: string) => {
+    applyFamily(value)
+    if (!value.trim()) setCustomizing(false)
   }
 
   // Sem a API FontFaceSet (jsdom, navegador antigo), o status segue idle.
@@ -150,17 +169,27 @@ function GoogleFontField({ role }: { role: FontRole }) {
   }, [face?.family, statusHref])
 
   return <div className="font-role" role="group" aria-label={`${label} webfont`}>
-    <TextField
+    {showCustom ? <>
+      <TextField
+        label={`${label} webfont family`}
+        value={face?.family ?? ''}
+        placeholder="Fraunces…"
+        onChange={typeCustom}
+        hint="Empty clears the download; the stack text below stays editable."
+      />
+      <div className="font-role-row">
+        {customizing && !isCustomValue && <button type="button" className="link-button" onClick={() => setCustomizing(false)}>Usar a lista</button>}
+      </div>
+    </> : <Field
       label={`${label} webfont family`}
-      value={face?.family ?? ''}
-      placeholder="Fraunces…"
-      list={datalistId}
-      onChange={applyFamily}
-      hint="Empty clears the download; the stack text below stays editable."
-    />
-    <datalist id={datalistId}>
-      {suggestionsFor(role).map((option) => <option key={option.family} value={option.family} />)}
-    </datalist>
+      hint="The full catalog is always listed; Custom… accepts any Google Fonts name."
+    >
+      <select aria-label={`${label} webfont family`} value={face?.family ?? ''} onChange={(event) => choose(event.target.value)}>
+        <option value="">System stacks (no download)…</option>
+        {options.map((option) => <option key={option.family} value={option.family}>{option.family}</option>)}
+        <option value="__custom__">Custom…</option>
+      </select>
+    </Field>}
     {face && <div className="weight-chips">
       {FONT_WEIGHT_CHOICES.map((weight) => <label key={weight}>
         <input type="checkbox" checked={(face.weights ?? []).includes(weight)} onChange={() => toggleWeight(weight)} />{weight}

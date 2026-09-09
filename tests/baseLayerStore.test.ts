@@ -3,43 +3,49 @@ import { compileTheme } from '../src/compiler'
 import { seedBaseRules } from '../src/theme/baseRules'
 import { isBaseRuleModified, useStudioStore } from '../src/theme/store'
 
+// O sujeito e `input, textarea, select, button` de proposito: e uma regra do
+// MEIO da semente, entao apagar e reinserir a chave muda a ordem de emissao.
+// A suite antiga usava `pre code`, que era a ultima chave — o unico seletor
+// para o qual delete-e-reinsere era neutro, e por isso nao pegava o defeito.
+const SUBJECT = 'input, textarea, select, button'
+
 describe('camada base na store', () => {
   beforeEach(() => {
     useStudioStore.getState().resetTheme()
   })
 
   it('edita uma declaracao da regra base', () => {
-    useStudioStore.getState().setLayerProperty('base', 'pre code', 'padding', '4px')
-    expect(useStudioStore.getState().theme.layers.base['pre code'].padding).toBe('4px')
+    useStudioStore.getState().setLayerProperty('base', SUBJECT, 'padding', '4px')
+    expect(useStudioStore.getState().theme.layers.base[SUBJECT].padding).toBe('4px')
   })
 
   it('reconhece uma regra modificada', () => {
     const theme = () => useStudioStore.getState().theme
-    expect(isBaseRuleModified(theme(), 'pre code')).toBe(false)
-    useStudioStore.getState().setLayerProperty('base', 'pre code', 'padding', '4px')
-    expect(isBaseRuleModified(theme(), 'pre code')).toBe(true)
+    expect(isBaseRuleModified(theme(), SUBJECT)).toBe(false)
+    useStudioStore.getState().setLayerProperty('base', SUBJECT, 'padding', '4px')
+    expect(isBaseRuleModified(theme(), SUBJECT)).toBe(true)
   })
 
   it('restaura a regra ao padrao semeado', () => {
-    useStudioStore.getState().setLayerProperty('base', 'pre code', 'padding', '4px')
-    useStudioStore.getState().resetBaseRule('pre code')
-    expect(useStudioStore.getState().theme.layers.base['pre code']).toEqual(seedBaseRules()['pre code'])
+    useStudioStore.getState().setLayerProperty('base', SUBJECT, 'padding', '4px')
+    useStudioStore.getState().resetBaseRule(SUBJECT)
+    expect(useStudioStore.getState().theme.layers.base[SUBJECT]).toEqual(seedBaseRules()[SUBJECT])
   })
 
   it('desliga e religa uma regra sem perder as declaracoes', () => {
     const store = useStudioStore.getState()
-    store.setLayerProperty('base', 'pre code', 'padding', '4px')
-    store.toggleBaseRule('pre code', false)
-    expect(useStudioStore.getState().theme.layers.base['pre code']).toBeUndefined()
-    useStudioStore.getState().toggleBaseRule('pre code', true)
+    store.setLayerProperty('base', SUBJECT, 'padding', '4px')
+    store.toggleBaseRule(SUBJECT, false)
+    expect(useStudioStore.getState().theme.layers.base[SUBJECT]).toBeUndefined()
+    useStudioStore.getState().toggleBaseRule(SUBJECT, true)
     // religar traz de volta o padrao semeado, nao a edicao descartada
-    expect(useStudioStore.getState().theme.layers.base['pre code']).toEqual(seedBaseRules()['pre code'])
+    expect(useStudioStore.getState().theme.layers.base[SUBJECT]).toEqual(seedBaseRules()[SUBJECT])
   })
 
   it('registra a mudanca no historico de undo', () => {
-    useStudioStore.getState().setLayerProperty('base', 'pre code', 'padding', '4px')
+    useStudioStore.getState().setLayerProperty('base', SUBJECT, 'padding', '4px')
     useStudioStore.getState().undo()
-    expect(useStudioStore.getState().theme.layers.base['pre code'].padding).toBe('0')
+    expect(useStudioStore.getState().theme.layers.base[SUBJECT].padding).toBe('0.65rem 0.8rem')
   })
 })
 
@@ -54,7 +60,7 @@ describe('ordem da camada base ao religar uma regra', () => {
   // ordem e troca o resultado — `input, textarea, select, button` passaria a
   // vir depois de `button` e roubaria a cor primaria de todo botao.
   it('devolve a regra religada a posicao original da semente', () => {
-    const selector = 'input, textarea, select, button'
+    const selector = SUBJECT
     useStudioStore.getState().toggleBaseRule(selector, false)
     useStudioStore.getState().toggleBaseRule(selector, true)
 
@@ -71,7 +77,7 @@ describe('ordem da camada base ao religar uma regra', () => {
   })
 
   it('mantem o botao com a cor primaria depois do ciclo desliga/religa', () => {
-    const selector = 'input, textarea, select, button'
+    const selector = SUBJECT
     useStudioStore.getState().toggleBaseRule(selector, false)
     useStudioStore.getState().toggleBaseRule(selector, true)
     const css = compileTheme(useStudioStore.getState().theme)

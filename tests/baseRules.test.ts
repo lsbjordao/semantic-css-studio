@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { seedBaseRules, seedResponsiveRules } from '../src/theme/baseRules'
+import { preCodeNeutraliser, seedBaseRules, seedResponsiveRules } from '../src/theme/baseRules'
 import { scrollDefaults } from '../src/theme/scrollDefaults'
 
 describe('seedBaseRules', () => {
@@ -14,13 +14,19 @@ describe('seedBaseRules', () => {
       'input:not([type="checkbox"]):not([type="radio"]), textarea, select',
       'input, textarea, select, button',
       'button',
-      'pre code',
     ])
   })
 
   it('mantem as declaracoes das regras semeadas', () => {
     const base = seedBaseRules()
-    expect(base['pre code']).toEqual({ background: 'transparent', color: 'inherit', padding: '0' })
+    expect(base['input, textarea, select, button']).toEqual({
+      background: 'var(--color-surface)',
+      border: '1px solid var(--color-border)',
+      borderRadius: 'var(--radius-sm)',
+      color: 'var(--color-text)',
+      font: 'inherit',
+      padding: '0.65rem 0.8rem',
+    })
     expect(base.button).toEqual({
       background: 'var(--color-primary)',
       color: 'var(--color-primary-text)',
@@ -63,5 +69,23 @@ describe('scrollDefaults', () => {
     expect(scrollDefaults.scrollBehavior).toBe('auto')
     expect(scrollDefaults.scrollbarWidth).toBe('auto')
     expect(Object.keys(scrollDefaults)).toHaveLength(10)
+  })
+})
+
+describe('a camada base nao abriga sobreposicoes contextuais', () => {
+  // A camada base sai inteira embrulhada em :where(): especificidade 0. Como a
+  // ordem de camadas vence a especificidade, uma regra cuja unica funcao e
+  // desfazer outra regra de elemento perde sempre para a camada `elements`.
+  // `pre code` e o caso concreto: mora em layers.elements, nao aqui.
+  it('nao semeia pre code', () => {
+    expect(seedBaseRules()['pre code']).toBeUndefined()
+  })
+
+  it('expoe a neutralizacao de pre code para a camada elements', () => {
+    expect(preCodeNeutraliser).toEqual({
+      background: 'transparent',
+      color: 'inherit',
+      padding: '0',
+    })
   })
 })

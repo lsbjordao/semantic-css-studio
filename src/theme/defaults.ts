@@ -143,13 +143,16 @@ export const defaultTheme = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',

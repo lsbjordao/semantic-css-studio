@@ -20,30 +20,30 @@ describe('BaseRulesEditor', () => {
 
   it('lista as regras semeadas', () => {
     render(<BaseRulesEditor />)
-    expect(screen.getByText('pre code')).toBeInTheDocument()
+    expect(screen.getByText('button')).toBeInTheDocument()
     expect(screen.getByText('th, td')).toBeInTheDocument()
   })
 
   it('edita uma declaracao', () => {
     render(<BaseRulesEditor />)
-    const field = screen.getByLabelText('padding em pre code')
+    const field = screen.getByLabelText('padding em th, td')
     fireEvent.change(field, { target: { value: '4px' } })
-    expect(useStudioStore.getState().theme.layers.base['pre code'].padding).toBe('4px')
+    expect(useStudioStore.getState().theme.layers.base['th, td'].padding).toBe('4px')
   })
 
   it('marca a regra como modificada e permite restaurar', () => {
     render(<BaseRulesEditor />)
-    fireEvent.change(screen.getByLabelText('padding em pre code'), { target: { value: '4px' } })
-    const group = screen.getByRole('group', { name: /pre code/ })
+    fireEvent.change(screen.getByLabelText('padding em th, td'), { target: { value: '4px' } })
+    const group = screen.getByRole('group', { name: /th, td/ })
     expect(within(group).getByText(/modificada/i)).toBeInTheDocument()
     fireEvent.click(within(group).getByRole('button', { name: /restaurar/i }))
-    expect(useStudioStore.getState().theme.layers.base['pre code'].padding).toBe('0')
+    expect(useStudioStore.getState().theme.layers.base['th, td'].padding).toBe('var(--space-sm) var(--space-md)')
   })
 
   it('desliga a regra', () => {
     render(<BaseRulesEditor />)
-    const group = screen.getByRole('group', { name: /pre code/ })
+    const group = screen.getByRole('group', { name: /th, td/ })
     fireEvent.click(within(group).getByRole('checkbox'))
-    expect(useStudioStore.getState().theme.layers.base['pre code']).toBeUndefined()
+    expect(useStudioStore.getState().theme.layers.base['th, td']).toBeUndefined()
   })
 })

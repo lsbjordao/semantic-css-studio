@@ -143,13 +143,16 @@ export const minimalPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -531,13 +534,16 @@ export const editorialPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -920,13 +926,16 @@ export const documentationPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -1311,13 +1320,16 @@ export const academicPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -1697,13 +1709,16 @@ export const terminalPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -2093,11 +2108,6 @@ export const simpleCssPreset = {
       button: {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
-      },
-      'pre code': {
-        background: 'transparent',
-        color: 'inherit',
-        padding: '0',
       },
     },
     elements: {
@@ -2689,13 +2699,16 @@ export const noirPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -3081,13 +3094,16 @@ export const porcelainPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -3478,13 +3494,16 @@ export const sagePreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -3868,13 +3887,16 @@ export const acaiPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -4260,13 +4282,16 @@ export const acaiBananaPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -4653,13 +4678,16 @@ export const limaLimaoPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -5043,13 +5071,16 @@ export const morangoPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -5433,13 +5464,16 @@ export const melanciaPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -5822,13 +5856,16 @@ export const frutaDoCondePreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -6212,13 +6249,16 @@ export const mognoPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -6607,13 +6647,16 @@ export const carvalhoPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',
@@ -6996,13 +7039,16 @@ export const jacarandaPreset = {
         background: 'var(--color-primary)',
         color: 'var(--color-primary-text)',
       },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
       'pre code': {
         background: 'transparent',
         color: 'inherit',
         padding: '0',
       },
-    },
-    elements: {
       body: {
         margin: '0',
         backgroundColor: 'var(--color-background)',

@@ -1,4 +1,17 @@
-import type { RuleMap } from './schema'
+import type { CssPropertyMap, RuleMap } from './schema'
+
+/**
+ * Neutraliza o chrome do código inline dentro de um `<pre>`.
+ *
+ * Mora em `layers.elements`, nunca em `layers.base`: é uma sobreposição
+ * contextual de `code`, e só funciona onde a especificidade ainda decide —
+ * `pre code` (0,0,2) contra `code` (0,0,1), as duas sem `:where()`.
+ */
+export const preCodeNeutraliser: CssPropertyMap = {
+  background: 'transparent',
+  color: 'inherit',
+  padding: '0',
+}
 
 /**
  * As regras que hoje estão hardcoded em `baseRules()` do compilador. Trazê-las
@@ -7,6 +20,15 @@ import type { RuleMap } from './schema'
  *
  * `:root[data-theme="light"]` e `:root[data-theme="dark"]` continuam gerados
  * pelo compilador: são estruturais, não escolhas de estilo.
+ *
+ * RESTRIÇÃO: tudo daqui é emitido dentro de `@layer base` e embrulhado em
+ * `:where()`, ou seja, com especificidade zero. Como a ordem de camadas vence
+ * a especificidade sem exceção, uma regra que existe para sobrepor outra regra
+ * de elemento NÃO pode morar aqui: ela perderia sempre para a camada
+ * `elements`. Sobreposições contextuais desse tipo — `pre code` desfazendo
+ * `code` é o caso concreto — vão para `layers.elements`, onde as duas regras
+ * saem sem `:where()` e a especificidade volta a decidir. A camada base é um
+ * piso de padrões, não um lugar para consertar outra regra.
  */
 export function seedBaseRules(): RuleMap {
   return {
@@ -45,11 +67,6 @@ export function seedBaseRules(): RuleMap {
     button: {
       background: 'var(--color-primary)',
       color: 'var(--color-primary-text)',
-    },
-    'pre code': {
-      background: 'transparent',
-      color: 'inherit',
-      padding: '0',
     },
   }
 }

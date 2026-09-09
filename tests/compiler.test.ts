@@ -84,7 +84,7 @@ describe('camadas', () => {
   })
 
   it('envolve as regras-base em :where()', () => {
-    expect(css).toContain(':where(pre code) {')
+    expect(css).toContain(':where(button) {')
     expect(css).toContain(':where(h1, h2, h3, h4, h5, h6) {')
   })
 
@@ -111,6 +111,31 @@ describe('camadas', () => {
   it('minifica sem quebrar as camadas', () => {
     const minified = minifyCss(css)
     expect(minified).toContain('@layer reset,base,elements,states,responsive;')
-    expect(minified).toContain(':where(pre code){')
+    expect(minified).toContain(':where(h1,h2,h3,h4,h5,h6){')
   })
+})
+
+describe('pre code e sobreposicao contextual, nao regra de base', () => {
+  // `pre code` so existe para desfazer o chrome do codigo inline dentro de um
+  // <pre>. Em @layer base ele sai como `:where(pre code)`, especificidade 0, e
+  // a ordem de camadas vence a especificidade sem excecao — perderia sempre
+  // para `code` em @layer elements. Na camada elements as duas regras saem sem
+  // :where(), e `pre code` (0,0,2) volta a vencer `code` (0,0,1).
+  function slices(css: string) {
+    const base = css.slice(css.indexOf('@layer base {'), css.indexOf('@layer elements {'))
+    const elements = css.slice(css.indexOf('@layer elements {'), css.indexOf('@layer states {'))
+    return { base, elements }
+  }
+
+  for (const [name, theme] of Object.entries(presets)) {
+    it(`${name}: emite pre code em @layer elements, depois de code`, () => {
+      const { base, elements } = slices(compileTheme(theme))
+      expect(base).not.toContain(':where(pre code)')
+      const code = elements.indexOf('\n  code {')
+      const preCode = elements.indexOf('\n  pre code {')
+      expect(code).toBeGreaterThan(-1)
+      expect(preCode).toBeGreaterThan(-1)
+      expect(code).toBeLessThan(preCode)
+    })
+  }
 })
