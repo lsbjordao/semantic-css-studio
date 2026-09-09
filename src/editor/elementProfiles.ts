@@ -291,15 +291,16 @@ function baseRuleApplies(ruleSelector: string, element: string): boolean {
 
 /**
  * O valor que o controle deve exibir: o override da camada `elements` quando
- * existir, senao o que a camada `base` ja aplica ao elemento. Antes deste
- * fallback, todo estilo vindo de preset via base (o botao azul de
- * `base.button.background`, por exemplo) aparecia como controle vazio.
+ * existir, senao o que a camada `base` ja aplica ao elemento, senao o token
+ * que o alimenta. Sem a última etapa, `fontFamily` aparecia vazio para quase
+ * todo elemento, embora cada um herde um token (`body` define
+ * `var(--font-body)`, `h1` recebe `var(--font-heading)` da base).
  */
 export function effectiveValueFor(theme: Theme, element: string, definition: PropertyDef): string {
   const targets = targetList(element, definition)
   for (const target of targets) {
     const value = readRule(theme.layers.elements[target.selector], target.property)
-    if (value) return value
+    if (value) return maybeResolveFontToken(theme, target.property, value)
   }
   for (const target of targets) {
     let found = ''
@@ -309,9 +310,32 @@ export function effectiveValueFor(theme: Theme, element: string, definition: Pro
         if (value) found = value
       }
     }
-    if (found) return found
+    if (found) return maybeResolveFontToken(theme, target.property, found)
+  }
+  if (definition.property === 'fontFamily') {
+    if (MONO_ELEMENTS.has(element)) return theme.tokens.typography.fontMono
+    if (HEADING_ELEMENTS.has(element)) return theme.tokens.typography.fontHeading
+    return theme.tokens.typography.fontBody
   }
   return ''
+}
+
+const MONO_ELEMENTS = new Set(['code', 'pre', 'kbd', 'samp'])
+const HEADING_ELEMENTS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+
+/**
+ * `var(--font-*)` no controle de família vira a pilha real do token. O var
+ * cru é verdadeiro, mas inútil num select de pilhas — e é exatamente o que
+ * base e elements guardam (`h1` herda `var(--font-heading)`).
+ */
+function maybeResolveFontToken(theme: Theme, property: string, value: string): string {
+  if (property !== 'fontFamily') return value
+  const tokens = {
+    'var(--font-body)': theme.tokens.typography.fontBody,
+    'var(--font-heading)': theme.tokens.typography.fontHeading,
+    'var(--font-mono)': theme.tokens.typography.fontMono,
+  } as Record<string, string | undefined>
+  return tokens[value.trim()] ?? value
 }
 
 /** Se o valor exibido e override proprio (`elements`) ou herdado da base. */
