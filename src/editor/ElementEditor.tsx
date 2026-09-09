@@ -5,8 +5,9 @@ import { swatchColor } from './colorPreview'
 import { ColorField, SelectField, StepperField, TextField } from './Field'
 import { effectiveValueFor, hasElementOverride, propertyGroupsForElement, targetList, type PropertyDef } from './elementProfiles'
 import { ShadowField } from './ShadowField'
+import { resolveShadowTokenValue } from './shadowValue'
 
-function PropertyControl({ definition, value, swatch, onChange }: { definition: PropertyDef; value: string; swatch?: string; onChange: (value: string) => void }) {
+function PropertyControl({ definition, value, resolvedValue, swatch, onChange }: { definition: PropertyDef; value: string; resolvedValue?: string; swatch?: string; onChange: (value: string) => void }) {
   if (definition.kind === 'select') {
     return <SelectField label={definition.label} value={value} options={definition.options ?? []} hint={definition.hint} onChange={onChange} />
   }
@@ -17,7 +18,7 @@ function PropertyControl({ definition, value, swatch, onChange }: { definition: 
     return <ColorField label={definition.label} value={value} hint={definition.hint} swatch={swatch} onChange={onChange} />
   }
   if (definition.kind === 'shadow') {
-    return <ShadowField label={definition.label} value={value} hint={definition.hint} onChange={onChange} />
+    return <ShadowField label={definition.label} value={value} resolvedValue={resolvedValue} hint={definition.hint} onChange={onChange} />
   }
   return <TextField label={definition.label} value={value} placeholder="inherit / token / CSS value" hint={definition.hint} onChange={onChange} />
 }
@@ -85,8 +86,11 @@ export function ElementEditor() {
           {group.properties.map((definition) => {
             const value = valueFor(definition)
             const swatch = definition.kind === 'color' ? swatchColor(value, theme) : undefined
+            const resolvedValue = definition.kind === 'shadow'
+              ? resolveShadowTokenValue(value, theme.tokens.shadow)
+              : undefined
             return <div key={`${definition.property}-${definition.label}`} className={`property-row ${definition.kind === 'shadow' ? 'property-row-wide' : ''}`}>
-              <PropertyControl definition={definition} value={value} swatch={swatch} onChange={(next) => changeProperty(definition, next)} />
+              <PropertyControl definition={definition} value={value} resolvedValue={resolvedValue === value ? undefined : resolvedValue} swatch={swatch} onChange={(next) => changeProperty(definition, next)} />
               {hasOverride(definition) && <button className="tiny-button" aria-label={`Clear ${definition.label}`} onClick={() => changeProperty(definition, '')}>×</button>}
             </div>
           })}
