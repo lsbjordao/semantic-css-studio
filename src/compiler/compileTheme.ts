@@ -1,4 +1,5 @@
-import { supportedElements, type CssPropertyMap, type Theme } from '../theme/schema'
+import { supportedElements, type CssPropertyMap, type Theme, type ThemeTokens } from '../theme/schema'
+import { tokenName } from '../theme/tokenNames'
 
 const legacyElementOrder = [
   'body','header','nav','main','section','article','aside','footer',
@@ -19,41 +20,6 @@ function kebab(value: string): string {
   return value.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`)
 }
 
-function tokenName(key: string): string {
-  return kebab(key)
-    .replace(/^background$/, 'color-background')
-    .replace(/^surface$/, 'color-surface')
-    .replace(/^surface-alt$/, 'color-surface-alt')
-    .replace(/^text$/, 'color-text')
-    .replace(/^text-muted$/, 'color-text-muted')
-    .replace(/^primary$/, 'color-primary')
-    .replace(/^primary-hover$/, 'color-primary-hover')
-    .replace(/^primary-text$/, 'color-primary-text')
-    .replace(/^secondary$/, 'color-secondary')
-    .replace(/^border$/, 'color-border')
-    .replace(/^success$/, 'color-success')
-    .replace(/^warning$/, 'color-warning')
-    .replace(/^danger$/, 'color-danger')
-    .replace(/^code-background$/, 'color-code-background')
-    .replace(/^code-text$/, 'color-code-text')
-    .replace(/^font-body$/, 'font-body')
-    .replace(/^font-heading$/, 'font-heading')
-    .replace(/^font-mono$/, 'font-mono')
-    .replace(/^font-size-/, 'font-size-')
-    .replace(/^line-height-/, 'line-height-')
-    .replace(/^font-weight-/, 'font-weight-')
-    .replace(/^space-2xl$/, 'space-2xl')
-    .replace(/^space-/, 'space-')
-    .replace(/^radius-/, 'radius-')
-    .replace(/^shadow-/, 'shadow-')
-    .replace(/^content-width$/, 'content-width')
-    .replace(/^wide-width$/, 'wide-width')
-    .replace(/^body-padding$/, 'body-padding')
-    .replace(/^section-spacing$/, 'section-spacing')
-    .replace(/^header-width$/, 'header-width')
-    .replace(/^footer-width$/, 'footer-width')
-}
-
 function declarations(styles: CssPropertyMap, indent = '  '): string {
   return Object.entries(styles)
     .filter(([, value]) => value !== '')
@@ -67,18 +33,16 @@ function rule(selector: string, styles: CssPropertyMap): string {
   return body ? `${selector} {\n${body}\n}` : ''
 }
 
-function tokenEntries(theme: Theme): Array<[string, string]> {
-  const entries = (group: object): Array<[string, string]> =>
-    Object.entries(group).map(([key, value]) => [tokenName(key), String(value)])
+const tokenGroups: Array<keyof ThemeTokens> = [
+  'colors', 'typography', 'spacing', 'radius', 'shadow', 'layout',
+]
 
-  return [
-    ...entries(theme.tokens.colors),
-    ...entries(theme.tokens.typography),
-    ...entries(theme.tokens.spacing),
-    ...entries(theme.tokens.radius),
-    ...entries(theme.tokens.shadow),
-    ...entries(theme.tokens.layout),
-  ]
+function tokenEntries(theme: Theme): Array<[string, string]> {
+  return tokenGroups.flatMap((group) =>
+    Object.entries(theme.tokens[group]).map(
+      ([key, value]) => [tokenName(group, key), String(value)] as [string, string],
+    ),
+  )
 }
 
 function rootVariables(theme: Theme): string {
@@ -143,7 +107,7 @@ function darkModeRule(theme: Theme): string {
   if (!colors || Object.keys(colors).length === 0) return ''
   const vars = Object.entries(colors)
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([key, value]) => `    --${tokenName(key)}: ${value};`)
+    .map(([key, value]) => `    --${tokenName('colors', key)}: ${value};`)
     .join('\n')
   const manual = `:root[data-theme="dark"] {\n${vars.replaceAll('    ', '  ')}\n}`
   const automatic = `@media (prefers-color-scheme: dark) {\n  :root:not([data-theme="light"]) {\n${vars}\n  }\n}`
