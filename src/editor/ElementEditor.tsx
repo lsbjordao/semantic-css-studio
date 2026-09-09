@@ -2,12 +2,14 @@ import { useMemo, useState } from 'react'
 import { selectorGroups } from '../theme/schema'
 import { useStudioStore } from '../theme/store'
 import { swatchColor } from './colorPreview'
+import { controlValueFor } from './controlValue'
 import { ColorField, SelectField, StepperField, TextField } from './Field'
-import { effectiveValueFor, hasElementOverride, propertyGroupsForElement, targetList, type PropertyDef } from './elementProfiles'
+import { effectiveValueFor, propertyGroupsForElement, targetList, type PropertyDef } from './elementProfiles'
 import { configuredStacks } from './googleFonts'
 import { ShadowField } from './ShadowField'
+import { resolveShadowTokenValue } from './shadowValue'
 
-function PropertyControl({ definition, value, swatch, fontOptions, onChange }: { definition: PropertyDef; value: string; swatch?: string; fontOptions?: string[]; onChange: (value: string) => void }) {
+function PropertyControl({ definition, value, resolvedValue, swatch, fontOptions, onChange }: { definition: PropertyDef; value: string; resolvedValue?: string; swatch?: string; fontOptions?: string[]; onChange: (value: string) => void }) {
   if (definition.kind === 'select') {
     // A família do elemento aceita as webfonts do tema além das portáteis.
     const options = definition.property === 'fontFamily' && fontOptions?.length
@@ -22,7 +24,7 @@ function PropertyControl({ definition, value, swatch, fontOptions, onChange }: {
     return <ColorField label={definition.label} value={value} hint={definition.hint} swatch={swatch} onChange={onChange} />
   }
   if (definition.kind === 'shadow') {
-    return <ShadowField label={definition.label} value={value} hint={definition.hint} onChange={onChange} />
+    return <ShadowField label={definition.label} value={value} resolvedValue={resolvedValue} hint={definition.hint} onChange={onChange} />
   }
   return <TextField label={definition.label} value={value} placeholder="inherit / token / CSS value" hint={definition.hint} onChange={onChange} />
 }
@@ -47,9 +49,19 @@ export function ElementEditor() {
     setElement(tag)
   }
 
-  const valueFor = (definition: PropertyDef) => effectiveValueFor(theme, element, definition)
+  const valueFor = (definition: PropertyDef) => controlValueFor(
+    theme,
+    element,
+    definition.property,
+    effectiveValueFor(theme, element, definition),
+  )
 
-  const hasOverride = (definition: PropertyDef) => hasElementOverride(theme, element, definition)
+  // Só um longhand escrito explicitamente é um override limpável. Um valor
+  // apenas herdado de shorthand continua sendo mostrado, mas não recebe um ×
+  // que seria incapaz de apagar a declaração que de fato o produz.
+  const hasOverride = (definition: PropertyDef) => targetList(element, definition).some((target) =>
+    Boolean(theme.layers.elements[target.selector]?.[target.property]),
+  )
 
   const changeProperty = (definition: PropertyDef, next: string) => {
     setTargets(targetList(element, definition), next)
@@ -91,8 +103,18 @@ export function ElementEditor() {
             const value = valueFor(definition)
             const swatch = definition.kind === 'color' ? swatchColor(value, theme) : undefined
             const fontOptions = definition.property === 'fontFamily' ? configuredStacks(theme) : undefined
+            const resolvedShadow = definition.kind === 'shadow'
+              ? resolveShadowTokenValue(value, theme.tokens.shadow)
+              : undefined
             return <div key={`${definition.property}-${definition.label}`} className={`property-row ${definition.kind === 'shadow' ? 'property-row-wide' : ''}`}>
-              <PropertyControl definition={definition} value={value} swatch={swatch} fontOptions={fontOptions} onChange={(next) => changeProperty(definition, next)} />
+              <PropertyControl
+                definition={definition}
+                value={value}
+                resolvedValue={resolvedShadow === value ? undefined : resolvedShadow}
+                swatch={swatch}
+                fontOptions={fontOptions}
+                onChange={(next) => changeProperty(definition, next)}
+              />
               {hasOverride(definition) && <button className="tiny-button" aria-label={`Clear ${definition.label}`} onClick={() => changeProperty(definition, '')}>×</button>}
             </div>
           })}
