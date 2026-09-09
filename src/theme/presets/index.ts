@@ -4111,6 +4111,3132 @@ export const acaiPreset = {
   },
 } as unknown as Theme
 
+export const acaiBananaPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Açaí com Banana',
+    description: 'Deep açaí purples with banana-yellow letters and accents.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#1a1026',
+      surface: '#251737',
+      surfaceAlt: '#302045',
+      text: '#f6efdc',
+      textMuted: '#b3a3c7',
+      primary: '#f2c42c',
+      primaryHover: '#ffd94d',
+      primaryText: '#2a1230',
+      secondary: '#a08fb5',
+      border: '#3d2a58',
+      success: '#9ccb8f',
+      warning: '#f2c42c',
+      danger: '#ef8f8a',
+      codeBackground: '#120a1c',
+      codeText: '#f7ecd2',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.7',
+      lineHeightHeading: '1.08',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '750',
+    },
+    radius: {
+      radiusSm: '0.375rem',
+      radiusMd: '0.75rem',
+      radiusLg: '1.25rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(10 4 24 / 0.5)',
+      shadowMd: '0 12px 32px rgb(60 30 110 / 0.45)',
+      shadowLg: '0 24px 60px rgb(60 30 110 / 0.5)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#130b1d',
+        surface: '#1d1229',
+        surfaceAlt: '#281a38',
+        text: '#f6efdc',
+        textMuted: '#b3a3c7',
+        primary: '#f2c42c',
+        primaryHover: '#ffd94d',
+        primaryText: '#2a1230',
+        border: '#36234e',
+        codeBackground: '#0d0714',
+        codeText: '#f7ecd2',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+    },
+    elements: {
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.4rem, 7vw, 4.4rem)',
+        letterSpacing: '-0.03em',
+      },
+      h2: {
+        fontSize: 'clamp(1.75rem, 4vw, 2.75rem)',
+        letterSpacing: '-0.02em',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '3px solid var(--color-primary)',
+        color: 'var(--color-text)',
+        fontFamily: 'Georgia, "Times New Roman", serif',
+        fontStyle: 'italic',
+        fontSize: '1.15em',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} as unknown as Theme
+
+export const limaLimaoPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Lima-limão',
+    description:
+      'Zesty lime-leaf greens with a squeeze of lemon on pale citrus mist.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#f2f6e5',
+      surface: '#e6eed4',
+      surfaceAlt: '#d8e3c0',
+      text: '#22301a',
+      textMuted: '#4f6139',
+      primary: '#42751a',
+      primaryHover: '#335c12',
+      primaryText: '#f6faec',
+      secondary: '#6f7a2e',
+      border: '#c2cfa4',
+      success: '#4d8a1f',
+      warning: '#96702a',
+      danger: '#b0472f',
+      codeBackground: '#22301a',
+      codeText: '#edf3da',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.65',
+      lineHeightHeading: '1.15',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '750',
+    },
+    radius: {
+      radiusSm: '0.5rem',
+      radiusMd: '1rem',
+      radiusLg: '1.5rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(50 80 20 / 0.10)',
+      shadowMd: '0 10px 28px rgb(50 80 20 / 0.12)',
+      shadowLg: '0 24px 55px rgb(50 80 20 / 0.16)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#131a0d',
+        surface: '#1b2413',
+        surfaceAlt: '#26311a',
+        text: '#e9f1d8',
+        textMuted: '#9dab86',
+        primary: '#a4d65c',
+        primaryHover: '#bde37e',
+        primaryText: '#17220b',
+        border: '#31401f',
+        codeBackground: '#0c1107',
+        codeText: '#edf3da',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+    },
+    elements: {
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.2rem, 7vw, 4.25rem)',
+        letterSpacing: '-0.025em',
+      },
+      h2: {
+        fontSize: 'clamp(1.7rem, 5vw, 2.6rem)',
+        letterSpacing: '-0.02em',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '4px solid var(--color-primary)',
+        color: 'var(--color-text-muted)',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} as unknown as Theme
+
+export const morangoPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Morango',
+    description:
+      'Blush cream with ripe strawberry reds for a sweet, warm read.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#fdf3f1',
+      surface: '#f9e4e0',
+      surfaceAlt: '#f3d0ca',
+      text: '#471b1e',
+      textMuted: '#8a5a5e',
+      primary: '#cf3249',
+      primaryHover: '#ad2940',
+      primaryText: '#fff5f3',
+      secondary: '#a06a70',
+      border: '#e6c2bb',
+      success: '#5d8a4a',
+      warning: '#a8791f',
+      danger: '#cf3249',
+      codeBackground: '#471b1e',
+      codeText: '#ffe9e4',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.7',
+      lineHeightHeading: '1.15',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '750',
+    },
+    radius: {
+      radiusSm: '0.375rem',
+      radiusMd: '0.9rem',
+      radiusLg: '1.4rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(140 40 55 / 0.10)',
+      shadowMd: '0 10px 28px rgb(140 40 55 / 0.12)',
+      shadowLg: '0 24px 55px rgb(140 40 55 / 0.16)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#1f1114',
+        surface: '#2a161b',
+        surfaceAlt: '#382027',
+        text: '#f9e6e3',
+        textMuted: '#c09a9e',
+        primary: '#f06078',
+        primaryHover: '#ff8296',
+        primaryText: '#33090f',
+        border: '#4c2633',
+        codeBackground: '#120809',
+        codeText: '#ffe4e1',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+    },
+    elements: {
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.2rem, 7vw, 4.25rem)',
+        letterSpacing: '-0.02em',
+      },
+      h2: {
+        fontSize: 'clamp(1.7rem, 5vw, 2.6rem)',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '4px solid var(--color-primary)',
+        color: 'var(--color-text-muted)',
+        fontStyle: 'italic',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} as unknown as Theme
+
+export const melanciaPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Melancia',
+    description:
+      'Watermelon flesh pinks with rind-green details on pale cream.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#f7f3ee',
+      surface: '#f0e6e0',
+      surfaceAlt: '#e6d2d2',
+      text: '#37222b',
+      textMuted: '#7c5c68',
+      primary: '#c72f4f',
+      primaryHover: '#a82540',
+      primaryText: '#fff3f5',
+      secondary: '#2e7d4f',
+      border: '#dfc5c4',
+      success: '#2e7d4f',
+      warning: '#a8791f',
+      danger: '#c72f4f',
+      codeBackground: '#37222b',
+      codeText: '#ffe9ee',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.65',
+      lineHeightHeading: '1.15',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '750',
+    },
+    radius: {
+      radiusSm: '0.5rem',
+      radiusMd: '1rem',
+      radiusLg: '1.5rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(150 50 70 / 0.10)',
+      shadowMd: '0 10px 28px rgb(150 50 70 / 0.12)',
+      shadowLg: '0 24px 55px rgb(150 50 70 / 0.16)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#1a1015',
+        surface: '#25161d',
+        surfaceAlt: '#311d27',
+        text: '#f6e3e8',
+        textMuted: '#bb95a2',
+        primary: '#f4607e',
+        primaryHover: '#ff85a0',
+        primaryText: '#38060f',
+        border: '#472331',
+        codeBackground: '#0e070b',
+        codeText: '#ffe0e8',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+    },
+    elements: {
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.2rem, 7vw, 4.25rem)',
+        letterSpacing: '-0.025em',
+      },
+      h2: {
+        fontSize: 'clamp(1.7rem, 5vw, 2.6rem)',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '4px solid var(--color-secondary)',
+        color: 'var(--color-text-muted)',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} as unknown as Theme
+
+export const frutaDoCondePreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Fruta-do-conde',
+    description:
+      'Custard cream with sugar-apple greens for a soft orchard read.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#f6f4e8',
+      surface: '#ebe6d2',
+      surfaceAlt: '#ded5ba',
+      text: '#2e2b1d',
+      textMuted: '#6b6350',
+      primary: '#4e7523',
+      primaryHover: '#3c5a1a',
+      primaryText: '#f7f9ec',
+      secondary: '#8a7a3a',
+      border: '#d3cba9',
+      success: '#4e7523',
+      warning: '#9c7a1c',
+      danger: '#a8442f',
+      codeBackground: '#2e2b1d',
+      codeText: '#f1ecd9',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.65',
+      lineHeightHeading: '1.15',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '750',
+    },
+    radius: {
+      radiusSm: '0.375rem',
+      radiusMd: '0.75rem',
+      radiusLg: '1.25rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(90 90 40 / 0.10)',
+      shadowMd: '0 10px 28px rgb(90 90 40 / 0.12)',
+      shadowLg: '0 24px 55px rgb(90 90 40 / 0.16)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#15130c',
+        surface: '#1e1a10',
+        surfaceAlt: '#2a2517',
+        text: '#ece5cf',
+        textMuted: '#a89f82',
+        primary: '#a4c25e',
+        primaryHover: '#bcd67e',
+        primaryText: '#1a2008',
+        border: '#38311c',
+        codeBackground: '#0d0b06',
+        codeText: '#f0e9d2',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+    },
+    elements: {
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.2rem, 7vw, 4.25rem)',
+        letterSpacing: '-0.02em',
+      },
+      h2: {
+        fontSize: 'clamp(1.7rem, 5vw, 2.6rem)',
+        letterSpacing: '-0.015em',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '4px solid var(--color-primary)',
+        color: 'var(--color-text-muted)',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} as unknown as Theme
+
+export const mognoPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Mogno',
+    description:
+      'Polished mahogany browns with amber glow for a classic library feel.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#1c1210',
+      surface: '#291917',
+      surfaceAlt: '#35211d',
+      text: '#f0e4d8',
+      textMuted: '#b49a86',
+      primary: '#d07a4a',
+      primaryHover: '#e08f5c',
+      primaryText: '#2c1006',
+      secondary: '#9a7a63',
+      border: '#453027',
+      success: '#9ccb8f',
+      warning: '#dfa04e',
+      danger: '#e07a6a',
+      codeBackground: '#100a08',
+      codeText: '#f3e2d2',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Georgia, "Times New Roman", serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.7',
+      lineHeightHeading: '1.12',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '750',
+    },
+    radius: {
+      radiusSm: '0.25rem',
+      radiusMd: '0.5rem',
+      radiusLg: '0.75rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(0 0 0 / 0.4)',
+      shadowMd: '0 12px 30px rgb(0 0 0 / 0.42)',
+      shadowLg: '0 24px 55px rgb(0 0 0 / 0.48)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#150d0b',
+        surface: '#201310',
+        surfaceAlt: '#2b1a16',
+        text: '#f0e4d8',
+        textMuted: '#b49a86',
+        primary: '#d07a4a',
+        primaryHover: '#e08f5c',
+        primaryText: '#2c1006',
+        border: '#3a271f',
+        codeBackground: '#0c0705',
+        codeText: '#f3e2d2',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+    },
+    elements: {
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.3rem, 6vw, 4.2rem)',
+        fontFamily: 'Georgia, "Times New Roman", serif',
+        letterSpacing: '-0.01em',
+      },
+      h2: {
+        fontSize: 'clamp(1.7rem, 5vw, 2.6rem)',
+        fontFamily: 'Georgia, "Times New Roman", serif',
+        letterSpacing: '-0.01em',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '4px solid var(--color-primary)',
+        color: 'var(--color-text)',
+        fontFamily: 'Georgia, "Times New Roman", serif',
+        fontStyle: 'italic',
+        fontSize: '1.15em',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} as unknown as Theme
+
+export const carvalhoPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Carvalho',
+    description:
+      'Sturdy honey-oak tones with bronze accents for a warm, grounded read.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#f7f2e8',
+      surface: '#efe4d0',
+      surfaceAlt: '#e4d3b4',
+      text: '#3a2c1c',
+      textMuted: '#75603f',
+      primary: '#9a6420',
+      primaryHover: '#7d5018',
+      primaryText: '#fdf6e7',
+      secondary: '#7a6a45',
+      border: '#d9c6a1',
+      success: '#6d8a3f',
+      warning: '#9a6420',
+      danger: '#b0472f',
+      codeBackground: '#3a2c1c',
+      codeText: '#f5e8d2',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.65',
+      lineHeightHeading: '1.15',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '750',
+    },
+    radius: {
+      radiusSm: '0.25rem',
+      radiusMd: '0.5rem',
+      radiusLg: '0.875rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(100 70 25 / 0.12)',
+      shadowMd: '0 10px 26px rgb(100 70 25 / 0.14)',
+      shadowLg: '0 22px 50px rgb(100 70 25 / 0.18)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#1a140d',
+        surface: '#241b10',
+        surfaceAlt: '#302515',
+        text: '#eee2cb',
+        textMuted: '#b39f78',
+        primary: '#d29a4a',
+        primaryHover: '#e2ad60',
+        primaryText: '#2a1a05',
+        border: '#3d2f1a',
+        codeBackground: '#100b06',
+        codeText: '#f2e4c8',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+    },
+    elements: {
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.2rem, 7vw, 4.25rem)',
+        letterSpacing: '-0.02em',
+      },
+      h2: {
+        fontSize: 'clamp(1.7rem, 5vw, 2.6rem)',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '5px solid var(--color-primary)',
+        color: 'var(--color-text-muted)',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} as unknown as Theme
+
+export const jacarandaPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Jacarandá',
+    description:
+      'Deep rosewood espresso with dusty-rose highlights for quiet drama.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#161216',
+      surface: '#211a21',
+      surfaceAlt: '#2c232c',
+      text: '#ece2e8',
+      textMuted: '#ab9aa8',
+      primary: '#c083b0',
+      primaryHover: '#d29ac2',
+      primaryText: '#2b0f24',
+      secondary: '#8a7586',
+      border: '#3d2f3d',
+      success: '#93bd8b',
+      warning: '#d9a441',
+      danger: '#e08073',
+      codeBackground: '#0e0a0e',
+      codeText: '#f2e2ec',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.7',
+      lineHeightHeading: '1.1',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '750',
+    },
+    radius: {
+      radiusSm: '0.375rem',
+      radiusMd: '0.625rem',
+      radiusLg: '1rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(0 0 0 / 0.4)',
+      shadowMd: '0 12px 30px rgb(40 10 35 / 0.45)',
+      shadowLg: '0 24px 55px rgb(40 10 35 / 0.5)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#110d11',
+        surface: '#1a141a',
+        surfaceAlt: '#251d25',
+        text: '#ece2e8',
+        textMuted: '#ab9aa8',
+        primary: '#c083b0',
+        primaryHover: '#d29ac2',
+        primaryText: '#2b0f24',
+        border: '#342834',
+        codeBackground: '#0b070b',
+        codeText: '#f2e2ec',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+    },
+    elements: {
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.4rem, 7vw, 4.4rem)',
+        letterSpacing: '-0.025em',
+      },
+      h2: {
+        fontSize: 'clamp(1.7rem, 5vw, 2.6rem)',
+        letterSpacing: '-0.02em',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '4px solid var(--color-primary)',
+        color: 'var(--color-text)',
+        fontStyle: 'italic',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} as unknown as Theme
+
 export const presets = {
   Minimal: minimalPreset,
   Editorial: editorialPreset,
@@ -4122,6 +7248,14 @@ export const presets = {
   Porcelain: porcelainPreset,
   Sage: sagePreset,
   Açaí: acaiPreset,
+  'Açaí com Banana': acaiBananaPreset,
+  'Lima-limão': limaLimaoPreset,
+  Morango: morangoPreset,
+  Melancia: melanciaPreset,
+  'Fruta-do-conde': frutaDoCondePreset,
+  Mogno: mognoPreset,
+  Carvalho: carvalhoPreset,
+  Jacarandá: jacarandaPreset,
 } as const
 
 export type PresetName = keyof typeof presets
