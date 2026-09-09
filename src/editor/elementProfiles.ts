@@ -248,32 +248,115 @@ export function targetList(element: string, definition: PropertyDef): PropertyTa
   return definition.targets ?? [{ selector: element, property: definition.property }]
 }
 
+type ShorthandPart = 'top' | 'right' | 'bottom' | 'left' | 'width' | 'style' | 'color' | 'value'
+type ShorthandFallback = { property: string; part: ShorthandPart }
+
+/** Split CSS tokens while preserving functions such as var(), rgb() and calc(). */
+function splitTopLevel(value: string): string[] {
+  const tokens: string[] = []
+  let current = ''
+  let depth = 0
+  let quote: string | null = null
+
+  for (let i = 0; i < value.length; i += 1) {
+    const char = value[i]
+    if (quote) {
+      current += char
+      if (char === quote && value[i - 1] !== '\\') quote = null
+      continue
+    }
+    if (char === '"' || char === "'") {
+      quote = char
+      current += char
+      continue
+    }
+    if (char === '(') depth += 1
+    if (char === ')') depth = Math.max(0, depth - 1)
+    if (/\s/.test(char) && depth === 0) {
+      if (current) {
+        tokens.push(current)
+        current = ''
+      }
+      continue
+    }
+    current += char
+  }
+  if (current) tokens.push(current)
+  return tokens
+}
+
+function boxPart(value: string, part: Extract<ShorthandPart, 'top' | 'right' | 'bottom' | 'left'>): string {
+  const tokens = splitTopLevel(value)
+  if (tokens.length === 0 || tokens.length > 4) return value
+  const [top, second = top, third = top, fourth = second] = tokens
+  const expanded = tokens.length === 1
+    ? { top, right: top, bottom: top, left: top }
+    : tokens.length === 2
+      ? { top, right: second, bottom: top, left: second }
+      : tokens.length === 3
+        ? { top, right: second, bottom: third, left: second }
+        : { top, right: second, bottom: third, left: fourth }
+  return expanded[part]
+}
+
+const borderStyles = new Set(['none','hidden','dotted','dashed','solid','double','groove','ridge','inset','outset'])
+const borderWidthPattern = /^(?:0|thin|medium|thick|-?(?:\d+\.?\d*|\.\d+)(?:px|rem|em|ch|%|vh|vw|vmin|vmax|pt|pc|cm|mm|in|ex)?)$/i
+
+function borderPart(value: string, part: Extract<ShorthandPart, 'width' | 'style' | 'color'>): string {
+  const tokens = splitTopLevel(value)
+  const width = tokens.find((token) => borderWidthPattern.test(token)) ?? ''
+  const style = tokens.find((token) => borderStyles.has(token.toLowerCase())) ?? ''
+  if (part === 'width') return width || value
+  if (part === 'style') return style || value
+
+  const colorTokens = tokens.filter((token) => token !== width && token !== style)
+  return colorTokens.join(' ') || value
+}
+
+function resolveShorthand(value: string, part: ShorthandPart): string {
+  if (part === 'value') return value
+  if (part === 'top' || part === 'right' || part === 'bottom' || part === 'left') return boxPart(value, part)
+  return borderPart(value, part)
+}
+
 /**
  * Longhands que o painel procura, mas que os presets costumam guardar como
- * shorthand (`background`, `border`, `margin`, `padding`). Sem esta ponte, um
- * `background: var(--color-primary)` nunca apareceria no controle
- * "Control background", que procura por `backgroundColor`.
+ * shorthand. Cada fallback extrai apenas a parcela correspondente para que
+ * steppers, selects e color pickers continuem recebendo um valor editável.
  */
-const shorthandFallback: Record<string, string[]> = {
-  backgroundColor: ['background'],
-  borderWidth: ['border'],
-  borderStyle: ['border'],
-  borderColor: ['border'],
-  marginTop: ['margin'],
-  marginRight: ['margin'],
-  marginBottom: ['margin'],
-  marginLeft: ['margin'],
-  paddingTop: ['padding'],
-  paddingRight: ['padding'],
-  paddingBottom: ['padding'],
-  paddingLeft: ['padding'],
+const shorthandFallback: Record<string, ShorthandFallback[]> = {
+  backgroundColor: [{ property: 'background', part: 'value' }],
+  borderWidth: [{ property: 'border', part: 'width' }],
+  borderStyle: [{ property: 'border', part: 'style' }],
+  borderColor: [{ property: 'border', part: 'color' }],
+  borderInlineStartWidth: [
+    { property: 'borderInlineStart', part: 'width' },
+    { property: 'border', part: 'width' },
+  ],
+  borderInlineStartStyle: [
+    { property: 'borderInlineStart', part: 'style' },
+    { property: 'border', part: 'style' },
+  ],
+  borderInlineStartColor: [
+    { property: 'borderInlineStart', part: 'color' },
+    { property: 'border', part: 'color' },
+  ],
+  marginTop: [{ property: 'margin', part: 'top' }],
+  marginRight: [{ property: 'margin', part: 'right' }],
+  marginBottom: [{ property: 'margin', part: 'bottom' }],
+  marginLeft: [{ property: 'margin', part: 'left' }],
+  paddingTop: [{ property: 'padding', part: 'top' }],
+  paddingRight: [{ property: 'padding', part: 'right' }],
+  paddingBottom: [{ property: 'padding', part: 'bottom' }],
+  paddingLeft: [{ property: 'padding', part: 'left' }],
 }
 
 function readRule(declarations: CssPropertyMap | undefined, property: string): string {
   if (!declarations) return ''
   if (declarations[property]) return declarations[property]
-  for (const shorthand of shorthandFallback[property] ?? []) {
-    if (declarations[shorthand]) return declarations[shorthand]
+  for (const fallback of shorthandFallback[property] ?? []) {
+    const shorthand = declarations[fallback.property]
+    if (shorthand) return resolveShorthand(shorthand, fallback.part)
   }
   return ''
 }
@@ -291,9 +374,7 @@ function baseRuleApplies(ruleSelector: string, element: string): boolean {
 
 /**
  * O valor que o controle deve exibir: o override da camada `elements` quando
- * existir, senao o que a camada `base` ja aplica ao elemento. Antes deste
- * fallback, todo estilo vindo de preset via base (o botao azul de
- * `base.button.background`, por exemplo) aparecia como controle vazio.
+ * existir, senao o que a camada `base` ja aplica ao elemento.
  */
 export function effectiveValueFor(theme: Theme, element: string, definition: PropertyDef): string {
   const targets = targetList(element, definition)
