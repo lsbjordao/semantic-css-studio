@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Minimal — Semantic CSS demo</title><link rel="stylesheet" href="theme.css"></head>
+<body>
+
+<header>
+  <nav aria-label="Primary"><strong>Semantic CSS</strong><a href="#content">Content</a><a href="#forms">Forms</a><a href="#table">Data</a></nav>
+</header>
+<main id="content">
+<section><small>KITCHEN SINK · 54+ ELEMENTS</small><h1>Everything semantic, one page.</h1><p>This integration specimen deliberately exercises the full MVP selector set.</p></section>
+<article><h2>Typography & inline semantics</h2><p>Text with <a href="#forms">links</a>, <strong>strong</strong>, <em>emphasis</em>, <small>small text</small>, <mark>mark</mark>, <del>deletion</del> and <ins>insertion</ins>.</p><h3>H3 heading</h3><h4>H4 heading</h4><h5>H5 heading</h5><h6>H6 heading</h6><blockquote>A meaningful default stylesheet should reward meaningful markup.</blockquote></article>
+<section><h2>Lists</h2><ul><li>Unordered item</li><li>Second item</li></ul><ol><li>Ordered item</li><li>Second item</li></ol><dl><dt>Design token</dt><dd>A named design decision.</dd><dt>Semantic element</dt><dd>HTML that communicates meaning.</dd></dl></section>
+<aside><h2>Aside</h2><p>Supporting information remains visually distinct.</p></aside>
+<section><h2>Code</h2><p>Inline <code>const css = compile(theme)</code> plus keyboard input <kbd>Ctrl</kbd> + <kbd>Z</kbd>.</p><pre><code>/* deterministic output */
+:root { --color-primary: #3157d5; }</code></pre></section>
+<section id="table"><h2>Table</h2><table><caption>Generated artifacts</caption><thead><tr><th>Artifact</th><th>Purpose</th></tr></thead><tbody><tr><td>theme.css</td><td>Readable stylesheet</td></tr><tr><td>theme.min.css</td><td>Production stylesheet</td></tr></tbody><tfoot><tr><th>Total</th><td>2 CSS outputs</td></tr></tfoot></table></section>
+<section id="forms"><h2>Form</h2><form><fieldset><legend>Theme metadata</legend><label>Name <input type="text" value="My Theme"></label><label>Email <input type="email" placeholder="author@example.org"></label><label>Password <input type="password" value="semantic"></label><label>Search <input type="search" placeholder="Filter elements"></label><label>Number <input type="number" value="16"></label><label>Date <input type="date"></label><label>Preset <select><option>Minimal</option><option>Editorial</option></select></label><label>Description <textarea>Portable semantic stylesheet.</textarea></label><p><label><input type="checkbox" checked> Minimal reset</label> <label><input type="radio" name="mode" checked> Light</label> <label><input type="radio" name="mode"> Dark</label></p><p><button type="button">Save theme</button> <button type="button" disabled>Disabled</button></p></fieldset></form></section>
+<section><h2>Media & disclosure</h2><figure><svg viewBox="0 0 800 250" role="img" aria-label="Theme blocks" style="width:100%;background:var(--color-surface-alt);border-radius:var(--radius-md)"><rect x="30" y="35" width="220" height="180" rx="20" fill="var(--color-primary)" opacity=".8"/><rect x="290" y="70" width="220" height="145" rx="20" fill="var(--color-secondary)" opacity=".6"/><rect x="550" y="105" width="220" height="110" rx="20" fill="var(--color-success)" opacity=".7"/></svg><figcaption>Figure using theme colors.</figcaption></figure><img alt="Generated placeholder" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='240'%3E%3Crect width='100%25' height='100%25' fill='%23e8e8e8'/%3E%3Ctext x='50%25' y='52%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='34' fill='%23666'%3Esemantic image%3C/text%3E%3C/svg%3E"><details open><summary>Native disclosure</summary><p>No JavaScript is required for this interaction.</p></details></section>
+<hr><p><small>Kitchen Sink complete.</small></p>
+</main><footer><p>Generated with Semantic CSS Studio.</p></footer></body>
+</html>
