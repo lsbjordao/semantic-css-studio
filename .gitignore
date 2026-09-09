@@ -4,3 +4,4 @@ coverage
 .playwright
 .DS_Store
 *.log
+.superpowers
