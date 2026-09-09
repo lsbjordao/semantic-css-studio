@@ -184,11 +184,17 @@ export function migrateThemeV2(input: unknown): ThemeV2 {
 
   let upgraded: ThemeV2
   if (candidate.schemaVersion === SCHEMA_VERSION) {
-    validateThemeV2(candidate)
-    upgraded = structuredClone(candidate)
+    upgraded = structuredClone(candidate as ThemeV2)
   } else {
     upgraded = upgradeFromV1(candidate as ThemeV1)
   }
+
+  // O guard vale para os DOIS ramos, nao so para o v2. `validateTheme` cobre
+  // apenas colors/typography/spacing, entao um v1 sem `radius`, `shadow` ou
+  // `modes` era aceito, persistido, e so estourava dentro do render do React —
+  // tela branca que sobrevive ao reload. Validar o resultado, e nao a entrada,
+  // fecha a classe inteira de uma vez.
+  validateThemeV2(upgraded)
 
   normalisePreCode(upgraded)
 

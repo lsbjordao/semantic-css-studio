@@ -210,3 +210,26 @@ describe('validacao estrutural do v2', () => {
     }
   })
 })
+
+describe('validacao estrutural vale para os dois ramos', () => {
+  // O ramo v1 tinha a MESMA lacuna que o ramo v2: validateTheme so checa
+  // colors/typography/spacing, entao um tema sem radius/shadow/modes passava,
+  // era persistido, e estourava dentro do render — tela branca sobrevivendo ao
+  // reload, recuperavel so limpando o localStorage.
+  it('recusa um v1 estruturalmente incompleto', () => {
+    const incompleto = {
+      schemaVersion: 1,
+      metadata: { name: 'Poison v1', version: '1' },
+      tokens: { colors: {}, typography: {}, spacing: {} },
+      elements: {},
+      states: {},
+      responsive: { tablet: 800, mobile: 480 },
+      options: { includeMinimalReset: true },
+    }
+    expect(() => migrateThemeV2(incompleto)).toThrow(/Tema inválido/i)
+  })
+
+  it('o tema v1 legitimo continua passando', () => {
+    expect(migrateThemeV2(themeV1).schemaVersion).toBe(2)
+  })
+})
