@@ -3,7 +3,7 @@
  * um tema classless razoavelmente precisa, e recusa qualquer coisa que
  * indique que o texto não é um seletor (chave, ponto-e-vírgula, arroba).
  */
-const ALLOWED = /^[A-Za-z0-9_\-#.[\]="':(),>+~*|\s^$]+$/
+const ALLOWED = /^[A-Za-z0-9_\-#.[\]="':(),>+~*|\s^$\\-￿]+$/
 
 function balanced(selector: string): boolean {
   let round = 0
@@ -44,18 +44,25 @@ export function isValidSelector(selector: string): boolean {
   return true
 }
 
+/** Substitui o conteudo de cada string literal, para que texto dentro de valor
+ *  de atributo nunca seja lido como seletor de classe ou de id. */
+function stripQuoted(selector: string): string {
+  return selector.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, '""')
+}
+
 /**
  * Classe e id não são bloqueados: contrariam a premissa classless do projeto,
- * mas a decisão é de quem usa. O ponto de uma classe é distinguido de um
- * pseudo-elemento (`::after`) e de uma pseudo-classe (`:hover`) pela exigência
- * de que venha no início do seletor ou logo após espaço, combinador ou vírgula.
+ * mas a decisão é de quem usa. A função agora:
+ * 1. Remove conteúdo entre aspas para evitar falsos positivos
+ * 2. Procura `.` ou `#` que não sejam escapados em qualquer posição
  */
 export function selectorWarnings(selector: string): string[] {
   const warnings: string[] = []
-  if (/(^|[\s>+~(,])\.[A-Za-z_-]/.test(selector)) {
+  const bare = stripQuoted(selector)
+  if (/(?<!\\)\.[A-Za-z_-]/.test(bare)) {
     warnings.push('Este seletor usa classe, o que contraria a premissa classless do tema.')
   }
-  if (/(^|[\s>+~(,])#[A-Za-z_-]/.test(selector)) {
+  if (/(?<!\\)#[A-Za-z_-]/.test(bare)) {
     warnings.push('Este seletor usa id, o que contraria a premissa classless do tema.')
   }
   return warnings
