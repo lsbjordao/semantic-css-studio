@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { seedBaseRules } from './baseRules'
 import { defaultTheme } from './defaults'
 import { presets, type PresetName } from './presets'
 import { migrateThemeV2 } from './migration'
@@ -33,6 +34,8 @@ interface StudioState {
   setToken: <K extends Exclude<keyof ThemeTokens, 'colors'>>(category: K, key: keyof ThemeTokens[K], value: string) => void
   setLayerProperty: (layer: LayerName, selector: string, property: string, value: string) => void
   removeLayerProperty: (layer: LayerName, selector: string, property: string) => void
+  resetBaseRule: (selector: string) => void
+  toggleBaseRule: (selector: string, enabled: boolean) => void
   setElementTargets: (targets: Array<{ selector: string; property: string }>, value: string) => void
   setReset: (enabled: boolean) => void
   setEditMode: (mode: ThemeModeName) => void
@@ -67,6 +70,14 @@ function readStoredTheme(): Theme {
 
 function clone(theme: Theme): Theme {
   return structuredClone(theme)
+}
+
+export function isBaseRuleModified(theme: Theme, selector: string): boolean {
+  const seeded = seedBaseRules()[selector]
+  const current = theme.layers.base[selector]
+  if (!seeded) return true
+  if (!current) return true
+  return JSON.stringify(current) !== JSON.stringify(seeded)
 }
 
 function commit(state: StudioState, nextTheme: Theme, notice?: string): Partial<StudioState> {
@@ -130,6 +141,26 @@ export const useStudioStore = create<StudioState>((set) => ({
     delete next.layers[layer][selector]?.[property]
     if (next.layers[layer][selector] && Object.keys(next.layers[layer][selector]).length === 0) {
       delete next.layers[layer][selector]
+    }
+    return commit(state, next)
+  }),
+
+  resetBaseRule: (selector) => set((state) => {
+    const seeded = seedBaseRules()[selector]
+    if (!seeded) return state
+    const next = clone(state.theme)
+    next.layers.base[selector] = { ...seeded }
+    return commit(state, next, 'Regra-base restaurada.')
+  }),
+
+  toggleBaseRule: (selector, enabled) => set((state) => {
+    const next = clone(state.theme)
+    if (enabled) {
+      const seeded = seedBaseRules()[selector]
+      if (!seeded) return state
+      next.layers.base[selector] = { ...seeded }
+    } else {
+      delete next.layers.base[selector]
     }
     return commit(state, next)
   }),
