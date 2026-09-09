@@ -38,6 +38,25 @@ describe('isValidSelector', () => {
   it('rejeita chave, que indicaria bloco e nao seletor', () => {
     expect(isValidSelector('a { color: red }')).toBe(false)
   })
+
+  it('aceita aspas escapadas em valores de atributo', () => {
+    expect(isValidSelector('[title="say \\"hi\\""]')).toBe(true)
+  })
+
+  it('aceita nao-ASCII em valores de atributo', () => {
+    expect(isValidSelector('[data-label="café"]')).toBe(true)
+  })
+
+  it('aceita operadores de atributo', () => {
+    expect(isValidSelector('a[href$=".pdf"]')).toBe(true)
+    expect(isValidSelector('a[href*="example"]')).toBe(true)
+    expect(isValidSelector('a[href~="link"]')).toBe(true)
+    expect(isValidSelector('a[lang|="pt"]')).toBe(true)
+  })
+
+  it('aceita formulas em :nth-child', () => {
+    expect(isValidSelector('tbody tr:nth-child(2n+1)')).toBe(true)
+  })
 })
 
 describe('selectorWarnings', () => {
@@ -57,5 +76,20 @@ describe('selectorWarnings', () => {
   it('nao confunde pseudo-elemento com classe', () => {
     expect(selectorWarnings('a::after')).toEqual([])
     expect(selectorWarnings('li::marker')).toEqual([])
+  })
+
+  it('avisa sobre classe em seletor composto', () => {
+    expect(selectorWarnings('div.card')).toHaveLength(1)
+    expect(selectorWarnings('div.card')[0]).toMatch(/classe/i)
+  })
+
+  it('avisa sobre id em seletor composto', () => {
+    expect(selectorWarnings('nav#main')).toHaveLength(1)
+    expect(selectorWarnings('nav#main')[0]).toMatch(/id/i)
+  })
+
+  it('nao avisa sobre # ou . dentro de valor de atributo', () => {
+    expect(selectorWarnings('[data-note="(#hello)"]')).toEqual([])
+    expect(selectorWarnings('[href="a.html"]')).toEqual([])
   })
 })

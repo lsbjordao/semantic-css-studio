@@ -12,6 +12,19 @@
 
 ## Global Constraints
 
+**Aviso de método, aprendido em execução.** O código de referência deste plano
+já embarcou dois defeitos reais que os testes do próprio plano não pegaram — o
+guard `blocks.length === 0` do minificador na Task 2, e as falsas rejeições do
+validador de seletor na Task 3. A causa é a mesma nos dois casos: os testes
+foram escritos com os mesmos pontos cegos do código que testam.
+
+Ao executar qualquer tarefa, trate o código do plano como proposta, não como
+verdade. Antes de transcrever, gere você mesmo uma entrada que o plano não
+previu e rode contra ela. Para funções de validação, procure especificamente
+**falsas rejeições**: uma entrada válida recusada vira perda de dados
+silenciosa do ponto de vista de quem usa.
+
+
 - As invariantes 1 a 6 de `docs/ARCHITECTURE.md` permanecem válidas. Em particular: o compilador **não** pode importar React nem usar API de browser (`document`, `window`, `localStorage`).
 - O CSS gerado é determinístico: mesmo tema, mesmos bytes. Todo teste de compilador deve poder compilar duas vezes e comparar.
 - Seletores são ordenados por ordem canônica de domínio para tags conhecidas e `localeCompare` para o restante. Declarações são ordenadas alfabeticamente pelo nome kebab dentro de cada regra.
@@ -538,7 +551,10 @@ Expected: FAIL — `Cannot find module '../src/compiler/selectorValidation'`
  * um tema classless razoavelmente precisa, e recusa qualquer coisa que
  * indique que o texto não é um seletor (chave, ponto-e-vírgula, arroba).
  */
-const ALLOWED = /^[A-Za-z0-9_\-#.[\]="':(),>+~*|\s^$]+$/
+// O backslash e o range nao-ASCII sao obrigatorios: escape e o mecanismo
+// padrao do CSS, e valor de atributo com acento e comum. Sem eles, um seletor
+// valido vira tema que o usuario nao consegue importar, sem explicacao.
+const ALLOWED = /^[A-Za-z0-9_\-#.[\]="':(),>+~*|\s^$\\-￿]+$/
 
 function balanced(selector: string): boolean {
   let round = 0
@@ -585,12 +601,22 @@ export function isValidSelector(selector: string): boolean {
  * pseudo-elemento (`::after`) e de uma pseudo-classe (`:hover`) pela exigência
  * de que venha no início do seletor ou logo após espaço, combinador ou vírgula.
  */
+/** Substitui o conteudo de cada string literal, para que texto dentro de valor
+ *  de atributo nunca seja lido como seletor de classe ou de id. */
+function stripQuoted(selector: string): string {
+  return selector.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, '""')
+}
+
 export function selectorWarnings(selector: string): string[] {
   const warnings: string[] = []
-  if (/(^|[\s>+~(,])\.[A-Za-z_-]/.test(selector)) {
+  // Sem stripQuoted, '[data-note="(#hello)"]' avisaria sobre um id inexistente.
+  // Sem casar em qualquer posicao, 'div.card' — a forma mais comum de escrever
+  // seletor de classe — nao avisaria nada.
+  const bare = stripQuoted(selector)
+  if (/(?<!\\)\.[A-Za-z_-]/.test(bare)) {
     warnings.push('Este seletor usa classe, o que contraria a premissa classless do tema.')
   }
-  if (/(^|[\s>+~(,])#[A-Za-z_-]/.test(selector)) {
+  if (/(?<!\\)#[A-Za-z_-]/.test(bare)) {
     warnings.push('Este seletor usa id, o que contraria a premissa classless do tema.')
   }
   return warnings
