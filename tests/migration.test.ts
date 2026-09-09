@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { defaultTheme } from '../src/theme/defaults'
 import { migrateThemeV2 } from '../src/theme/migration'
+import { presets } from '../src/theme/presets'
 
 // O ambiente jsdom substitui o URL global, e `new URL(rel, import.meta.url)`
 // resolve para http://localhost:3000/... em vez de um caminho de arquivo.
@@ -138,5 +139,73 @@ describe('normalizacao de pre code em tema ja salvo', () => {
       color: 'inherit',
       padding: '0',
     })
+  })
+})
+
+// Um v2 estruturalmente invalido passava direto: o ramo `schemaVersion === 2`
+// era um structuredClone sem nenhuma checagem, e so os seletores e breakpoints
+// eram validados depois. O payload abaixo e aceito, gravado no localStorage
+// pela subscription da store e so estoura dentro do useMemo do compilador —
+// depois que o try/catch do Topbar ja retornou. A tela some, e o reload le o
+// mesmo payload e estoura de novo: so limpando o localStorage se recupera.
+const poison = {
+  schemaVersion: 2,
+  metadata: { name: 'Poison', version: '1' },
+  layers: { base: {}, elements: {}, states: {}, responsive: {} },
+  breakpoints: {},
+}
+
+describe('validacao estrutural do v2', () => {
+  it('recusa o tema sem tokens em vez de aceita-lo', () => {
+    expect(() => migrateThemeV2(poison)).toThrow()
+  })
+
+  it('explica o que falta, em texto legivel para o alert do Topbar', () => {
+    let message = ''
+    try {
+      migrateThemeV2(poison)
+    } catch (error) {
+      message = error instanceof Error ? error.message : String(error)
+    }
+    expect(message).toMatch(/tokens/i)
+    expect(message).not.toMatch(/undefined|TypeError|Object\.entries/)
+  })
+
+  it('nomeia o grupo de tokens ausente', () => {
+    const theme = structuredClone(defaultTheme) as unknown as Record<string, unknown>
+    const tokens = theme.tokens as Record<string, unknown>
+    delete tokens.scroll
+    expect(() => migrateThemeV2(theme)).toThrow(/scroll/i)
+  })
+
+  it('recusa modes sem light', () => {
+    const theme = structuredClone(defaultTheme) as unknown as Record<string, unknown>
+    theme.modes = {}
+    expect(() => migrateThemeV2(theme)).toThrow(/modes\.light|modo claro/i)
+  })
+
+  it('recusa uma camada que nao e objeto', () => {
+    const theme = structuredClone(defaultTheme) as unknown as Record<string, unknown>
+    ;(theme.layers as Record<string, unknown>).states = 'nao e objeto'
+    expect(() => migrateThemeV2(theme)).toThrow(/layers\.states/i)
+  })
+
+  it('recusa options sem os dois booleanos', () => {
+    const theme = structuredClone(defaultTheme) as unknown as Record<string, unknown>
+    theme.options = { includeMinimalReset: true }
+    expect(() => migrateThemeV2(theme)).toThrow(/reducedMotion|options/i)
+  })
+
+  // Guarda contra validacao rigida demais: o tema bem formado tem que
+  // atravessar sem alteracao nenhuma.
+  it('deixa um v2 bem formado passar identico', () => {
+    const theme = structuredClone(defaultTheme)
+    expect(migrateThemeV2(theme)).toEqual(theme)
+  })
+
+  it('deixa todos os presets passarem identicos', () => {
+    for (const [name, preset] of Object.entries(presets)) {
+      expect(migrateThemeV2(structuredClone(preset)), name).toEqual(preset)
+    }
   })
 })

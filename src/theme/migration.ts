@@ -1,7 +1,14 @@
 import { isValidSelector } from '../compiler/selectorValidation'
 import { preCodeNeutraliser, seedBaseRules, seedResponsiveRules } from './baseRules'
 import { scrollDefaults } from './scrollDefaults'
-import { SCHEMA_VERSION, type RuleMap, type ThemeV1, type ThemeV2 } from './schema'
+import {
+  SCHEMA_VERSION,
+  type RuleMap,
+  type ThemeLayers,
+  type ThemeTokensV2,
+  type ThemeV1,
+  type ThemeV2,
+} from './schema'
 
 export function validateTheme(candidate: Partial<ThemeV1>): asserts candidate is ThemeV1 {
   if (!candidate.metadata?.name || !candidate.metadata.version) throw new Error('Theme metadata is incomplete.')
@@ -10,6 +17,88 @@ export function validateTheme(candidate: Partial<ThemeV1>): asserts candidate is
   }
   if (!candidate.elements || typeof candidate.elements !== 'object') throw new Error('Theme elements are missing.')
   if (!candidate.responsive) throw new Error('Responsive configuration is missing.')
+}
+
+const themeTokenGroups: Array<keyof ThemeTokensV2> = [
+  'colors', 'typography', 'spacing', 'radius', 'shadow', 'layout', 'scroll',
+]
+const themeLayerNames: Array<keyof ThemeLayers> = ['base', 'elements', 'states', 'responsive']
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+/**
+ * A mensagem chega ao usuário pelo `alert(error.message)` do Topbar, então diz
+ * em texto corrido qual campo está faltando ou malformado — não um fragmento
+ * de stack trace.
+ */
+function invalidTheme(detail: string): never {
+  throw new Error(`Tema inválido: ${detail}`)
+}
+
+/**
+ * Confere a estrutura que `migrateThemeV2` promete devolver.
+ *
+ * Sem isto, um v2 sintaticamente válido mas estruturalmente vazio (sem
+ * `tokens`, por exemplo) atravessava a migração intacto, era comitado pela
+ * store, gravado no `localStorage` pela subscription e só estourava dentro do
+ * `useMemo` do compilador — em pleno render, depois que o `try/catch` do
+ * import já tinha retornado. Resultado: tela branca, e o reload lia o mesmo
+ * conteúdo e estourava de novo. Recusar na entrada é o que mantém o defeito
+ * fora do estado persistido.
+ */
+export function validateThemeV2(candidate: unknown): asserts candidate is ThemeV2 {
+  if (!isRecord(candidate)) invalidTheme('o conteúdo precisa ser um objeto JSON.')
+
+  const metadata = candidate.metadata
+  if (!isRecord(metadata)) invalidTheme('falta o bloco "metadata" com o nome e a versão do tema.')
+  if (typeof metadata.name !== 'string' || !metadata.name) {
+    invalidTheme('"metadata.name" precisa ser o nome do tema.')
+  }
+  if (typeof metadata.version !== 'string' || !metadata.version) {
+    invalidTheme('"metadata.version" precisa ser a versão do tema.')
+  }
+
+  const tokens = candidate.tokens
+  if (!isRecord(tokens)) invalidTheme('falta o bloco "tokens" com os grupos de variáveis do tema.')
+  for (const group of themeTokenGroups) {
+    if (!isRecord(tokens[group])) {
+      invalidTheme(
+        `o grupo de tokens "${group}" está faltando ou não é um objeto. ` +
+        `Um tema v2 precisa dos sete grupos: ${themeTokenGroups.join(', ')}.`,
+      )
+    }
+  }
+
+  const modes = candidate.modes
+  if (!isRecord(modes)) invalidTheme('falta o bloco "modes" com as cores de cada modo.')
+  if (!isRecord(modes.light)) invalidTheme('falta "modes.light", as cores do modo claro.')
+
+  const layers = candidate.layers
+  if (!isRecord(layers)) {
+    invalidTheme('falta o bloco "layers" com as camadas base, elements, states e responsive.')
+  }
+  for (const layer of themeLayerNames) {
+    if (!isRecord(layers[layer])) {
+      invalidTheme(`"layers.${layer}" está faltando ou não é um objeto de regras.`)
+    }
+  }
+
+  if (!isRecord(candidate.breakpoints)) {
+    invalidTheme('"breakpoints" precisa ser um objeto com a largura de cada breakpoint.')
+  }
+
+  const options = candidate.options
+  if (!isRecord(options)) {
+    invalidTheme('falta o bloco "options" com includeMinimalReset e reducedMotion.')
+  }
+  if (typeof options.includeMinimalReset !== 'boolean') {
+    invalidTheme('"options.includeMinimalReset" precisa ser true ou false.')
+  }
+  if (typeof options.reducedMotion !== 'boolean') {
+    invalidTheme('"options.reducedMotion" precisa ser true ou false.')
+  }
 }
 
 /**
@@ -77,8 +166,9 @@ function assertBreakpointsMatch(theme: ThemeV2): void {
 
 /**
  * Migra um `Theme` (v1 ou v2, vindo de JSON não confiável) para a forma em
- * camadas do v2. Um v2 já pronto passa apenas pelas mesmas validações de
- * seletor e breakpoint, sem outra transformação.
+ * camadas do v2. Um v2 já pronto é conferido por `validateThemeV2` e passa
+ * pelas mesmas validações de seletor e breakpoint, sem outra transformação
+ * além da normalização de `pre code`.
  */
 export function migrateThemeV2(input: unknown): ThemeV2 {
   if (!input || typeof input !== 'object') throw new Error('Theme must be a JSON object.')
@@ -92,10 +182,13 @@ export function migrateThemeV2(input: unknown): ThemeV2 {
   }
   if (candidate.schemaVersion < 1) throw new Error('Unsupported theme schema.')
 
-  const upgraded =
-    candidate.schemaVersion === SCHEMA_VERSION
-      ? structuredClone(candidate as ThemeV2)
-      : upgradeFromV1(candidate as ThemeV1)
+  let upgraded: ThemeV2
+  if (candidate.schemaVersion === SCHEMA_VERSION) {
+    validateThemeV2(candidate)
+    upgraded = structuredClone(candidate)
+  } else {
+    upgraded = upgradeFromV1(candidate as ThemeV1)
+  }
 
   normalisePreCode(upgraded)
 

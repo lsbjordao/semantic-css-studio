@@ -50,3 +50,39 @@ describe('leitura do tema salvo', () => {
     expect(useStudioStore.getState().theme.metadata.name).toBe('Minimal')
   })
 })
+
+describe('tema salvo estruturalmente invalido', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    vi.resetModules()
+  })
+
+  // Sem validacao estrutural, este payload era aceito por migrateThemeV2,
+  // regravado no localStorage pela subscription da store e so estourava dentro
+  // do compilador, em pleno render. O reload lia o mesmo conteudo e estourava
+  // de novo: tela branca permanente ate limpar o armazenamento a mao.
+  it('cai no tema padrao em vez de estourar no render', async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      schemaVersion: 2,
+      metadata: { name: 'Poison', version: '1' },
+      layers: { base: {}, elements: {}, states: {}, responsive: {} },
+      breakpoints: {},
+    }))
+    const { useStudioStore } = await import('../src/theme/store')
+    const theme = useStudioStore.getState().theme
+    expect(theme.metadata.name).toBe('Minimal')
+    expect(theme.tokens.colors.primary).toBeTypeOf('string')
+  })
+
+  it('o tema recuperado ainda compila', async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      schemaVersion: 2,
+      metadata: { name: 'Poison', version: '1' },
+      layers: { base: {}, elements: {}, states: {}, responsive: {} },
+      breakpoints: {},
+    }))
+    const { useStudioStore } = await import('../src/theme/store')
+    const { compileTheme } = await import('../src/compiler')
+    expect(() => compileTheme(useStudioStore.getState().theme)).not.toThrow()
+  })
+})
