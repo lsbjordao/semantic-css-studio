@@ -1,7 +1,8 @@
-import { colorTokenKeys, type ColorTokenKey, type ThemeTokens } from '../theme/schema'
+import { colorTokenKeys, type ColorTokenKey, type FontRole, type ThemeTokens } from '../theme/schema'
 import { useStudioStore } from '../theme/store'
 import { Field, NativeSelectField, StepperField, TextField } from './Field'
 import { fontPairings, fontStackOptions, type FontPairingName } from './fontOptions'
+import { defaultsFor, stackFor, suggestionsFor } from './googleFonts'
 import { ShadowField } from './ShadowField'
 
 const colorLabels: Record<ColorTokenKey, string> = {
@@ -57,6 +58,72 @@ function GroupEditorInner<K extends Exclude<keyof ThemeTokens, 'colors'>>({ cate
   </div>
 }
 
+const FONT_WEIGHT_CHOICES = [400, 500, 600, 700]
+
+const fontRoleLabels: Record<FontRole, string> = {
+  body: 'Body',
+  heading: 'Heading',
+  mono: 'Monospace',
+}
+
+function GoogleFontField({ role }: { role: FontRole }) {
+  const theme = useStudioStore((s) => s.theme)
+  const setFontFace = useStudioStore((s) => s.setFontFace)
+  const face = theme.fonts?.[role]
+  const label = fontRoleLabels[role]
+  const datalistId = `google-fonts-${role}`
+
+  const applyFamily = (value: string) => {
+    const family = value.trim()
+    if (!family) {
+      setFontFace(role, null)
+      return
+    }
+    const current = theme.fonts?.[role]
+    setFontFace(
+      role,
+      { family, weights: current?.weights ?? defaultsFor(family), italic: current?.italic ?? false },
+      stackFor(role, family),
+    )
+  }
+
+  const toggleWeight = (weight: number) => {
+    if (!face) return
+    const weights = (face.weights ?? []).includes(weight)
+      ? (face.weights ?? []).filter((item) => item !== weight)
+      : [...(face.weights ?? []), weight]
+    setFontFace(role, { ...face, weights })
+  }
+
+  const toggleItalic = () => {
+    if (!face) return
+    setFontFace(role, { ...face, italic: !face.italic })
+  }
+
+  return <div className="font-role" role="group" aria-label={`${label} webfont`}>
+    <TextField
+      label={`${label} webfont family`}
+      value={face?.family ?? ''}
+      placeholder="Fraunces…"
+      list={datalistId}
+      onChange={applyFamily}
+      hint="Empty clears the download; the stack text below stays editable."
+    />
+    <datalist id={datalistId}>
+      {suggestionsFor(role).map((option) => <option key={option.family} value={option.family} />)}
+    </datalist>
+    {face && <div className="weight-chips">
+      {FONT_WEIGHT_CHOICES.map((weight) => <label key={weight}>
+        <input type="checkbox" checked={(face.weights ?? []).includes(weight)} onChange={() => toggleWeight(weight)} />{weight}
+      </label>)}
+    </div>}
+    <div className="font-role-row">
+      {face && <label><input type="checkbox" checked={face.italic ?? false} onChange={toggleItalic} />Italic</label>}
+      {face && <button type="button" className="link-button" aria-label={`Clear ${label.toLowerCase()} webfont`} onClick={() => setFontFace(role, null)}>Clear</button>}
+    </div>
+  </div>
+}
+
 function TypographyControls() {
   const setToken = useStudioStore((s) => s.setToken)
 
@@ -80,6 +147,9 @@ function TypographyControls() {
         <span className="field-label">Preview behavior</span>
         <small>Font choices use resilient CSS stacks, so the generated theme stays portable even without loading webfonts.</small>
       </div>
+    </div>
+    <div className="font-roles">
+      {(['body', 'heading', 'mono'] as const).map((role) => <GoogleFontField key={role} role={role} />)}
     </div>
     <GroupEditorInner category="typography" labels={{ fontBody: 'Body font', fontHeading: 'Heading font', fontMono: 'Monospace font', fontSizeBase: 'Base size', fontSizeXs: 'XS size', fontSizeSm: 'Small size', fontSizeMd: 'Medium size', fontSizeLg: 'Large size', fontSizeXl: 'XL size', lineHeightBody: 'Body line height', lineHeightHeading: 'Heading line height', fontWeightNormal: 'Normal weight', fontWeightMedium: 'Medium weight', fontWeightBold: 'Bold weight' }} />
   </div>

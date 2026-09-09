@@ -3,7 +3,7 @@ import { seedBaseRules } from './baseRules'
 import { defaultTheme } from './defaults'
 import { presets, type PresetName } from './presets'
 import { migrateThemeV2 } from './migration'
-import type { ColorTokenKey, InteractionState, Theme, ThemeTokens } from './schema'
+import type { ColorTokenKey, FontRole, InteractionState, Theme, ThemeFontFace, ThemeTokens } from './schema'
 
 const STORAGE_KEY = 'semantic-css-studio/theme-v1'
 const HISTORY_LIMIT = 60
@@ -34,6 +34,7 @@ interface StudioState {
   setToken: <K extends Exclude<keyof ThemeTokens, 'colors'>>(category: K, key: keyof ThemeTokens[K], value: string) => void
   setLayerProperty: (layer: LayerName, selector: string, property: string, value: string) => void
   removeLayerProperty: (layer: LayerName, selector: string, property: string) => void
+  setFontFace: (role: FontRole, face: ThemeFontFace | null, stack?: string) => void
   resetBaseRule: (selector: string) => void
   toggleBaseRule: (selector: string, enabled: boolean) => void
   setElementTargets: (targets: Array<{ selector: string; property: string }>, value: string) => void
@@ -141,6 +142,21 @@ export const useStudioStore = create<StudioState>((set) => ({
     delete next.layers[layer][selector]?.[property]
     if (next.layers[layer][selector] && Object.keys(next.layers[layer][selector]).length === 0) {
       delete next.layers[layer][selector]
+    }
+    return commit(state, next)
+  }),
+
+  // Família e pilha no mesmo commit, para o undo reverter as duas juntas.
+  // stack ausente = só mexe no @import (limpar preserva o texto da pilha).
+  setFontFace: (role, face, stack) => set((state) => {
+    const next = clone(state.theme)
+    const fonts = { ...(next.fonts ?? {}) }
+    if (face) fonts[role] = face
+    else delete fonts[role]
+    next.fonts = Object.keys(fonts).length ? fonts : undefined
+    if (stack !== undefined) {
+      const tokenKey = role === 'body' ? 'fontBody' : role === 'heading' ? 'fontHeading' : 'fontMono'
+      next.tokens.typography[tokenKey] = stack
     }
     return commit(state, next)
   }),

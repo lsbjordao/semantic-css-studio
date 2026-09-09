@@ -212,4 +212,6 @@ export interface ThemeFonts {
   mono?: ThemeFontFace
 }
 
+export type FontRole = keyof ThemeFonts
+
 export type Theme = ThemeV2

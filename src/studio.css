@@ -210,3 +210,14 @@ button:disabled { cursor: not-allowed; opacity: .45; }
 .base-rule header label { display:flex; align-items:center; gap:8px; flex:1; min-width:0; cursor:pointer; }
 .base-rule header code { font-size:11px; color:#c8d0dd; overflow-wrap:anywhere; }
 .badge { font-size:9px; text-transform:uppercase; letter-spacing:.06em; color:#f0b429; border:1px solid #5c4a1a; background:#221c0d; border-radius:4px; padding:2px 5px; }
+.font-roles { display:grid; gap:10px; margin-bottom:14px; }
+.font-role { border:1px solid #2b3240; border-radius:8px; background:#11161e; padding:10px 12px; }
+.font-role .field { margin-bottom:0; }
+.weight-chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.weight-chips label { display:flex; align-items:center; gap:5px; font-size:11px; color:#aeb7c7; border:1px solid #313848; border-radius:6px; padding:5px 8px; cursor:pointer; }
+.weight-chips input { accent-color:#7773fb; }
+.font-role-row { display:flex; align-items:center; gap:12px; margin-top:8px; }
+.font-role-row label { display:flex; align-items:center; gap:6px; font-size:11px; color:#aeb7c7; cursor:pointer; }
+.font-role-row input { accent-color:#7773fb; }
+.link-button { border:0; background:transparent; color:#8f98ff; font-size:11px; padding:0; cursor:pointer; }
+.link-button:hover { color:white; }

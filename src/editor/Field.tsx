@@ -5,8 +5,8 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
   return <div className="field"><span className="field-label">{label}</span>{children}{hint && <small>{hint}</small>}</div>
 }
 
-export function TextField({ label, value, onChange, placeholder, hint }: { label: string; value: string; onChange: (value: string) => void; placeholder?: string; hint?: string }) {
-  return <Field label={label} hint={hint}><input aria-label={label} type="text" value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} /></Field>
+export function TextField({ label, value, onChange, placeholder, hint, list }: { label: string; value: string; onChange: (value: string) => void; placeholder?: string; hint?: string; list?: string }) {
+  return <Field label={label} hint={hint}><input aria-label={label} type="text" value={value} placeholder={placeholder} list={list} onChange={(e) => onChange(e.target.value)} /></Field>
 }
 
 export function ColorField({
