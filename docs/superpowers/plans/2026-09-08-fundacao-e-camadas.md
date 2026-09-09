@@ -272,6 +272,13 @@ describe('minifyCss', () => {
     expect(minifyCss('@media (max-width: 768px) {\n  a { color: red }\n}'))
       .toBe('@media (max-width: 768px){a{color:red}}')
   })
+
+  it('preserva o combinador descendente dentro de at-rule', () => {
+    // Um contador de profundidade simples trataria o interior de @media como
+    // bloco de declaracao e apagaria o espaco, virando o seletor 'a:hover'.
+    expect(minifyCss('@media print {\n  a :hover { color: red }\n}'))
+      .toBe('@media print{a :hover{color:red}}')
+  })
 })
 ```
 
@@ -295,10 +302,12 @@ const DROP_AROUND = '{};,'
  */
 export function minifyCss(css: string): string {
   const out: string[] = []
-  let depth = 0
+  const blocks: Array<'at-rule' | 'declarations'> = []
+  let pendingAtRule = false
   let i = 0
 
   const last = (): string => (out.length ? out[out.length - 1] : '')
+  const inDeclarations = (): boolean => blocks[blocks.length - 1] === 'declarations'
 
   while (i < css.length) {
     const char = css[i]
@@ -345,25 +354,32 @@ export function minifyCss(css: string): string {
         next === undefined ||
         DROP_AROUND.includes(next) ||
         DROP_AROUND.includes(prev) ||
-        (depth > 0 && (next === ':' || prev === ':'))
+        (inDeclarations() && (next === ':' || prev === ':'))
       if (!dropped) out.push(' ')
       continue
     }
 
     if (char === '{') {
-      depth += 1
+      // O bloco de uma at-rule contém regras, não declarações. Sem essa
+      // distinção, `@media (...) { a :hover { } }` perderia o espaço de
+      // `a :hover`, que é um seletor diferente de `a:hover`.
+      blocks.push(pendingAtRule ? 'at-rule' : 'declarations')
+      pendingAtRule = false
       out.push('{')
       i += 1
       continue
     }
 
     if (char === '}') {
-      depth = Math.max(0, depth - 1)
+      blocks.pop()
       while (last() === ';') out.pop()
       out.push('}')
       i += 1
       continue
     }
+
+    if (char === '@') pendingAtRule = true
+    if (char === ';' && blocks.length === 0) pendingAtRule = false
 
     out.push(char)
     i += 1
@@ -376,7 +392,7 @@ export function minifyCss(css: string): string {
 - [ ] **Step 4: Rodar para verificar que passa**
 
 Run: `npx vitest run tests/minify.test.ts`
-Expected: PASS, 8 testes
+Expected: PASS, 9 testes
 
 - [ ] **Step 5: Trocar a implementação antiga**
 
@@ -1223,9 +1239,31 @@ export type Theme = ThemeV2
 
 - [ ] **Step 4: Adaptar o compilador**
 
-Em `src/compiler/compileTheme.ts`:
+Primeiro, `src/theme/tokenNames.ts` precisa aceitar o grupo novo. `ThemeTokens` v1 não tem `scroll`, então acrescentá-lo a `tokenGroups` sem isto é erro de compilação:
 
-- `tokenGroups` ganha `'scroll'` ao final, para que os tokens de scroll sejam emitidos no `:root`.
+```ts
+import type { ThemeTokensV2 } from './schema'
+
+const groupPrefix: Record<keyof ThemeTokensV2, string> = {
+  colors: 'color-',
+  typography: '',
+  spacing: '',
+  radius: '',
+  shadow: '',
+  layout: '',
+  scroll: '',
+}
+
+export function tokenName(group: keyof ThemeTokensV2, key: string): string {
+  return `${groupPrefix[group]}${kebabToken(key)}`
+}
+```
+
+As chaves de `ScrollTokens` já começam por `scrollbar`, `scroll` ou `overscroll`, então o prefixo vazio produz `--scrollbar-thumb-hover`, `--scroll-padding-top` e `--overscroll-behavior` corretamente.
+
+Depois, em `src/compiler/compileTheme.ts`:
+
+- `tokenGroups` passa a ser `Array<keyof ThemeTokensV2>` e ganha `'scroll'` ao final, para que os tokens de scroll sejam emitidos no `:root`.
 - `baseRules(theme)` passa a ler `theme.layers.base` em vez das strings literais, mantendo apenas as duas regras estruturais que continuam geradas:
 
 ```ts
@@ -1352,11 +1390,12 @@ npx vite-node scripts/regenerate-snapshots.ts
 git diff tests/snapshots/presets/minimal.css
 ```
 
-Expected: **exatamente três** categorias de diferença, e nenhuma outra:
+Expected: **exatamente quatro** categorias de diferença, e nenhuma outra:
 
 1. dez linhas `--overscroll-behavior`, `--scroll-behavior`, `--scroll-padding-top`, `--scrollbar-*` acrescentadas ao `:root` — os tokens de scroll novos;
 2. quatro linhas `--body-padding-sm`, `--body-padding-xs`, `--section-spacing-sm`, `--space-2xl-sm` acrescentadas ao `:root`;
-3. reordenação alfabética das declarações em exatamente duas regras — `html` passa a `background` antes de `color-scheme`, e `input, textarea, select, button` passa a ter `background` antes de `border`. As regras semeadas passam por `declarations()`, que ordena alfabeticamente, enquanto as strings literais antigas não eram ordenadas.
+3. reordenação alfabética das declarações em exatamente duas regras — `html` passa a `background` antes de `color-scheme`, e `input, textarea, select, button` passa a ter `background` antes de `border`. As regras semeadas passam por `declarations()`, que ordena alfabeticamente, enquanto as strings literais antigas não eram ordenadas;
+4. o par `:root[data-theme="light"]` / `:root[data-theme="dark"]` desce da terceira posição do bloco base para o fim dele, porque passa a ser emitido depois do laço sobre `layers.base`. É inerte: `:root[data-theme]` tem especificidade 0,1,1 e vence `html` 0,0,1 em qualquer ordem.
 
 E, dentro dos media queries, `--body-padding: 1rem` vira `--body-padding: var(--body-padding-sm)`, com o token novo valendo `1rem` — mesmo valor computado.
 
