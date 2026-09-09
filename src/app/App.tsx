@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { AccessibilityEditor } from '../editor/AccessibilityEditor'
+import { BaseRulesEditor } from '../editor/BaseRulesEditor'
 import { EditorSidebar } from '../editor/EditorSidebar'
 import { ElementEditor } from '../editor/ElementEditor'
 import { StateEditor } from '../editor/StateEditor'
@@ -18,6 +19,7 @@ function ActiveEditor() {
     case 'Layout': return <LayoutEditor />
     case 'Radius': return <RadiusEditor />
     case 'Shadows': return <ShadowsEditor />
+    case 'Base': return <BaseRulesEditor />
     case 'Elements': return <ElementEditor />
     case 'States': return <StateEditor />
     case 'Accessibility': return <AccessibilityEditor />

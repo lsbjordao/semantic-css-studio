@@ -13,7 +13,7 @@ export type ThemeModeName = 'light' | 'dark'
 export type PreviewMode = 'light' | 'dark' | 'auto'
 export type ViewportName = 'desktop' | 'tablet' | 'mobile' | 'custom'
 export type SpecimenName = 'Selector' | 'Overview' | 'Typography' | 'Content' | 'Forms' | 'Tables' | 'Code' | 'All HTML' | 'Kitchen Sink'
-export type EditorSection = 'Colors' | 'Typography' | 'Spacing' | 'Layout' | 'Radius' | 'Shadows' | 'Elements' | 'States' | 'Accessibility'
+export type EditorSection = 'Colors' | 'Typography' | 'Spacing' | 'Layout' | 'Radius' | 'Shadows' | 'Base' | 'Elements' | 'States' | 'Accessibility'
 
 interface StudioState {
   theme: Theme
