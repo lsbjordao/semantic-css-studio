@@ -98,7 +98,7 @@ export interface ResponsiveConfig {
   desktop: number
 }
 
-export interface Theme {
+export interface ThemeV1 {
   schemaVersion: number
   metadata: {
     name: string
@@ -119,6 +119,8 @@ export interface Theme {
   }
 }
 
+export type Theme = ThemeV1
+
 export const selectorGroups = {
   Document: ['body', 'header', 'nav', 'main', 'section', 'article', 'aside', 'footer', 'address', 'search'],
   Headings: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hgroup'],
@@ -137,3 +139,54 @@ export const supportedElements = Object.values(selectorGroups).flat() as Array<
 >
 
 export type SupportedElement = (typeof supportedElements)[number]
+
+export interface ScrollTokens {
+  scrollbarWidth: string
+  scrollbarSize: string
+  scrollbarTrack: string
+  scrollbarThumb: string
+  scrollbarThumbHover: string
+  scrollbarRadius: string
+  scrollbarGutter: string
+  scrollBehavior: string
+  scrollPaddingTop: string
+  overscrollBehavior: string
+}
+
+export interface SpacingTokensV2 extends SpacingTokens {
+  space2xlSm: string
+}
+
+export interface LayoutTokensV2 extends LayoutTokens {
+  bodyPaddingSm: string
+  bodyPaddingXs: string
+  sectionSpacingSm: string
+}
+
+export interface ThemeTokensV2 extends Omit<ThemeTokens, 'spacing' | 'layout'> {
+  spacing: SpacingTokensV2
+  layout: LayoutTokensV2
+  scroll: ScrollTokens
+}
+
+export type RuleMap = Record<string, CssPropertyMap>
+
+export interface ThemeLayers {
+  base: RuleMap
+  elements: RuleMap
+  states: RuleMap
+  responsive: Record<string, RuleMap>
+}
+
+export interface ThemeV2 {
+  schemaVersion: 2
+  metadata: ThemeV1['metadata']
+  tokens: ThemeTokensV2
+  modes: ThemeV1['modes']
+  layers: ThemeLayers
+  breakpoints: Record<string, number>
+  options: {
+    includeMinimalReset: boolean
+    reducedMotion: boolean
+  }
+}
