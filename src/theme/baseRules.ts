@@ -1,11 +1,11 @@
 import type { CssPropertyMap, RuleMap } from './schema'
 
 /**
- * Neutraliza o chrome do código inline dentro de um `<pre>`.
+ * Neutralises inline-code chrome inside a `<pre>`.
  *
- * Mora em `layers.elements`, nunca em `layers.base`: é uma sobreposição
- * contextual de `code`, e só funciona onde a especificidade ainda decide —
- * `pre code` (0,0,2) contra `code` (0,0,1), as duas sem `:where()`.
+ * Lives in `layers.elements`, never in `layers.base`: it is a contextual
+ * `code` override, and only works where specificity still decides —
+ * `pre code` (0,0,2) vs `code` (0,0,1), both without `:where()`.
  */
 export const preCodeNeutraliser: CssPropertyMap = {
   background: 'transparent',
@@ -14,21 +14,22 @@ export const preCodeNeutraliser: CssPropertyMap = {
 }
 
 /**
- * As regras que hoje estão hardcoded em `baseRules()` do compilador. Trazê-las
- * para o modelo é o que as torna visíveis e editáveis. A ordem das chaves é a
- * mesma da lista original, porque o compilador emite na ordem de inserção.
+ * The rules that are currently hardcoded in the compiler's `baseRules()`.
+ * Bringing them into the model is what makes them visible and editable. Key
+ * order matches the original list, because the compiler emits in insertion
+ * order.
  *
- * `:root[data-theme="light"]` e `:root[data-theme="dark"]` continuam gerados
- * pelo compilador: são estruturais, não escolhas de estilo.
+ * `:root[data-theme="light"]` and `:root[data-theme="dark"]` stay
+ * compiler-generated: they are structural, not style choices.
  *
- * RESTRIÇÃO: tudo daqui é emitido dentro de `@layer base` e embrulhado em
- * `:where()`, ou seja, com especificidade zero. Como a ordem de camadas vence
- * a especificidade sem exceção, uma regra que existe para sobrepor outra regra
- * de elemento NÃO pode morar aqui: ela perderia sempre para a camada
- * `elements`. Sobreposições contextuais desse tipo — `pre code` desfazendo
- * `code` é o caso concreto — vão para `layers.elements`, onde as duas regras
- * saem sem `:where()` e a especificidade volta a decidir. A camada base é um
- * piso de padrões, não um lugar para consertar outra regra.
+ * CONSTRAINT: everything here is emitted inside `@layer base` wrapped in
+ * `:where()`, i.e. with zero specificity. Since layer order beats specificity
+ * without exception, a rule that exists to override another element rule must
+ * NOT live here: it would always lose to the `elements` layer. Contextual
+ * overrides of that kind — `pre code` undoing `code` is the concrete case —
+ * go to `layers.elements`, where both rules are emitted without `:where()`
+ * and specificity decides again. The base layer is a floor of defaults, not a
+ * place to fix another rule.
  */
 export function seedBaseRules(): RuleMap {
   return {
@@ -72,9 +73,9 @@ export function seedBaseRules(): RuleMap {
 }
 
 /**
- * As regras de `responsiveRules()` do compilador, com os literais `1rem`,
- * `2rem`, `0.8rem` e `2.5rem` trocados por tokens. O compilador atual grava
- * valores fixos e descarta em silêncio o que o usuário configurou.
+ * The compiler's `responsiveRules()`, with the `1rem`, `2rem`, `0.8rem` and
+ * `2.5rem` literals replaced by tokens. The current compiler writes fixed
+ * values and silently discards what the user configured.
  */
 export function seedResponsiveRules(): Record<string, RuleMap> {
   return {

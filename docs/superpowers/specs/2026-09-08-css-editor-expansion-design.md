@@ -1,147 +1,152 @@
-# Expansão do editor: propriedades exaustivas, seletores abertos, camadas e scroll
+# Editor expansion: exhaustive properties, open selectors, layers and scroll
 
-Data: 2026-09-08
-Estado: aprovado para planejamento
+Date: 2026-09-08
+Status: approved for planning
 
-## Objetivo
+## Goal
 
-Tornar o Semantic CSS Studio capaz de produzir um CSS padronizado completo para
-HTML semântico, de modo que o documento fique livre para tratar apenas de
-conteúdo. Isso exige três mudanças de fundo sobre a versão 0.1.5:
+Make Semantic CSS Studio capable of producing a complete standardized CSS for
+semantic HTML, so that the document is left free to deal only with
+content. This requires three fundamental changes on top of version 0.1.5:
 
-1. toda propriedade CSS acessível para qualquer seletor, navegada por busca;
-2. um modelo de seletor que vá além da tag nua — variantes catalogadas mais um
-   campo livre;
-3. estilo de scroll como recurso de primeira classe, hoje inexistente.
+1. every CSS property accessible for any selector, navigated by search;
+2. a selector model that goes beyond the bare tag — cataloged variants plus a
+   free field;
+3. scroll styling as a first-class feature, nonexistent today.
 
-O CSS exportado passa a sair em camadas (`@layer`) com as regras-base em
-`:where()`, de forma que o tema funcione como piso e nunca como teto para quem
-o consome.
+The exported CSS now comes out in layers (`@layer`) with the base rules in
+`:where()`, so that the theme works as a floor and never as a ceiling for whoever
+consumes it.
 
-## Decisões
+## Decisions
 
-| Eixo | Decisão |
-|---|---|
-| Cobertura de propriedades | Exaustiva e plana: toda propriedade disponível para todo seletor, agrupada por família, navegada por busca |
-| Modelo de seletor | Catálogo de variantes como caminho principal + campo de seletor livre como escape hatch |
-| Scroll | Sistema completo: barra, comportamento, âncoras e snap |
-| CSS exportado | `@layer` + `:where()`, com regras-base editáveis |
-| Forma do `Theme` | Mapas por camada (`layers.base/elements/states/responsive`) |
-| Origem do catálogo | Gerado em build-time a partir do `mdn-data`, artefato versionado |
+| Axis              | Decision                                                                                                 |
+| ----------------- | -------------------------------------------------------------------------------------------------------- |
+| Property coverage | Exhaustive and flat: every property available for every selector, grouped by family, navigated by search |
+| Selector model    | Variant catalog as the main path + free selector field as escape hatch                                   |
+| Scroll            | Complete system: bar, behavior, anchors and snap                                                         |
+| Exported CSS      | `@layer` + `:where()`, with editable base rules                                                          |
+| `Theme` shape     | Maps per layer (`layers.base/elements/states/responsive`)                                                |
+| Catalog source    | Generated at build time from `mdn-data`, versioned artifact                                              |
 
-## Estado atual e lacunas
+## Current state and gaps
 
-O que já está correto e deve ser preservado: a separação `Theme` →
-`compileTheme()` → CSS, com o compilador livre de React e de API de browser
-(`docs/ARCHITECTURE.md`, invariantes 1–6); e a injeção de CSS no
-`<style id="studio-theme">` em vez de recriar o `srcDoc`
-(`src/preview/PreviewFrame.tsx`), que dá preview sem flicker e sem perda de
-posição de rolagem.
+What is already correct and must be preserved: the `Theme` →
+`compileTheme()` → CSS separation, with the compiler free of React and browser
+APIs (`docs/ARCHITECTURE.md`, invariants 1–6); and the CSS injection into
+`<style id="studio-theme">` instead of recreating the `srcDoc`
+(`src/preview/PreviewFrame.tsx`), which gives flicker-free preview with no loss of
+scroll position.
 
-As lacunas que motivam este trabalho:
+The gaps motivating this work:
 
-- `src/editor/elementProfiles.ts` é uma whitelist de cerca de 50 propriedades
-  escrita à mão. Faltam famílias inteiras: posicionamento, grid, item de flex,
-  `background-*` além da cor, texto avançado, multi-coluna, listas, tabelas,
-  transições, transformações, filtros, bordas e raios individuais, e scroll.
-- `Theme.elements` só aceita tag nua. Não há pseudo-elementos, seletores de
-  atributo nem combinadores. Zebra striping (`tbody tr:nth-child(even)`) — um
-  dos pedidos mais comuns em tema classless — é inexprimível.
-- `src/editor/StateEditor.tsx` fixa 7 elementos, 6 pseudo-classes e 9
-  propriedades. Faltam `:visited`, `:target`, `:invalid`, `:required`,
-  `:placeholder-shown`, `:read-only`, `:indeterminate`, `:open` e os
-  `:nth-child`.
-- Scroll é ausente por completo. Existe um `scrollBehavior: 'smooth'` solto em
-  `src/theme/presets/index.ts:322`, sem `prefers-reduced-motion` para desligar.
-- `baseRules()` em `src/compiler/compileTheme.ts` injeta cerca de 11 regras
-  invisíveis e não editáveis. `responsiveRules()` sobrescreve
-  `--body-padding` e `--section-spacing` com literais fixos, descartando em
-  silêncio o valor configurado pelo usuário.
-- `tokenName()` é uma cadeia de trinta `.replace()` majoritariamente no-op; um
-  token de cor novo fora da lista sai como `--accent` em vez de
+- `src/editor/elementProfiles.ts` is a hand-written whitelist of about 50 properties.
+  Entire families are missing: positioning, grid, flex item,
+  `background-*` beyond color, advanced text, multi-column, lists, tables,
+  transitions, transforms, filters, individual borders and radii, and scroll.
+- `Theme.elements` only accepts a bare tag. There are no pseudo-elements, attribute
+  selectors or combinators. Zebra striping (`tbody tr:nth-child(even)`) — one
+  of the most common requests in a classless theme — is inexpressible.
+- `src/editor/StateEditor.tsx` pins 7 elements, 6 pseudo-classes and 9
+  properties. Missing: `:visited`, `:target`, `:invalid`, `:required`,
+  `:placeholder-shown`, `:read-only`, `:indeterminate`, `:open` and the
+  `:nth-child` variants.
+- Scroll is entirely absent. There is a loose `scrollBehavior: 'smooth'` in
+  `src/theme/presets/index.ts:322`, with no `prefers-reduced-motion` to switch it off.
+- `baseRules()` in `src/compiler/compileTheme.ts` injects about 11
+  invisible and non-editable rules. `responsiveRules()` overwrites
+  `--body-padding` and `--section-spacing` with fixed literals, silently discarding
+  the value configured by the user.
+- `tokenName()` is a chain of thirty mostly no-op `.replace()` calls; a
+  new color token outside the list comes out as `--accent` instead of
   `--color-accent`.
-- `src/theme/store.ts` grava o tema inteiro em `localStorage` a cada `set()`,
-  inclusive em mudanças puramente de UI, sem debounce e sem tratar
+- `src/theme/store.ts` writes the entire theme to `localStorage` on every `set()`,
+  including on purely UI changes, with no debounce and no handling of
   `QuotaExceededError`.
-- `readStoredTheme()` descarta silenciosamente qualquer `schemaVersion !== 1`
-  sem usar o `migrateTheme()` que existe ao lado.
-- `minifyCss()` é regex sobre string; corrompe assim que `content`, gradientes
-  e `url(data:…)` ficarem acessíveis.
+- `readStoredTheme()` silently discards any `schemaVersion !== 1`
+  without using the `migrateTheme()` that exists next to it.
+- `minifyCss()` is regex over string; it corrupts as soon as `content`, gradients
+  and `url(data:…)` become accessible.
 
-## Arquitetura
+## Architecture
 
 ### `Theme` v2
 
 ```ts
 export const SCHEMA_VERSION = 2
 
-export type CssPropertyMap = Record<string, string>    // camelCase → valor CSS bruto
-export type RuleMap = Record<string, CssPropertyMap>   // seletor → declarações
+export type CssPropertyMap = Record<string, string> // camelCase → valor CSS bruto
+export type RuleMap = Record<string, CssPropertyMap> // seletor → declarações
 
 export interface ThemeLayers {
-  base: RuleMap                          // emitido dentro de :where(), especificidade 0
-  elements: RuleMap                      // tags, variantes do catálogo, seletores livres
-  states: RuleMap                        // regras com pseudo-classe
-  responsive: Record<string, RuleMap>    // chave do breakpoint → regras
+  base: RuleMap // emitido dentro de :where(), especificidade 0
+  elements: RuleMap // tags, variantes do catálogo, seletores livres
+  states: RuleMap // regras com pseudo-classe
+  responsive: Record<string, RuleMap> // chave do breakpoint → regras
 }
 
 export interface Theme {
   schemaVersion: 2
-  metadata: { name: string; description?: string; author?: string; version: string }
-  tokens: ThemeTokens                    // ganha o grupo `scroll`
+  metadata: {
+    name: string
+    description?: string
+    author?: string
+    version: string
+  }
+  tokens: ThemeTokens // ganha o grupo `scroll`
   modes: { light: ThemeMode; dark?: ThemeMode }
   layers: ThemeLayers
-  breakpoints: Record<string, number>    // substitui `responsive`
+  breakpoints: Record<string, number> // substitui `responsive`
   options: {
     includeMinimalReset: boolean
-    reducedMotion: boolean               // padrão: true
+    reducedMotion: boolean // padrão: true
   }
 }
 ```
 
-As chaves de `layers.responsive` correspondem exatamente às chaves de
-`breakpoints`. Um breakpoint sem regras associadas é válido; uma chave em
-`layers.responsive` sem breakpoint correspondente é erro de validação e é
-rejeitada na importação.
+The keys of `layers.responsive` correspond exactly to the keys of
+`breakpoints`. A breakpoint with no associated rules is valid; a key in
+`layers.responsive` with no matching breakpoint is a validation error and is
+rejected on import.
 
-As chaves de `CssPropertyMap` são nomes de propriedade em camelCase, e a função
-`kebab()` existente já converte corretamente propriedades com prefixo de
-fornecedor, porque uma maiúscula inicial vira hífen inicial
-(`WebkitLineClamp` → `-webkit-line-clamp`). Propriedades customizadas fogem
-dessa regra: são armazenadas literalmente, começando por `--`, e emitidas sem
-qualquer transformação.
+The keys of `CssPropertyMap` are camelCase property names, and the existing
+`kebab()` function already converts vendor-prefixed properties correctly,
+because a leading uppercase letter becomes a leading hyphen
+(`WebkitLineClamp` → `-webkit-line-clamp`). Custom properties are the
+exception to this rule: they are stored literally, starting with `--`, and emitted without
+any transformation.
 
-`layers.base` nasce populado com exatamente as regras hoje hardcoded em
-`compileTheme.ts`, de modo que a saída padrão continua visualmente idêntica,
-só que visível e editável. `layers.responsive` nasce com as regras de
-`responsiveRules()`, com os literais `1rem`, `2rem`, `0.8rem` e `2.5rem`
-substituídos por tokens novos, o que corrige a sobrescrita silenciosa sem
-alterar a aparência padrão. Os tokens novos entram nos grupos existentes:
-`bodyPaddingSm` (1rem, no tablet), `bodyPaddingXs` (0.8rem, no mobile) e
-`sectionSpacingSm` (2rem, no tablet) em `LayoutTokens`; `space2xlXs` (2.5rem,
-no mobile) em `SpacingTokens`. O sufixo e estrito: `Sm` marca override de
-tablet, `Xs` marca override de mobile.
+`layers.base` is born populated with exactly the rules currently hardcoded in
+`compileTheme.ts`, so that the default output stays visually identical,
+only now visible and editable. `layers.responsive` is born with the
+`responsiveRules()` rules, with the literals `1rem`, `2rem`, `0.8rem` and `2.5rem`
+replaced by new tokens, which fixes the silent overwrite without
+changing the default appearance. The new tokens go into the existing groups:
+`bodyPaddingSm` (1rem, on tablet), `bodyPaddingXs` (0.8rem, on mobile) and
+`sectionSpacingSm` (2rem, on tablet) in `LayoutTokens`; `space2xlXs` (2.5rem,
+on mobile) in `SpacingTokens`. The suffix is strict: `Sm` marks a tablet
+override, `Xs` marks a mobile override.
 
-### Tokens de scroll
+### Scroll tokens
 
 ```ts
 export interface ScrollTokens {
-  scrollbarWidth: string        // auto | thin | none
-  scrollbarSize: string         // largura/altura das partes WebKit
+  scrollbarWidth: string // auto | thin | none
+  scrollbarSize: string // largura/altura das partes WebKit
   scrollbarTrack: string
   scrollbarThumb: string
   scrollbarThumbHover: string
   scrollbarRadius: string
-  scrollbarGutter: string       // auto | stable | stable both-edges
-  scrollBehavior: string        // auto | smooth
-  scrollPaddingTop: string      // âncoras sob header sticky
+  scrollbarGutter: string // auto | stable | stable both-edges
+  scrollBehavior: string // auto | smooth
+  scrollPaddingTop: string // âncoras sob header sticky
   overscrollBehavior: string
 }
 ```
 
-### Compilador
+### Compiler
 
-Ordem de emissão:
+Emission order:
 
 ```
 /* metadata */
@@ -159,23 +164,23 @@ Ordem de emissão:
 @media print      { … }
 ```
 
-Os tokens ficam em `@layer base` no `:root` com especificidade normal, de modo
-que um `:root { --color-primary: red }` sem camada, escrito por quem consome o
-tema, sempre vence. O bloco de movimento reduzido fica fora de qualquer camada
-porque é decisão de acessibilidade que não deve ser sobrescrível por acidente.
+Tokens live in `@layer base` on `:root` with normal specificity, so that
+a `:root { --color-primary: red }` without a layer, written by whoever consumes the
+theme, always wins. The reduced-motion block stays outside any layer
+because it is an accessibility decision that must not be accidentally overridable.
 
-Determinismo preservado: seletores ordenados por ordem canônica de domínio para
-tags conhecidas e `localeCompare` para o restante; declarações em ordem
-alfabética dentro de cada regra.
+Determinism preserved: selectors ordered by canonical domain order for
+known tags and `localeCompare` for the rest; declarations in alphabetical
+order within each rule.
 
-### Compatibilidade da barra de rolagem
+### Scrollbar compatibility
 
-No Chrome 121 e superiores, definir `scrollbar-color` desativa os
-pseudo-elementos `::-webkit-scrollbar`. Emitir os dois lado a lado, portanto,
-perde as partes ricas. A saída correta dá as partes ao Chromium/WebKit e as
-propriedades padrão a quem não as suporta — e apenas `scrollbar-color` e
-`scrollbar-width` entram no bloco condicional, porque as demais propriedades de
-scroll são padrão em todos os motores e vão sem gate na mesma regra:
+On Chrome 121 and above, setting `scrollbar-color` disables the
+`::-webkit-scrollbar` pseudo-elements. Emitting both side by side therefore
+loses the rich parts. The correct output gives the parts to Chromium/WebKit and the
+standard properties to those without them — and only `scrollbar-color` and
+`scrollbar-width` go into the conditional block, because the remaining scroll
+properties are standard in every engine and go ungated in the same rule:
 
 ```css
 @layer base {
@@ -186,10 +191,20 @@ scroll são padrão em todos os motores e vão sem gate na mesma regra:
     overscroll-behavior: var(--overscroll-behavior);
   }
 
-  :where(html)::-webkit-scrollbar { width: var(--scrollbar-size); height: var(--scrollbar-size); }
-  :where(html)::-webkit-scrollbar-track { background: var(--scrollbar-track); }
-  :where(html)::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: var(--scrollbar-radius); }
-  :where(html)::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+  :where(html)::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+    height: var(--scrollbar-size);
+  }
+  :where(html)::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+  :where(html)::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--scrollbar-radius);
+  }
+  :where(html)::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
 
   @supports not selector(::-webkit-scrollbar) {
     :where(html) {
@@ -200,76 +215,78 @@ scroll são padrão em todos os motores e vão sem gate na mesma regra:
 }
 ```
 
-As mesmas partes ficam disponíveis por seletor no catálogo, não apenas em
-`html`: `pre`, `table`, `dialog`, `textarea`, `aside` e seletores livres.
+The same parts are available per selector in the catalog, not only on
+`html`: `pre`, `table`, `dialog`, `textarea`, `aside` and free selectors.
 
-### Movimento reduzido
+### Reduced motion
 
-Emitido por padrão, controlado por `options.reducedMotion`:
+Emitted by default, controlled by `options.reducedMotion`:
 
 ```css
 @media (prefers-reduced-motion: reduce) {
-  :where(html) { scroll-behavior: auto; }
+  :where(html) {
+    scroll-behavior: auto;
+  }
   :where(*, *::before, *::after) {
-    animation-duration: .01ms !important;
-    transition-duration: .01ms !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }
 ```
 
-### Correções estruturais no compilador
+### Structural fixes in the compiler
 
-- `tokenName()` deixa de ser cadeia de `.replace()` e passa a ser um mapa de
-  prefixo por grupo de token, de modo que um token novo nunca saia com nome
-  errado. Os prefixos por grupo são: `colors` recebe `color-`; `typography`,
-  `spacing`, `radius`, `shadow` e `layout` mantêm o kebab da própria chave, que
-  já carrega o prefixo (`fontSizeBase` → `--font-size-base`, `spaceMd` →
-  `--space-md`); `scroll` também mantém o kebab da chave, porque as chaves já
-  começam por `scrollbar`, `scroll` ou `overscroll` (`scrollbarThumbHover` →
+- `tokenName()` stops being a chain of `.replace()` calls and becomes a
+  per-token-group prefix map, so that a new token never comes out with the wrong
+  name. The per-group prefixes are: `colors` gets `color-`; `typography`,
+  `spacing`, `radius`, `shadow` and `layout` keep the kebab of the key itself, which
+  already carries the prefix (`fontSizeBase` → `--font-size-base`, `spaceMd` →
+  `--space-md`); `scroll` also keeps the kebab of the key, because the keys already
+  start with `scrollbar`, `scroll` or `overscroll` (`scrollbarThumbHover` →
   `--scrollbar-thumb-hover`, `overscrollBehavior` → `--overscroll-behavior`).
-- `minifyCss()` deixa de ser regex e passa a ser um tokenizador pequeno (~60
-  linhas, puro, sem dependência) que respeita strings, comentários e `url()`.
-- Validação de seletor em duas camadas: no app, `document.querySelector` dentro
-  de `try/catch`, em tempo de edição; no compilador, uma função pura com
-  gramática restrita, usada na importação, para não violar a invariante de que
-  o compilador não usa API de browser. Seletor contendo classe ou id é aceito
-  com aviso, não bloqueado — contraria a premissa classless, mas a decisão é de
-  quem usa.
+- `minifyCss()` stops being regex and becomes a small tokenizer (~60
+  lines, pure, dependency-free) that respects strings, comments and `url()`.
+- Two-layer selector validation: in the app, `document.querySelector` inside
+  `try/catch`, at edit time; in the compiler, a pure function with a
+  restricted grammar, used on import, so as not to violate the invariant that
+  the compiler does not use browser APIs. A selector containing a class or id is accepted
+  with a warning, not blocked — it goes against the classless premise, but the decision belongs to
+  whoever uses it.
 
 ## Interface
 
-### Catálogo de propriedades gerado
+### Generated property catalog
 
-`scripts/generate-css-properties.ts`, executado no build, com o artefato
-versionado em `src/editor/cssProperties.generated.ts`:
+`scripts/generate-css-properties.ts`, run at build time, with the artifact
+versioned at `src/editor/cssProperties.generated.ts`:
 
-- lê `mdn-data/css/properties.json` (devDependency) e descarta
+- reads `mdn-data/css/properties.json` (devDependency) and discards
   `status: "obsolete"`;
-- guarda por propriedade: nome, sintaxe, valor inicial, se herda e grupo;
-- deriva o controle a partir da sintaxe — apenas `<color>` gera seletor de cor;
-  `<length>`, `<length-percentage>` e `<number>` geram stepper; conjunto fechado
-  de palavras-chave sem `<…>` gera select; o restante gera campo de texto.
+- stores per property: name, syntax, initial value, whether it inherits, and group;
+- derives the control from the syntax — only `<color>` produces a color picker;
+  `<length>`, `<length-percentage>` and `<number>` produce a stepper; a closed
+  set of keywords without `<…>` produces a select; the rest produces a text field.
 
-Ao lado, `src/editor/propertyOverrides.ts`, escrito à mão e pequeno: rótulos
-melhores e controles ricos onde a derivação automática não basta —
-`box-shadow` e `text-shadow` no editor de sombra existente, `font-family` na
-pilha de fontes, `transition` num construtor dedicado.
+Alongside it, `src/editor/propertyOverrides.ts`, hand-written and small: better
+labels and rich controls where automatic derivation is not enough —
+`box-shadow` and `text-shadow` in the existing shadow editor, `font-family` in the
+font stack, `transition` in a dedicated builder.
 
-Os grupos do MDN são remapeados para doze famílias: Layout, Caixa e
-espaçamento, Tipografia, Cor e fundo, Borda, Efeitos e filtros, Transições e
-animações, Scroll, Tabelas, Listas e contadores, Conteúdo gerado, e
-Interatividade e formulários. A família Scroll não existe no MDN: ela colapsa
+The MDN groups are remapped into twelve families: Layout, Box and
+spacing, Typography, Color and background, Border, Effects and filters, Transitions and
+animations, Scroll, Tables, Lists and counters, Generated content, and
+Interactivity and forms. The Scroll family does not exist in MDN: it collapses
 CSSOM View (`scroll-behavior`), CSS Scrollbars (`scrollbar-*`), CSS Scroll Snap
-(`scroll-snap-*`) e CSS Overscroll Behavior (`overscroll-behavior`).
+(`scroll-snap-*`) and CSS Overscroll Behavior (`overscroll-behavior`).
 
-O dataset gerado é carregado por `import()` dinâmico na primeira abertura do
-painel de elementos, de modo que o bundle inicial não cresça.
+The generated dataset is loaded via dynamic `import()` on first opening of the
+elements panel, so that the initial bundle does not grow.
 
-### Inversão do painel de elementos
+### Elements panel inversion
 
-Com centenas de propriedades, o catálogo não pode ocupar o topo. A hierarquia
-passa a ser:
+With hundreds of properties, the catalog cannot occupy the top. The hierarchy
+becomes:
 
 ```
 SELETOR: article > p:first-of-type          [× limpar]
@@ -282,17 +299,17 @@ DEFINIDAS (4)          ← primário: o que está sendo editado
 FAMÍLIAS (recolhidas)
 ```
 
-`src/editor/ElementEditor.tsx` hoje tem 100 linhas fazendo três coisas. Passa a
-ser `src/editor/elements/` com `SelectorPicker`, `SelectorVariants`,
+`src/editor/ElementEditor.tsx` today is 100 lines doing three things. It becomes
+`src/editor/elements/` with `SelectorPicker`, `SelectorVariants`,
 `CustomSelectorField`, `DefinedProperties`, `PropertySearch`,
-`PropertyFamilies` e `PropertyControl`; o orquestrador fica em cerca de 60
-linhas.
+`PropertyFamilies` and `PropertyControl`; the orchestrator stays at about 60
+lines.
 
-### Variantes de seletor como dado
+### Selector variants as data
 
-`src/editor/selectorVariants.ts`. O campo `layer` em cada variante é o que
-determina, sem condicional espalhada pelo código, qual camada aquele editor
-escreve:
+`src/editor/selectorVariants.ts`. The `layer` field on each variant is what
+determines, with no conditional scattered through the code, which layer that editor
+writes to:
 
 ```ts
 { tag: 'input', variants: [
@@ -304,24 +321,24 @@ escreve:
 ]}
 ```
 
-Três origens de variante se somam para cada tag:
+Three variant sources add up for each tag:
 
-- **universais** — `::before`, `::after`, `::selection`, `::first-line`,
+- **universal** — `::before`, `::after`, `::selection`, `::first-line`,
   `::first-letter`, `:hover`, `:focus-visible`, `:target`, `:first-child`,
-  `:last-child`, `:nth-child(even)`, `:nth-child(odd)`, e as partes de
-  scrollbar em elementos roláveis;
-- **específicas da tag** — o bloco de `input` acima, `::marker` em `li`,
-  `::backdrop` em `dialog`, `:open` em `details`;
-- **contextuais** — cerca de vinte combinadores que um tema classless
-  efetivamente precisa, agrupados sob "Contexto": `tbody tr:nth-child(even)`,
+  `:last-child`, `:nth-child(even)`, `:nth-child(odd)`, and the scrollbar
+  parts on scrollable elements;
+- **tag-specific** — the `input` block above, `::marker` on `li`,
+  `::backdrop` on `dialog`, `:open` on `details`;
+- **contextual** — about twenty combinators that a classless theme
+  effectively needs, grouped under "Context": `tbody tr:nth-child(even)`,
   `pre > code`, `li > ul`, `h2 + p`, `thead th`, `article > :first-child`.
 
-Abaixo do catálogo fica o campo de seletor livre, validado em tempo real.
+Below the catalog sits the free selector field, validated in real time.
 
-### Barra lateral
+### Sidebar
 
-O `slice(0,6)` / `slice(6)` de `src/editor/EditorSidebar.tsx` é substituído por
-agrupamento explícito declarado no dado:
+The `slice(0,6)` / `slice(6)` in `src/editor/EditorSidebar.tsx` is replaced by
+explicit grouping declared in the data:
 
 ```
 TOKENS     Cores · Tipografia · Espaçamento · Layout · Raios · Sombras · Scroll
@@ -329,28 +346,28 @@ REGRAS     Base · Elementos · Estados · Responsivo
 CHECAGEM   Acessibilidade
 ```
 
-A seção **Scroll** tem duas metades: os tokens globais, com uma amostra rolável
-dentro do próprio painel — necessária para ver o thumb enquanto se arrasta a
-cor, sem depender do preview; e a parte por seletor, listando quais elementos
-recebem tratamento de barra, mais `scroll-margin-top` e `scroll-padding-top`
-com dica ligando explicitamente ao caso de header sticky com âncoras.
+The **Scroll** section has two halves: the global tokens, with a scrollable sample
+inside the panel itself — needed to see the thumb while dragging the
+color, without depending on the preview; and the per-selector part, listing which elements
+receive bar treatment, plus `scroll-margin-top` and `scroll-padding-top`
+with a hint explicitly linking to the sticky-header-with-anchors case.
 
-A seção **Base** lista as regras `:where()` semeadas, cada uma editável, com
-"restaurar padrão" e opção de desligar, sob um aviso de que são especificidade
-zero.
+The **Base** section lists the seeded `:where()` rules, each editable, with
+"restore default" and an option to switch off, under a warning that they are zero
+specificity.
 
 ### Preview
 
-Specimen novo, **Scroll**: conteúdo longo, header sticky, sumário com âncoras
-para verificar `:target`, `pre` e `table` que estouram na horizontal, `dialog`
-e `textarea`. O toolbar ganha um botão *forçar barras visíveis* — sem ele, o
-macOS esconde as barras por overlay e o usuário não consegue ver o que está
-estilizando.
+New **Scroll** specimen: long content, sticky header, summary with anchors
+to verify `:target`, `pre` and `table` overflowing horizontally, `dialog`
+and `textarea`. The toolbar gains a _force visible scrollbars_ button — without it,
+macOS hides the bars via overlay and the user cannot see what they are
+styling.
 
-## Migração v1 → v2
+## Migration v1 → v2
 
-`src/theme/migration.ts` deixa de apenas validar e rejeitar, e passa a migrar.
-O achatamento de estados é sem perda:
+`src/theme/migration.ts` stops merely validating and rejecting, and starts migrating.
+The state flattening is lossless:
 
 ```
 tokens.scroll     = defaults
@@ -362,68 +379,68 @@ breakpoints       = v1.responsive
 options.reducedMotion = true
 ```
 
-`readStoredTheme()` em `src/theme/store.ts` passa a rotear o conteúdo do
-`localStorage` por `migrateTheme()` em vez de descartá-lo em silêncio.
+`readStoredTheme()` in `src/theme/store.ts` now routes the
+`localStorage` content through `migrateTheme()` instead of silently discarding it.
 
-Os seis presets são literais v1 em `src/theme/presets/index.ts`. A migração é
-executada uma única vez por codemod e os literais v2 são comitados, em lugar de
-migrar em runtime: os presets seguem legíveis, sem custo de carga, e os
-snapshots são regerados.
+The six presets are v1 literals in `src/theme/presets/index.ts`. The migration is
+run a single time via codemod and the v2 literals are committed, instead of
+migrating at runtime: the presets stay readable, with no load cost, and the
+snapshots are regenerated.
 
-## Tratamento de erro
+## Error handling
 
-| Onde | Hoje | Passa a ser |
-|---|---|---|
-| `store.ts` autosave | `setItem` sem guarda, a cada `set()` | `try/catch` com `QuotaExceededError` e toast "autosave pausado"; debounce de 400 ms; assina apenas `theme` |
-| `Topbar.tsx` | `alert()` e `confirm()` | sistema de toast existente e confirmação em `<dialog>` |
-| Importação | uma string em `alert` | erro por campo, na interface |
-| Seletor livre inválido | não existe | erro inline; a regra não é escrita |
-| Propriedade desconhecida | não existe | aceita, pois CSS é tolerante, e marcada "não reconhecida" — necessário porque o catálogo sempre atrasa em relação ao CSS novo |
-| Popover de export | sem Escape, sem clique-fora, sem `aria-expanded` | os três |
+| Where                 | Today                                           | Becomes                                                                                                                |
+| --------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `store.ts` autosave   | `setItem` unguarded, on every `set()`           | `try/catch` with `QuotaExceededError` and "autosave paused" toast; 400 ms debounce; subscribes only to `theme`         |
+| `Topbar.tsx`          | `alert()` and `confirm()`                       | existing toast system and `<dialog>` confirmation                                                                      |
+| Import                | one string in `alert`                           | per-field error, in the interface                                                                                      |
+| Invalid free selector | does not exist                                  | inline error; the rule is not written                                                                                  |
+| Unknown property      | does not exist                                  | accepted, since CSS is forgiving, and marked "unrecognized" — necessary because the catalog always lags behind new CSS |
+| Export popover        | no Escape, no click-outside, no `aria-expanded` | all three                                                                                                              |
 
-## Testes
+## Tests
 
-O teste de maior valor é o do minificador novo: é exatamente onde o regex atual
-quebra assim que `content`, gradientes e `url(data:…)` ficarem acessíveis.
-Além dele:
+The highest-value test is the new minifier's: it is exactly where the current regex
+breaks as soon as `content`, gradients and `url(data:…)` become accessible.
+Beyond it:
 
-- compilador — ordem das camadas, `:where()` na base, o gate
-  `@supports not selector(::-webkit-scrollbar)`, presença e ausência do bloco de
-  movimento reduzido, e determinismo verificado compilando duas vezes;
-- migração — fixture v1 para v2, com foco no achatamento de estados, e o
-  caminho de recuperação do `localStorage`;
-- validador de seletor — tabela de casos válidos, inválidos e com aviso de
-  classe;
-- catálogo gerado — teste que regenera e compara, para que o artefato
-  versionado não possa divergir do gerador;
-- derivação de controle — amostra de propriedades contra o tipo esperado;
-- snapshots dos seis presets, regerados em v2;
-- E2E — definir cor de barra e vê-la no CSS exportado; usar o seletor livre;
-  âncora com `scroll-margin`.
+- compiler — layer order, `:where()` on the base, the
+  `@supports not selector(::-webkit-scrollbar)` gate, presence and absence of the
+  reduced-motion block, and determinism verified by compiling twice;
+- migration — v1-to-v2 fixture, focused on state flattening, and the
+  `localStorage` recovery path;
+- selector validator — table of valid, invalid and class-warning
+  cases;
+- generated catalog — test that regenerates and compares, so that the
+  versioned artifact cannot diverge from the generator;
+- control derivation — sample of properties against the expected type;
+- snapshots of the six presets, regenerated in v2;
+- E2E — set a bar color and see it in the exported CSS; use the free selector;
+  anchor with `scroll-margin`.
 
-## Faseamento
+## Phasing
 
-Seis fases, cada uma entregável isoladamente:
+Six phases, each independently deliverable:
 
-1. **Fundação** — schema v2, migração, `tokenName` como mapa, minificador novo,
-   `readStoredTheme` via migração, presets regerados. Nada muda para quem usa.
-2. **Camadas** — `@layer` e `:where()` no compilador, seção Base editável.
-3. **Scroll** — tokens, compilador, seção Scroll, specimen, movimento reduzido,
+1. **Foundation** — v2 schema, migration, `tokenName` as map, new minifier,
+   `readStoredTheme` via migration, regenerated presets. Nothing changes for the user.
+2. **Layers** — `@layer` and `:where()` in the compiler, editable Base section.
+3. **Scroll** — tokens, compiler, Scroll section, specimen, reduced motion,
    `@media print`.
-4. **Catálogo de propriedades** — gerador, dataset, inversão do painel, busca.
-5. **Seletores** — variantes catalogadas, contexto, escape hatch, quebra do
+4. **Property catalog** — generator, dataset, panel inversion, search.
+5. **Selectors** — cataloged variants, context, escape hatch, splitting
    `ElementEditor`.
-6. **Polimento** — autosave, toasts, barra lateral por dado, acessibilidade do
-   popover.
+6. **Polishing** — autosave, toasts, data-driven sidebar, popover
+   accessibility.
 
-A Fase 3 não depende das Fases 4 e 5. Dentro da Fase 3, `scroll-snap-*` é a
-peça de menor valor para um tema de documento; entra por fazer parte do sistema
-completo, mas é a última a ser implementada e a primeira a sair se o escopo
-apertar.
+Phase 3 does not depend on Phases 4 and 5. Within Phase 3, `scroll-snap-*` is the
+lowest-value piece for a document theme; it is included for being part of the complete
+system, but it is the last to be implemented and the first to go if scope
+tightens.
 
-## Fora de escopo
+## Out of scope
 
-Backend, autenticação, sincronização em nuvem, comportamento de page builder e
-importação de CSS existente seguem fora de escopo, conforme a promessa
-arquitetural da versão 0.1.0. As invariantes 1 a 6 de `docs/ARCHITECTURE.md`
-permanecem válidas sem alteração.
+Backend, authentication, cloud sync, page-builder behavior and
+importing existing CSS stay out of scope, per the
+architectural promise of version 0.1.0. Invariants 1 through 6 of `docs/ARCHITECTURE.md`
+remain valid unchanged.

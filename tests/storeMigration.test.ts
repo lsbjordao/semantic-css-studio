@@ -3,27 +3,27 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-// O ambiente jsdom substitui o URL global, e `new URL(rel, import.meta.url)`
-// resolve para http://localhost:3000/... em vez de um caminho de arquivo.
-// Resolver por node:path mantem o teste correto em qualquer environment
-// (mesma solucao ja usada em tests/presets.test.ts e tests/migration.test.ts).
+// The jsdom environment replaces the global URL, and `new URL(rel,
+// import.meta.url)` resolves to http://localhost:3000/... instead of a file
+// path. Resolving via node:path keeps the test correct in any environment
+// (same solution already used in tests/presets.test.ts and tests/migration.test.ts).
 const here = dirname(fileURLToPath(import.meta.url))
 const themeV1Raw = readFileSync(join(here, 'fixtures', 'theme-v1.json'), 'utf8')
 const STORAGE_KEY = 'semantic-css-studio/theme-v1'
 
-describe('leitura do tema salvo', () => {
+describe('saved-theme loading', () => {
   beforeEach(() => {
     localStorage.clear()
     vi.resetModules()
   })
 
-  it('migra um tema v1 salvo em vez de descarta-lo', async () => {
-    // Personaliza a fixture para provar MIGRACAO, nao fallback: um teste que so
-    // checasse schemaVersion passaria mesmo se readStoredTheme devolvesse o
-    // default, porque o default tambem e v2. O nome e a declaracao customizada
-    // abaixo so sobrevivem se o conteudo salvo for elevado.
+  it('migrates a saved v1 theme instead of discarding it', async () => {
+    // Customises the fixture to prove MIGRATION, not fallback: a test checking
+    // only schemaVersion would pass even if readStoredTheme returned the
+    // default, because the default is also v2. The name and custom declaration
+    // below only survive if the saved content is upgraded.
     const customized = JSON.parse(themeV1Raw)
-    customized.metadata.name = 'Tema do usuario'
+    customized.metadata.name = 'User theme'
     customized.elements.article = {
       ...customized.elements.article,
       marginBlock: '9rem',
@@ -32,55 +32,61 @@ describe('leitura do tema salvo', () => {
     const { useStudioStore } = await import('../src/theme/store')
     const theme = useStudioStore.getState().theme
     expect(theme.schemaVersion).toBe(2)
-    // o conteudo do usuario sobreviveu
-    expect(theme.metadata.name).toBe('Tema do usuario')
+    // the user content survived
+    expect(theme.metadata.name).toBe('User theme')
     expect(theme.layers.elements.article).toMatchObject({ marginBlock: '9rem' })
     expect(theme.layers.states['a:hover']).toBeDefined()
   })
 
-  it('cai no tema padrao quando o conteudo salvo e ilegivel', async () => {
-    localStorage.setItem(STORAGE_KEY, '{ nao e json')
+  it('falls back to the default theme when saved content is unreadable', async () => {
+    localStorage.setItem(STORAGE_KEY, '{ not json')
     const { useStudioStore } = await import('../src/theme/store')
     expect(useStudioStore.getState().theme.schemaVersion).toBe(2)
   })
 
-  it('cai no tema padrao quando o schema e mais novo que o suportado', async () => {
+  it('falls back to the default theme when the schema is newer than supported', async () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 99 }))
     const { useStudioStore } = await import('../src/theme/store')
     expect(useStudioStore.getState().theme.metadata.name).toBe('Minimal')
   })
 })
 
-describe('tema salvo estruturalmente invalido', () => {
+describe('structurally invalid saved theme', () => {
   beforeEach(() => {
     localStorage.clear()
     vi.resetModules()
   })
 
-  // Sem validacao estrutural, este payload era aceito por migrateThemeV2,
-  // regravado no localStorage pela subscription da store e so estourava dentro
-  // do compilador, em pleno render. O reload lia o mesmo conteudo e estourava
-  // de novo: tela branca permanente ate limpar o armazenamento a mao.
-  it('cai no tema padrao em vez de estourar no render', async () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      schemaVersion: 2,
-      metadata: { name: 'Poison', version: '1' },
-      layers: { base: {}, elements: {}, states: {}, responsive: {} },
-      breakpoints: {},
-    }))
+  // Without structural validation, this payload was accepted by migrateThemeV2,
+  // rewritten to localStorage by the store subscription, and only blew up
+  // inside the compiler, mid-render. Reload read the same content and blew up
+  // again: a permanent white screen until storage was cleared by hand.
+  it('falls back to the default theme instead of blowing up in render', async () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        schemaVersion: 2,
+        metadata: { name: 'Poison', version: '1' },
+        layers: { base: {}, elements: {}, states: {}, responsive: {} },
+        breakpoints: {},
+      }),
+    )
     const { useStudioStore } = await import('../src/theme/store')
     const theme = useStudioStore.getState().theme
     expect(theme.metadata.name).toBe('Minimal')
     expect(theme.tokens.colors.primary).toBeTypeOf('string')
   })
 
-  it('o tema recuperado ainda compila', async () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      schemaVersion: 2,
-      metadata: { name: 'Poison', version: '1' },
-      layers: { base: {}, elements: {}, states: {}, responsive: {} },
-      breakpoints: {},
-    }))
+  it('the recovered theme still compiles', async () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        schemaVersion: 2,
+        metadata: { name: 'Poison', version: '1' },
+        layers: { base: {}, elements: {}, states: {}, responsive: {} },
+        breakpoints: {},
+      }),
+    )
     const { useStudioStore } = await import('../src/theme/store')
     const { compileTheme } = await import('../src/compiler')
     expect(() => compileTheme(useStudioStore.getState().theme)).not.toThrow()

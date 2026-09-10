@@ -5,6 +5,7 @@ import { EditorSidebar } from '../editor/EditorSidebar'
 import { ElementEditor } from '../editor/ElementEditor'
 import { IconsEditor } from '../editor/IconsEditor'
 import { StateEditor } from '../editor/StateEditor'
+import { QuartoEditor } from '../editor/QuartoEditor'
 import { ColorsEditor, LayoutEditor, RadiusEditor, ShadowsEditor, SpacingEditor, TypographyEditor } from '../editor/TokenEditors'
 import { PreviewFrame } from '../preview/PreviewFrame'
 import { PreviewToolbar } from '../preview/PreviewToolbar'
@@ -25,6 +26,7 @@ function ActiveEditor() {
     case 'Elements': return <ElementEditor />
     case 'States': return <StateEditor />
     case 'Accessibility': return <AccessibilityEditor />
+    case 'Quarto': return <QuartoEditor />
   }
 }
 

@@ -1,118 +1,117 @@
-# Handoff — Semantic CSS Studio, fases Fundação e Camadas
+# Handoff — Semantic CSS Studio, Foundation and Layers phases
 
-Este documento existe para um agente ou pessoa assumir o trabalho sem ter
-acompanhado a sessão anterior. Leia-o inteiro antes de tocar em qualquer coisa.
+This document exists so that an agent or person can take over the work without
+having followed the previous session. Read it in full before touching anything.
 
-## O projeto
+## The project
 
-Semantic CSS Studio é um editor visual que compila um objeto `Theme` em uma
-folha de estilo CSS classless e portátil, para que o HTML fique livre para
-tratar apenas de conteúdo. Sem runtime, sem dependência de framework no CSS
-exportado.
+Semantic CSS Studio is a visual editor that compiles a `Theme` object into a
+portable classless CSS stylesheet, so that HTML is left free to deal only with
+content. No runtime, no framework dependency in the exported CSS.
 
-## Documentos que mandam
+## Documents that rule
 
-Nesta ordem de autoridade:
+In this order of authority:
 
-1. `docs/superpowers/specs/2026-09-08-css-editor-expansion-design.md` — a spec.
-   É a autoridade vinculante. Conflitos se resolvem contra ela.
-2. `docs/superpowers/plans/2026-09-08-fundacao-e-camadas.md` — o plano de
-   implementação, 10 tarefas, 74 passos, com o código completo de cada uma.
-   É o argumento da spec, não a autoridade.
-3. `.superpowers/sdd/2026-09-08-fundacao-e-camadas/progress.md` — a ledger de
-   progresso. Diz o que já está feito e o que foi decidido pelo caminho.
-   **Este diretório é git-ignored**, então só existe nesta máquina.
+1. `docs/superpowers/specs/2026-09-08-css-editor-expansion-design.md` — the spec.
+   It is the binding authority. Conflicts are resolved against it.
+2. `docs/superpowers/plans/2026-09-08-fundacao-e-camadas.md` — the
+   implementation plan, 10 tasks, 74 steps, with the complete code for each one.
+   It is the argument of the spec, not the authority.
+3. `.superpowers/sdd/2026-09-08-fundacao-e-camadas/progress.md` — the progress
+   ledger. It says what is already done and what was decided along the way.
+   **This directory is git-ignored**, so it only exists on this machine.
 
-O plano cobre as fases 1 e 2 da spec. As fases 3 a 6 (Scroll, catálogo
-exaustivo de propriedades, seletores com escape hatch, polimento) ainda não têm
-plano escrito.
+The plan covers phases 1 and 2 of the spec. Phases 3 through 6 (Scroll, exhaustive
+property catalog, selectors with escape hatch, polishing) do not have a written
+plan yet.
 
-## Estado exato neste momento
+## Exact state right now
 
-Trabalhando **direto na branch `main`**, por decisão explícita do dono do
-repositório. Ponto de retorno limpo: `git reset --hard cfa016f`.
+Working **directly on the `main` branch**, by explicit decision of the repository
+owner. Clean return point: `git reset --hard cfa016f`.
 
-| Commit | O que é |
-|--------|---------|
-| `cfa016f` | snapshot inicial do 0.1.5, antes de qualquer mudança |
-| `94d10c5` | a spec |
-| `5b16008` | o plano |
-| `75af78c` | correção de baseline: snapshot sob jsdom + script de regeneração |
-| `b4feb1f` | correção de baseline: erro de lint em App.tsx |
-| `d2f8efe` | emendas do scan pré-voo ao plano (F1, F2, F3) |
-| `11df414` | **Task 1 completa**, revisada e aprovada limpa |
-| `c1a0b73` | Task 2 implementada — a revisão reprovou |
-| `c098c95` | Task 2, rodada de correção 1: bug do `pendingAtRule` |
-| `22e9323` | correção do plano + limitações conhecidas do minificador |
-| `99231c3` … `297026a` | Tasks 3 a 6 (validador de seletor, tipos v2, migração v1→v2, a troca atômica) |
-| `a0ae5f3` | **Task 7**: cobertura de `readStoredTheme` via `migrateThemeV2` (implementação já havia entrado na Task 6) |
-| `20ac9dc` | **Task 8**: compilador emite `@layer` com base em `:where()` |
-| `79eaa9d` | **Task 9**: `resetBaseRule` / `toggleBaseRule` / `isBaseRuleModified` |
-| `3bce51d` | **Task 10**: painel da camada base + sidebar por grupo + `aria-current` |
+| Commit                | What it is                                                                                                |
+| --------------------- | --------------------------------------------------------------------------------------------------------- |
+| `cfa016f`             | initial 0.1.5 snapshot, before any change                                                                 |
+| `94d10c5`             | the spec                                                                                                  |
+| `5b16008`             | the plan                                                                                                  |
+| `75af78c`             | baseline fix: snapshot under jsdom + regeneration script                                                  |
+| `b4feb1f`             | baseline fix: lint error in App.tsx                                                                       |
+| `d2f8efe`             | pre-flight scan amendments to the plan (F1, F2, F3)                                                       |
+| `11df414`             | **Task 1 complete**, reviewed and approved clean                                                          |
+| `c1a0b73`             | Task 2 implemented — the review failed it                                                                 |
+| `c098c95`             | Task 2, fix round 1: the `pendingAtRule` bug                                                              |
+| `22e9323`             | plan fix + known minifier limitations                                                                     |
+| `99231c3` … `297026a` | Tasks 3 through 6 (selector validator, v2 types, v1→v2 migration, the atomic swap)                        |
+| `a0ae5f3`             | **Task 7**: `readStoredTheme` coverage via `migrateThemeV2` (implementation had already landed in Task 6) |
+| `20ac9dc`             | **Task 8**: compiler emits `@layer` based on `:where()`                                                   |
+| `79eaa9d`             | **Task 9**: `resetBaseRule` / `toggleBaseRule` / `isBaseRuleModified`                                     |
+| `3bce51d`             | **Task 10**: base-layer panel + sidebar by group + `aria-current`                                         |
 
-**Tasks 1 a 10 completas e verdes** (100 passed, 5 skipped, lint limpo, build OK, e2e 3/3).
+**Tasks 1 through 10 complete and green** (100 passed, 5 skipped, clean lint, OK build, e2e 3/3).
 
-## Armadilhas já pagas — não caia nelas de novo
+## Pitfalls already paid for — don't fall into them again
 
-1. **`npx vite-node -e` não existe.** Essa flag não é suportada; o comando
-   imprime o help e sai em silêncio. Para regerar snapshots use
-   `npx vite-node scripts/regenerate-snapshots.ts`. O plano já foi emendado,
-   mas se você escrever um comando novo, lembre disso.
+1. **`npx vite-node -e` does not exist.** That flag is not supported; the command
+   prints the help and exits silently. To regenerate snapshots use
+   `npx vite-node scripts/regenerate-snapshots.ts`. The plan has already been amended,
+   but if you write a new command, remember this.
 
-2. **O ambiente jsdom substitui o `URL` global.** `new URL('./x', import.meta.url)`
-   dentro de um teste resolve para `http://localhost:3000/...`, não para um
-   caminho de arquivo, e o `readFileSync` seguinte lê a coisa errada sem
-   reclamar. Resolva caminhos de teste por `node:path` + `fileURLToPath`.
-   Isso já quebrou os 6 testes de preset uma vez.
+2. **The jsdom environment replaces the global `URL`.** `new URL('./x', import.meta.url)`
+   inside a test resolves to `http://localhost:3000/...`, not to a
+   file path, and the following `readFileSync` reads the wrong thing without
+   complaining. Resolve test paths via `node:path` + `fileURLToPath`.
+   This already broke the 6 preset tests once.
 
-3. **Auditar o diff de snapshot é a verificação, não a regeneração.** Regerar e
-   commitar sem ler `git diff tests/snapshots/` não verifica nada. As Tasks 1,
-   6 e 8 dizem exatamente quantas e quais categorias de diferença são
-   esperadas. Qualquer linha além dessas é regressão.
+3. **Auditing the snapshot diff is the verification, not the regeneration.** Regenerating and
+   committing without reading `git diff tests/snapshots/` verifies nothing. Tasks 1,
+   6 and 8 say exactly how many and which categories of differences are
+   expected. Any line beyond those is a regression.
 
-4. **A Task 6 é atômica de propósito.** Trocar `Theme` para v2 quebra a
-   tipagem de tudo ao mesmo tempo. Não tente fatiá-la: defaults, presets,
-   compilador, store e os dois editores mudam juntos, com o codemod
-   `scripts/migrate-presets.ts` fazendo o trabalho mecânico. O compilador
-   **continua emitindo CSS plano** nessa tarefa; `@layer` só entra na Task 8.
+4. **Task 6 is atomic on purpose.** Switching `Theme` to v2 breaks the
+   typing of everything at the same time. Don't try to slice it: defaults, presets,
+   compiler, store and both editors change together, with the codemod
+   `scripts/migrate-presets.ts` doing the mechanical work. The compiler
+   **keeps emitting flat CSS** in that task; `@layer` only comes in Task 8.
 
-5. **O minificador tem 5 limitações conhecidas, registradas como `it.skip`**
-   no fim de `tests/minify.test.ts`, cada uma com comentário explicando o
-   mecanismo. Nenhuma é alcançável pela saída atual de `compileTheme()`, mas
-   três ficam no caminho do roadmap: `@font-face` (que a spec nomeia como
-   lacuna a preencher), CSS nesting (que pode chegar pelo campo de seletor
-   livre) e comentário entre tokens (alcançável assim que o catálogo exaustivo
-   permitir valores digitados). A mais grave é a última — apagar um comentário
-   entre dois tokens funde os dois, trocando um seletor descendente por um
-   seletor de tipo. **Resolver antes da entrega do catálogo de propriedades.**
+5. **The minifier has 5 known limitations, recorded as `it.skip`**
+   at the end of `tests/minify.test.ts`, each with a comment explaining the
+   mechanism. None is reachable by the current `compileTheme()` output, but
+   three are on the roadmap path: `@font-face` (which the spec names as a
+   gap to fill), CSS nesting (which may arrive via the free-selector
+   field) and comments between tokens (reachable as soon as the exhaustive catalog
+   allows typed values). The most serious is the last one — deleting a comment
+   between two tokens fuses the two, turning a descendant selector into a
+   type selector. **Resolve before delivering the property catalog.**
 
-6. **A Task 7 não é polimento, é bloqueio.** `readStoredTheme()` descarta em
-   silêncio qualquer `schemaVersion` diferente de 1. Sem a Task 7, a Task 6
-   faz todo usuário existente perder o tema ao abrir o app.
+6. **Task 7 is not polishing, it is a blocker.** `readStoredTheme()` silently discards
+   any `schemaVersion` other than 1. Without Task 7, Task 6
+   makes every existing user lose their theme when opening the app.
 
-## Método de trabalho
+## Working method
 
-Cada tarefa: TDD de verdade (teste que falha primeiro, com a saída da falha
-registrada), implementação mínima, suíte completa verde, `npm run lint` limpo,
-commit próprio. Uma tarefa não fecha sem revisão que cubra dois vereditos
-separados — conformidade com a spec, e qualidade do código.
+Each task: real TDD (test that fails first, with the failure output
+recorded), minimal implementation, full green suite, clean `npm run lint`,
+own commit. A task does not close without a review covering two separate
+verdicts — compliance with the spec, and code quality.
 
-Portões que valem para toda tarefa:
+Gates that hold for every task:
 
-- `npm test` — suíte inteira verde
-- `npm run lint` — sem erro
-- `npm run build` — compila
-- o compilador (`src/compiler/**`) não importa React nem usa API de browser
-- CSS gerado é determinístico: mesmo tema, mesmos bytes
+- `npm test` — entire suite green
+- `npm run lint` — no errors
+- `npm run build` — compiles
+- the compiler (`src/compiler/**`) does not import React nor use browser APIs
+- Generated CSS is deterministic: same theme, same bytes
 
-## Decisões de arquitetura já fechadas com o dono do repositório
+## Architecture decisions already agreed with the repository owner
 
-Não reabra estas sem perguntar:
+Do not reopen these without asking:
 
-- Cobertura de propriedades: exaustiva e plana, navegada por busca.
-- Seletores: catálogo de variantes como caminho principal, mais campo de
-  seletor livre como escape hatch.
-- Scroll: sistema completo — barra, comportamento, âncoras e snap.
-- CSS exportado: `@layer` mais `:where()`, com regras-base editáveis.
-- Forma do `Theme`: mapas por camada.
-- Catálogo de propriedades: gerado em build-time do `mdn-data`.
+- Property coverage: exhaustive and flat, navigated by search.
+- Selectors: variant catalog as the main path, plus a free
+  selector field as escape hatch.
+- Scroll: complete system — bar, behavior, anchors and snap.
+- Exported CSS: `@layer` plus `:where()`, with editable base rules.
+- `Theme` shape: maps per layer.
+- Property catalog: generated at build time from `mdn-data`.

@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { isValidSelector, selectorWarnings } from '../src/compiler/selectorValidation'
+import {
+  isValidSelector,
+  selectorWarnings,
+} from '../src/compiler/selectorValidation'
 
 describe('isValidSelector', () => {
-  it('aceita os seletores que o catalogo produz', () => {
+  it('accepts the selectors the catalog produces', () => {
     for (const selector of [
       'article',
       'tbody tr:nth-child(even)',
@@ -17,78 +20,78 @@ describe('isValidSelector', () => {
     }
   })
 
-  it('rejeita parenteses e colchetes desbalanceados', () => {
+  it('rejects unbalanced parentheses and brackets', () => {
     expect(isValidSelector('a:not(')).toBe(false)
     expect(isValidSelector('a[href')).toBe(false)
     expect(isValidSelector('a)')).toBe(false)
   })
 
-  it('rejeita combinador solto', () => {
+  it('rejects a dangling combinator', () => {
     expect(isValidSelector('article >')).toBe(false)
     expect(isValidSelector('+ p')).toBe(false)
     expect(isValidSelector('h1,')).toBe(false)
   })
 
-  it('rejeita vazio e aspas abertas', () => {
+  it('rejects empty strings and open quotes', () => {
     expect(isValidSelector('')).toBe(false)
     expect(isValidSelector('   ')).toBe(false)
     expect(isValidSelector('a[href="x]')).toBe(false)
   })
 
-  it('rejeita chave, que indicaria bloco e nao seletor', () => {
+  it('rejects braces, which would indicate a block rather than a selector', () => {
     expect(isValidSelector('a { color: red }')).toBe(false)
   })
 
-  it('aceita aspas escapadas em valores de atributo', () => {
+  it('accepts escaped quotes in attribute values', () => {
     expect(isValidSelector('[title="say \\"hi\\""]')).toBe(true)
   })
 
-  it('aceita nao-ASCII em valores de atributo', () => {
+  it('accepts non-ASCII in attribute values', () => {
     expect(isValidSelector('[data-label="café"]')).toBe(true)
   })
 
-  it('aceita operadores de atributo', () => {
+  it('accepts attribute operators', () => {
     expect(isValidSelector('a[href$=".pdf"]')).toBe(true)
     expect(isValidSelector('a[href*="example"]')).toBe(true)
     expect(isValidSelector('a[href~="link"]')).toBe(true)
     expect(isValidSelector('a[lang|="pt"]')).toBe(true)
   })
 
-  it('aceita formulas em :nth-child', () => {
+  it('accepts formulas in :nth-child', () => {
     expect(isValidSelector('tbody tr:nth-child(2n+1)')).toBe(true)
   })
 })
 
 describe('selectorWarnings', () => {
-  it('nao avisa sobre seletor semantico', () => {
+  it('does not warn about semantic selectors', () => {
     expect(selectorWarnings('article > p')).toEqual([])
   })
 
-  it('avisa sobre classe', () => {
+  it('warns about classes', () => {
     expect(selectorWarnings('.card')).toHaveLength(1)
-    expect(selectorWarnings('article .card')[0]).toMatch(/classe/i)
+    expect(selectorWarnings('article .card')[0]).toMatch(/class/i)
   })
 
-  it('avisa sobre id', () => {
+  it('warns about ids', () => {
     expect(selectorWarnings('#main')[0]).toMatch(/id/i)
   })
 
-  it('nao confunde pseudo-elemento com classe', () => {
+  it('does not mistake pseudo-elements for classes', () => {
     expect(selectorWarnings('a::after')).toEqual([])
     expect(selectorWarnings('li::marker')).toEqual([])
   })
 
-  it('avisa sobre classe em seletor composto', () => {
+  it('warns about classes in compound selectors', () => {
     expect(selectorWarnings('div.card')).toHaveLength(1)
-    expect(selectorWarnings('div.card')[0]).toMatch(/classe/i)
+    expect(selectorWarnings('div.card')[0]).toMatch(/class/i)
   })
 
-  it('avisa sobre id em seletor composto', () => {
+  it('warns about ids in compound selectors', () => {
     expect(selectorWarnings('nav#main')).toHaveLength(1)
     expect(selectorWarnings('nav#main')[0]).toMatch(/id/i)
   })
 
-  it('nao avisa sobre # ou . dentro de valor de atributo', () => {
+  it('does not warn about # or . inside attribute values', () => {
     expect(selectorWarnings('[data-note="(#hello)"]')).toEqual([])
     expect(selectorWarnings('[href="a.html"]')).toEqual([])
   })

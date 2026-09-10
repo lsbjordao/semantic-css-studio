@@ -1,9 +1,9 @@
 /**
- * Codemod de uso único: cria o preset Açaí (dark-first arroxeado) clonando o
- * Minimal e aplicando overrides curados, com gates de contraste (AA) e
- * validação pelo migrateThemeV2 + compileTheme antes de tocar o arquivo.
+ * One-shot codemod: creates the Açaí preset (dark-first purplish) by cloning
+ * Minimal and applying curated overrides, with contrast gates (AA) and
+ * migrateThemeV2 + compileTheme validation before touching the file.
  *
- * Rodar uma vez: npx vite-node scripts/add-acai-preset.ts
+ * Run once: npx vite-node scripts/add-acai-preset.ts
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -16,7 +16,10 @@ import { contrastRatio } from '../src/validators/contrast'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 
-function deepMerge(target: Record<string, unknown>, patch: Record<string, unknown>): void {
+function deepMerge(
+  target: Record<string, unknown>,
+  patch: Record<string, unknown>,
+): void {
   for (const [key, value] of Object.entries(patch)) {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       const slot = (target[key] ??= {}) as Record<string, unknown>
@@ -31,7 +34,8 @@ const theme = structuredClone(minimalPreset) as unknown as Theme
 theme.metadata = {
   ...theme.metadata,
   name: 'Açaí',
-  description: 'Deep berry purples with vibrant orchid accents for a bold dark theme.',
+  description:
+    'Deep berry purples with vibrant orchid accents for a bold dark theme.',
 }
 deepMerge(theme.tokens as unknown as Record<string, unknown>, {
   colors: {
@@ -89,43 +93,56 @@ for (const [selector, declarations] of Object.entries({
     borderInlineStart: '3px solid var(--color-primary)',
   },
 } as Record<string, Record<string, string>>)) {
-  theme.layers.elements[selector] = { ...(theme.layers.elements[selector] ?? {}), ...declarations }
+  theme.layers.elements[selector] = {
+    ...(theme.layers.elements[selector] ?? {}),
+    ...declarations,
+  }
 }
 
 const validated = migrateThemeV2(theme)
 
 const light = validated.tokens.colors as unknown as Record<string, string>
 const dark = (validated.modes.dark?.colors ?? {}) as Record<string, string>
-const checks: Array<[string, string | undefined, string | undefined, number]> = [
-  ['text/bg', light.text, light.background, 4.5],
-  ['muted/bg', light.textMuted, light.background, 4.5],
-  ['primaryText/primary', light.primaryText, light.primary, 4.5],
-  ['primary/bg', light.primary, light.background, 3],
-  ['dark text/bg', dark.text, dark.background, 4.5],
-  ['dark muted/bg', dark.textMuted, dark.background, 4.5],
-  ['dark primaryText/primary', dark.primaryText, dark.primary, 4.5],
-]
+const checks: Array<[string, string | undefined, string | undefined, number]> =
+  [
+    ['text/bg', light.text, light.background, 4.5],
+    ['muted/bg', light.textMuted, light.background, 4.5],
+    ['primaryText/primary', light.primaryText, light.primary, 4.5],
+    ['primary/bg', light.primary, light.background, 3],
+    ['dark text/bg', dark.text, dark.background, 4.5],
+    ['dark muted/bg', dark.textMuted, dark.background, 4.5],
+    ['dark primaryText/primary', dark.primaryText, dark.primary, 4.5],
+  ]
 for (const [label, fg, bg, min] of checks) {
   if (!fg || !bg) continue
   const ratio = contrastRatio(fg, bg)
   console.log(`  ${ratio.toFixed(2)} (min ${min}) ${label}`)
-  if (ratio < min) throw new Error(`Açaí: contraste ${ratio.toFixed(2)} < ${min} em ${label}`)
+  if (ratio < min)
+    throw new Error(`Açaí: contrast ${ratio.toFixed(2)} < ${min} on ${label}`)
 }
 const css = compileTheme(validated)
-if (!css.includes('/* Açaí v1.0.0')) throw new Error('Açaí: cabecalho inesperado no CSS')
-console.log(`  CSS: ${css.length} bytes, deterministico: ${compileTheme(structuredClone(validated)) === css}`)
+if (!css.includes('/* Açaí v1.0.0'))
+  throw new Error('Açaí: unexpected header in CSS')
+console.log(
+  `  CSS: ${css.length} bytes, deterministico: ${compileTheme(structuredClone(validated)) === css}`,
+)
 
 const file = join(root, 'src', 'theme', 'presets', 'index.ts')
 const source = readFileSync(file, 'utf8')
 
 const anchor = 'export const presets = {'
-if (!source.includes(anchor)) throw new Error('ancora do mapa de presets nao encontrada')
+if (!source.includes(anchor))
+  throw new Error('ancora do mapa de presets nao encontrada')
 const block = `export const acaiPreset = ${JSON.stringify(validated, null, 2)} as unknown as Theme\n`
 const withPreset = source.replace(anchor, `${block}\n${anchor}`)
 
 const mapAnchor = '  Sage: sagePreset,\n'
-if (!withPreset.includes(mapAnchor)) throw new Error('ancora de registro no mapa nao encontrada')
-const next = withPreset.replace(mapAnchor, `${mapAnchor}  'Açaí': acaiPreset,\n`)
+if (!withPreset.includes(mapAnchor))
+  throw new Error('ancora de registro no mapa nao encontrada')
+const next = withPreset.replace(
+  mapAnchor,
+  `${mapAnchor}  'Açaí': acaiPreset,\n`,
+)
 
 writeFileSync(file, next)
-console.log('preset Açaí inserido em src/theme/presets/index.ts')
+console.log('Açaí preset inserted into src/theme/presets/index.ts')

@@ -1,14 +1,14 @@
 /**
- * Codemod de uso único: cria 5 presets frutais (Açaí com Banana, Lima-limão,
- * Morango, Melancia, Fruta-do-conde) e 3 amadeirados (Mogno, Carvalho,
- * Jacarandá) clonando um preset existente e aplicando overrides curados, com
- * gates de contraste (AA) e validação pelo migrateThemeV2 + compileTheme
- * antes de tocar o arquivo.
+ * One-shot codemod: creates 5 fruity presets (Açaí com Banana, Lima-limão,
+ * Morango, Melancia, Fruta-do-conde) and 3 woody ones (Mogno, Carvalho,
+ * Jacarandá) by cloning an existing preset and applying curated overrides,
+ * with contrast gates (AA) and migrateThemeV2 + compileTheme validation
+ * before touching the file.
  *
- * Tudo é validado ANTES de qualquer escrita: se um gate falhar, o arquivo
- * de presets segue intacto. Recusar rodar duas vezes (checa os exportNames).
+ * Everything is validated BEFORE any write: if a gate fails, the presets file
+ * stays intact. Refuses to run twice (checks exportNames).
  *
- * Rodar uma vez: npx vite-node scripts/add-fruit-wood-presets.ts
+ * Run once: npx vite-node scripts/add-fruit-wood-presets.ts
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -21,7 +21,10 @@ import { contrastRatio } from '../src/validators/contrast'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 
-function deepMerge(target: Record<string, unknown>, patch: Record<string, unknown>): void {
+function deepMerge(
+  target: Record<string, unknown>,
+  patch: Record<string, unknown>,
+): void {
   for (const [key, value] of Object.entries(patch)) {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       const slot = (target[key] ??= {}) as Record<string, unknown>
@@ -44,11 +47,20 @@ interface PresetSpec {
 
 function buildPreset(spec: PresetSpec): Theme {
   const theme = structuredClone(spec.base)
-  theme.metadata = { ...theme.metadata, name: spec.metadata.name, description: spec.metadata.description }
+  theme.metadata = {
+    ...theme.metadata,
+    name: spec.metadata.name,
+    description: spec.metadata.description,
+  }
   deepMerge(theme.tokens as unknown as Record<string, unknown>, spec.tokens)
-  theme.modes.dark = { colors: { ...(spec.base.modes.dark?.colors ?? {}), ...spec.darkColors } }
+  theme.modes.dark = {
+    colors: { ...(spec.base.modes.dark?.colors ?? {}), ...spec.darkColors },
+  }
   for (const [selector, declarations] of Object.entries(spec.elements)) {
-    theme.layers.elements[selector] = { ...(theme.layers.elements[selector] ?? {}), ...declarations }
+    theme.layers.elements[selector] = {
+      ...(theme.layers.elements[selector] ?? {}),
+      ...declarations,
+    }
   }
   return migrateThemeV2(theme)
 }
@@ -56,7 +68,9 @@ function buildPreset(spec: PresetSpec): Theme {
 function gate(spec: PresetSpec, theme: Theme): void {
   const light = theme.tokens.colors as unknown as Record<string, string>
   const dark = (theme.modes.dark?.colors ?? {}) as Record<string, string>
-  const checks: Array<[string, string | undefined, string | undefined, number]> = [
+  const checks: Array<
+    [string, string | undefined, string | undefined, number]
+  > = [
     ['text/bg', light.text, light.background, 4.5],
     ['muted/bg', light.textMuted, light.background, 4.5],
     ['primaryText/primary', light.primaryText, light.primary, 4.5],
@@ -69,11 +83,17 @@ function gate(spec: PresetSpec, theme: Theme): void {
     if (!fg || !bg) continue
     const ratio = contrastRatio(fg, bg)
     console.log(`  ${ratio.toFixed(2)} (min ${min}) ${label}`)
-    if (ratio < min) throw new Error(`${spec.mapName}: contraste ${ratio.toFixed(2)} < ${min} em ${label}`)
+    if (ratio < min)
+      throw new Error(
+        `${spec.mapName}: contrast ${ratio.toFixed(2)} < ${min} on ${label}`,
+      )
   }
   const css = compileTheme(theme)
-  if (!css.includes(`/* ${spec.mapName} v1.0.0`)) throw new Error(`${spec.mapName}: cabecalho inesperado no CSS`)
-  console.log(`  CSS: ${css.length} bytes, deterministico: ${compileTheme(structuredClone(theme)) === css}`)
+  if (!css.includes(`/* ${spec.mapName} v1.0.0`))
+    throw new Error(`${spec.mapName}: unexpected header in CSS`)
+  console.log(
+    `  CSS: ${css.length} bytes, deterministico: ${compileTheme(structuredClone(theme)) === css}`,
+  )
 }
 
 const MINIMAL = minimalPreset as unknown as Theme
@@ -128,7 +148,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Lima-limão',
-      description: 'Zesty lime-leaf greens with a squeeze of lemon on pale citrus mist.',
+      description:
+        'Zesty lime-leaf greens with a squeeze of lemon on pale citrus mist.',
     },
     tokens: {
       colors: {
@@ -179,7 +200,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Morango',
-      description: 'Blush cream with ripe strawberry reds for a sweet, warm read.',
+      description:
+        'Blush cream with ripe strawberry reds for a sweet, warm read.',
     },
     tokens: {
       colors: {
@@ -231,7 +253,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Melancia',
-      description: 'Watermelon flesh pinks with rind-green details on pale cream.',
+      description:
+        'Watermelon flesh pinks with rind-green details on pale cream.',
     },
     tokens: {
       colors: {
@@ -282,7 +305,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Fruta-do-conde',
-      description: 'Custard cream with sugar-apple greens for a soft orchard read.',
+      description:
+        'Custard cream with sugar-apple greens for a soft orchard read.',
     },
     tokens: {
       colors: {
@@ -302,7 +326,11 @@ const specs: PresetSpec[] = [
         codeBackground: '#2e2b1d',
         codeText: '#f1ecd9',
       },
-      radius: { radiusSm: '0.375rem', radiusMd: '0.75rem', radiusLg: '1.25rem' },
+      radius: {
+        radiusSm: '0.375rem',
+        radiusMd: '0.75rem',
+        radiusLg: '1.25rem',
+      },
       shadow: {
         shadowSm: '0 1px 2px rgb(90 90 40 / 0.10)',
         shadowMd: '0 10px 28px rgb(90 90 40 / 0.12)',
@@ -333,7 +361,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Mogno',
-      description: 'Polished mahogany browns with amber glow for a classic library feel.',
+      description:
+        'Polished mahogany browns with amber glow for a classic library feel.',
     },
     tokens: {
       colors: {
@@ -384,7 +413,10 @@ const specs: PresetSpec[] = [
         fontSize: 'clamp(2.3rem, 6vw, 4.2rem)',
         letterSpacing: '-0.01em',
       },
-      h2: { fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '-0.01em' },
+      h2: {
+        fontFamily: 'Georgia, "Times New Roman", serif',
+        letterSpacing: '-0.01em',
+      },
       blockquote: {
         fontFamily: 'Georgia, "Times New Roman", serif',
         fontStyle: 'italic',
@@ -399,7 +431,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Carvalho',
-      description: 'Sturdy honey-oak tones with bronze accents for a warm, grounded read.',
+      description:
+        'Sturdy honey-oak tones with bronze accents for a warm, grounded read.',
     },
     tokens: {
       colors: {
@@ -450,7 +483,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Jacarandá',
-      description: 'Deep rosewood espresso with dusty-rose highlights for quiet drama.',
+      description:
+        'Deep rosewood espresso with dusty-rose highlights for quiet drama.',
     },
     tokens: {
       colors: {
@@ -511,20 +545,29 @@ const source = readFileSync(file, 'utf8')
 
 for (const { spec } of built) {
   if (source.includes(`export const ${spec.exportName} =`)) {
-    throw new Error(`${spec.exportName} já existe — reverta antes de rodar de novo`)
+    throw new Error(
+      `${spec.exportName} already exists — revert before running again`,
+    )
   }
 }
 
 const anchor = 'export const presets = {'
-if (!source.includes(anchor)) throw new Error('ancora do mapa de presets nao encontrada')
+if (!source.includes(anchor))
+  throw new Error('ancora do mapa de presets nao encontrada')
 const blocks = built
-  .map(({ spec, theme }) => `export const ${spec.exportName} = ${JSON.stringify(theme, null, 2)} as unknown as Theme\n`)
+  .map(
+    ({ spec, theme }) =>
+      `export const ${spec.exportName} = ${JSON.stringify(theme, null, 2)} as unknown as Theme\n`,
+  )
   .join('\n')
 const withPresets = source.replace(anchor, `${blocks}\n${anchor}`)
 
 const mapAnchor = '  Açaí: acaiPreset,\n'
-if (!withPresets.includes(mapAnchor)) throw new Error('ancora de registro no mapa nao encontrada')
-const entries = built.map(({ spec }) => `  '${spec.mapName}': ${spec.exportName},\n`).join('')
+if (!withPresets.includes(mapAnchor))
+  throw new Error('ancora de registro no mapa nao encontrada')
+const entries = built
+  .map(({ spec }) => `  '${spec.mapName}': ${spec.exportName},\n`)
+  .join('')
 const next = withPresets.replace(mapAnchor, `${mapAnchor}${entries}`)
 
 writeFileSync(file, next)

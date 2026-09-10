@@ -1,7 +1,7 @@
 /**
- * Gramática deliberadamente restritiva: cobre o que o catálogo produz e o que
- * um tema classless razoavelmente precisa, e recusa qualquer coisa que
- * indique que o texto não é um seletor (chave, ponto-e-vírgula, arroba).
+ * Deliberately restrictive grammar: covers what the catalog produces and what
+ * a classless theme reasonably needs, and rejects anything suggesting the
+ * text is not a selector (brace, semicolon, at-sign).
  */
 const ALLOWED = /^[A-Za-z0-9_\-#.[\]="':(),>+~*|\s^$\\-￿]+$/
 
@@ -44,26 +44,30 @@ export function isValidSelector(selector: string): boolean {
   return true
 }
 
-/** Substitui o conteudo de cada string literal, para que texto dentro de valor
- *  de atributo nunca seja lido como seletor de classe ou de id. */
+/** Replaces the contents of each string literal, so text inside an attribute
+ *  value is never read as a class or id selector. */
 function stripQuoted(selector: string): string {
   return selector.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, '""')
 }
 
 /**
- * Classe e id não são bloqueados: contrariam a premissa classless do projeto,
- * mas a decisão é de quem usa. A função agora:
- * 1. Remove conteúdo entre aspas para evitar falsos positivos
- * 2. Procura `.` ou `#` que não sejam escapados em qualquer posição
+ * Class and id are not blocked: they go against the project's classless
+ * premise, but the decision belongs to the user. The function now:
+ * 1. Removes quoted content to avoid false positives
+ * 2. Looks for unescaped `.` or `#` in any position
  */
 export function selectorWarnings(selector: string): string[] {
   const warnings: string[] = []
   const bare = stripQuoted(selector)
   if (/(?<!\\)\.[A-Za-z_-]/.test(bare)) {
-    warnings.push('Este seletor usa classe, o que contraria a premissa classless do tema.')
+    warnings.push(
+      'This selector uses a class, which goes against the theme classless premise.',
+    )
   }
   if (/(?<!\\)#[A-Za-z_-]/.test(bare)) {
-    warnings.push('Este seletor usa id, o que contraria a premissa classless do tema.')
+    warnings.push(
+      'This selector uses an id, which goes against the theme classless premise.',
+    )
   }
   return warnings
 }

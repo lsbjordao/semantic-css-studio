@@ -53,9 +53,9 @@ describe('layered theme compilation', () => {
     expect([...positions].sort((a, b) => a - b)).toEqual(positions)
   })
 
-  // Chaves achatadas como `button:hover` sao seletores completos, mas ordena-las
-  // em alfabetica trocaria o comportamento: `:hover`, `:active` e `:disabled` do
-  // mesmo elemento tem a mesma especificidade, entao quem vem depois vence.
+  // Flattened keys like `button:hover` are complete selectors, but sorting them
+  // alphabetically would change behavior: `:hover`, `:active` and `:disabled`
+  // of the same element share specificity, so the later one wins.
   it('orders state rules by stateOrder, not alphabetically', () => {
     const css = compileTheme(presets.Minimal)
     const at = (selector: string) => css.indexOf(`${selector} {`)
@@ -64,7 +64,7 @@ describe('layered theme compilation', () => {
     expect(at('button:focus-visible')).toBeLessThan(at('button:active'))
     expect(at('button:active')).toBeLessThan(at('button:disabled'))
     expect(at('a:hover')).toBeLessThan(at('a:focus-visible'))
-    // e os elementos continuam na ordem de elementOrder: input antes de button
+    // and elements stay in elementOrder: input before button
     expect(at('input:focus-visible')).toBeLessThan(at('button:hover'))
   })
 
@@ -77,75 +77,88 @@ describe('layered theme compilation', () => {
     expect(css).toContain('--otherVar: 2px;')
     expect(css).not.toContain('--my-var')
     expect(css).not.toContain('--other-var')
-    // propriedades normais seguem kebabizadas
+    // normal properties stay kebab-cased
     expect(css).toContain('background-color: red;')
   })
 
-  it('o scroll-behavior do Simple.css passa pelo token, nao por regra de elemento', () => {
+  it('Simple.css scroll-behavior goes through the token, not an element rule', () => {
     const css = compileTheme(presets['Simple.css'])
-    // Camada vence especificidade: uma regra de elemento aqui tornaria o token
-    // inerte e o controle do painel silenciosamente inoperante.
-    const elementsSlice = css.slice(css.indexOf('@layer elements'), css.indexOf('@layer states'))
+    // Layer beats specificity: an element rule here would render the token
+    // inert and the panel control silently inoperative.
+    const elementsSlice = css.slice(
+      css.indexOf('@layer elements'),
+      css.indexOf('@layer states'),
+    )
     expect(elementsSlice).not.toContain('scroll-behavior')
     expect(css).toContain('--scroll-behavior: smooth;')
   })
 })
 
-describe('camadas', () => {
+describe('layers', () => {
   const css = compileTheme(presets.Minimal)
 
-  it('declara a ordem das camadas antes de qualquer regra', () => {
-    const declaration = css.indexOf('@layer reset, base, elements, states, responsive;')
+  it('declares the layer order before any rule', () => {
+    const declaration = css.indexOf(
+      '@layer reset, base, elements, states, responsive;',
+    )
     expect(declaration).toBeGreaterThan(-1)
     expect(declaration).toBeLessThan(css.indexOf('@layer base'))
   })
 
-  it('envolve as regras-base em :where()', () => {
+  it('wraps base rules in :where()', () => {
     expect(css).toContain(':where(button) {')
     expect(css).toContain(':where(h1, h2, h3, h4, h5, h6) {')
   })
 
-  it('mantem os tokens no :root sem :where, para que o usuario sobrescreva', () => {
+  it('keeps tokens in :root without :where, so users can override', () => {
     expect(css).toContain(':root {')
     expect(css).not.toContain(':where(:root)')
   })
 
-  it('nao envolve elements e states em :where()', () => {
+  it('does not wrap elements and states in :where()', () => {
     expect(css).toContain('\n  article {')
     expect(css).not.toContain(':where(article)')
   })
 
-  it('agrupa cada camada em um bloco', () => {
+  it('groups each layer in one block', () => {
     for (const layer of ['base', 'elements', 'states', 'responsive']) {
       expect(css, layer).toContain(`@layer ${layer} {`)
     }
   })
 
-  it('continua deterministico', () => {
-    expect(compileTheme(presets.Minimal)).toBe(compileTheme(structuredClone(presets.Minimal)))
+  it('stays deterministic', () => {
+    expect(compileTheme(presets.Minimal)).toBe(
+      compileTheme(structuredClone(presets.Minimal)),
+    )
   })
 
-  it('minifica sem quebrar as camadas', () => {
+  it('minifies without breaking layers', () => {
     const minified = minifyCss(css)
     expect(minified).toContain('@layer reset,base,elements,states,responsive;')
     expect(minified).toContain(':where(h1,h2,h3,h4,h5,h6){')
   })
 })
 
-describe('pre code e sobreposicao contextual, nao regra de base', () => {
-  // `pre code` so existe para desfazer o chrome do codigo inline dentro de um
-  // <pre>. Em @layer base ele sai como `:where(pre code)`, especificidade 0, e
-  // a ordem de camadas vence a especificidade sem excecao — perderia sempre
-  // para `code` em @layer elements. Na camada elements as duas regras saem sem
-  // :where(), e `pre code` (0,0,2) volta a vencer `code` (0,0,1).
+describe('pre code is a contextual override, not a base rule', () => {
+  // `pre code` only exists to undo inline-code chrome inside a <pre>. In
+  // @layer base it would be emitted as `:where(pre code)` with 0 specificity,
+  // and layer order beats specificity without exception — it would always lose
+  // to `code` in @layer elements. In the elements layer both rules are emitted
+  // without :where(), and `pre code` (0,0,2) beats `code` (0,0,1) again.
   function slices(css: string) {
-    const base = css.slice(css.indexOf('@layer base {'), css.indexOf('@layer elements {'))
-    const elements = css.slice(css.indexOf('@layer elements {'), css.indexOf('@layer states {'))
+    const base = css.slice(
+      css.indexOf('@layer base {'),
+      css.indexOf('@layer elements {'),
+    )
+    const elements = css.slice(
+      css.indexOf('@layer elements {'),
+      css.indexOf('@layer states {'),
+    )
     return { base, elements }
   }
 
   for (const [name, theme] of Object.entries(presets)) {
-    it(`${name}: emite pre code em @layer elements, depois de code`, () => {
+    it(`${name}: emits pre code in @layer elements, after code`, () => {
       const { base, elements } = slices(compileTheme(theme))
       expect(base).not.toContain(':where(pre code)')
       const code = elements.indexOf('\n  code {')

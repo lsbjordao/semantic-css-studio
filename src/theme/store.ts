@@ -4,7 +4,17 @@ import { seedBaseRules } from './baseRules'
 import { defaultTheme } from './defaults'
 import { presets, type PresetName } from './presets'
 import { migrateThemeV2 } from './migration'
-import type { ColorTokenKey, CssPropertyMap, FontRole, InteractionState, RuleMap, Theme, ThemeFontFace, ThemeTokens } from './schema'
+import type {
+  ColorTokenKey,
+  CssPropertyMap,
+  FontRole,
+  InteractionState,
+  QuartoSidebarTone,
+  RuleMap,
+  Theme,
+  ThemeFontFace,
+  ThemeTokens,
+} from './schema'
 
 const STORAGE_KEY = 'semantic-css-studio/theme-v1'
 const HISTORY_LIMIT = 60
@@ -13,8 +23,29 @@ export type LayerName = 'base' | 'elements' | 'states'
 export type ThemeModeName = 'light' | 'dark'
 export type PreviewMode = 'light' | 'dark' | 'auto'
 export type ViewportName = 'desktop' | 'tablet' | 'mobile' | 'custom'
-export type SpecimenName = 'Selector' | 'Overview' | 'Typography' | 'Content' | 'Forms' | 'Tables' | 'Code' | 'All HTML' | 'Kitchen Sink'
-export type EditorSection = 'Colors' | 'Typography' | 'Spacing' | 'Layout' | 'Radius' | 'Shadows' | 'Icons' | 'Base' | 'Elements' | 'States' | 'Accessibility'
+export type SpecimenName =
+  | 'Selector'
+  | 'Overview'
+  | 'Typography'
+  | 'Content'
+  | 'Forms'
+  | 'Tables'
+  | 'Code'
+  | 'All HTML'
+  | 'Kitchen Sink'
+export type EditorSection =
+  | 'Colors'
+  | 'Typography'
+  | 'Spacing'
+  | 'Layout'
+  | 'Radius'
+  | 'Shadows'
+  | 'Icons'
+  | 'Quarto'
+  | 'Base'
+  | 'Elements'
+  | 'States'
+  | 'Accessibility'
 
 export type UiIconLibrary = Exclude<IconLibraryId, 'none'>
 
@@ -25,7 +56,7 @@ function readUiIconLibrary(): UiIconLibrary {
     const raw = localStorage.getItem(UI_ICON_STORAGE_KEY)
     if (raw && isIconLibraryId(raw) && raw !== 'none') return raw
   } catch {
-    // localStorage indisponível (SSR/testes): cai no padrão.
+    // localStorage unavailable (SSR/tests): fall back to the default.
   }
   return 'lucide'
 }
@@ -45,17 +76,41 @@ interface StudioState {
   selectedState: InteractionState
   notice: string | null
   uiIconLibrary: UiIconLibrary
-  updateMetadata: (key: 'name' | 'version' | 'description', value: string) => void
+  updateMetadata: (
+    key: 'name' | 'version' | 'description',
+    value: string,
+  ) => void
   setColor: (key: ColorTokenKey, value: string) => void
-  setToken: <K extends Exclude<keyof ThemeTokens, 'colors'>>(category: K, key: keyof ThemeTokens[K], value: string) => void
-  setLayerProperty: (layer: LayerName, selector: string, property: string, value: string) => void
-  removeLayerProperty: (layer: LayerName, selector: string, property: string) => void
-  setFontFace: (role: FontRole, face: ThemeFontFace | null, stack?: string) => void
+  setToken: <K extends Exclude<keyof ThemeTokens, 'colors'>>(
+    category: K,
+    key: keyof ThemeTokens[K],
+    value: string,
+  ) => void
+  setLayerProperty: (
+    layer: LayerName,
+    selector: string,
+    property: string,
+    value: string,
+  ) => void
+  removeLayerProperty: (
+    layer: LayerName,
+    selector: string,
+    property: string,
+  ) => void
+  setFontFace: (
+    role: FontRole,
+    face: ThemeFontFace | null,
+    stack?: string,
+  ) => void
   setIconLibrary: (library: IconLibraryId) => void
+  setQuartoSidebarTone: (tone: QuartoSidebarTone) => void
   setUiIconLibrary: (library: UiIconLibrary) => void
   resetBaseRule: (selector: string) => void
   toggleBaseRule: (selector: string, enabled: boolean) => void
-  setElementTargets: (targets: Array<{ selector: string; property: string }>, value: string) => void
+  setElementTargets: (
+    targets: Array<{ selector: string; property: string }>,
+    value: string,
+  ) => void
   setReset: (enabled: boolean) => void
   setEditMode: (mode: ThemeModeName) => void
   setPreviewMode: (mode: PreviewMode) => void
@@ -74,9 +129,9 @@ interface StudioState {
   clearNotice: () => void
 }
 
-// A chave mantem o sufixo `-v1` de proposito: renomea-la orfanaria o tema que
-// o usuario ja tem salvo. O conteudo passa por `migrateThemeV2`, entao um tema
-// v1 gravado antes desta versao e elevado em vez de descartado.
+// The key keeps the `-v1` suffix on purpose: renaming it would orphan the
+// theme the user already has saved. Content goes through `migrateThemeV2`, so
+// a v1 theme written before this version is upgraded instead of discarded.
 function readStoredTheme(): Theme {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -100,20 +155,24 @@ export function isBaseRuleModified(theme: Theme, selector: string): boolean {
 }
 
 /**
- * Reinsere `selector` em `base` na posicao que ele ocupa na semente.
+ * Reinserts `selector` into `base` at the position it occupies in the seed.
  *
- * O compilador emite a camada base na ordem de insercao do objeto, e la dentro
- * toda regra sai embrulhada em `:where()`, com especificidade 0 — a ordem do
- * fonte e o unico criterio de desempate. Uma reatribuicao simples poe a chave
- * no fim do objeto: religar `input, textarea, select, button` o emitiria depois
- * de `button`, e o `background: var(--color-surface)` dos campos passaria a
- * vencer o `var(--color-primary)` do botao.
+ * The compiler emits the base layer in object insertion order, and inside it
+ * every rule is wrapped in `:where()` with 0 specificity — source order is
+ * the only tiebreaker. A plain reassignment puts the key at the end of the
+ * object: re-enabling `input, textarea, select, button` would emit it after
+ * `button`, and the fields' `background: var(--color-surface)` would start
+ * beating the button's `var(--color-primary)`.
  *
- * Chaves que nao estao na semente (vindas de um tema importado) mantem a
- * posicao relativa: a regra religada entra logo antes da primeira sucessora
- * que a semente conhece.
+ * Keys missing from the seed (from an imported theme) keep their relative
+ * position: the re-enabled rule goes right before the first successor the
+ * seed knows.
  */
-function withSeedPosition(base: RuleMap, selector: string, rules: CssPropertyMap): RuleMap {
+function withSeedPosition(
+  base: RuleMap,
+  selector: string,
+  rules: CssPropertyMap,
+): RuleMap {
   const seedKeys = Object.keys(seedBaseRules())
   const target = seedKeys.indexOf(selector)
   const remaining = { ...base }
@@ -132,7 +191,11 @@ function withSeedPosition(base: RuleMap, selector: string, rules: CssPropertyMap
   return ordered
 }
 
-function commit(state: StudioState, nextTheme: Theme, notice?: string): Partial<StudioState> {
+function commit(
+  state: StudioState,
+  nextTheme: Theme,
+  notice?: string,
+): Partial<StudioState> {
   return {
     theme: nextTheme,
     past: [...state.past.slice(-(HISTORY_LIMIT - 1)), clone(state.theme)],
@@ -158,171 +221,209 @@ export const useStudioStore = create<StudioState>((set) => ({
   notice: null,
   uiIconLibrary: typeof window !== 'undefined' ? readUiIconLibrary() : 'lucide',
 
-  updateMetadata: (key, value) => set((state) => {
-    const next = clone(state.theme)
-    next.metadata[key] = value
-    return commit(state, next)
-  }),
+  updateMetadata: (key, value) =>
+    set((state) => {
+      const next = clone(state.theme)
+      next.metadata[key] = value
+      return commit(state, next)
+    }),
 
-  setColor: (key, value) => set((state) => {
-    const next = clone(state.theme)
-    if (state.editMode === 'light') {
-      next.tokens.colors[key] = value
-    } else {
-      next.modes.dark ??= { colors: {} }
-      next.modes.dark.colors[key] = value
-    }
-    return commit(state, next)
-  }),
+  setColor: (key, value) =>
+    set((state) => {
+      const next = clone(state.theme)
+      if (state.editMode === 'light') {
+        next.tokens.colors[key] = value
+      } else {
+        next.modes.dark ??= { colors: {} }
+        next.modes.dark.colors[key] = value
+      }
+      return commit(state, next)
+    }),
 
-  setToken: (category, key, value) => set((state) => {
-    const next = clone(state.theme)
-    const group = next.tokens[category] as unknown as Record<string, string>
-    group[String(key)] = value
-    return commit(state, next)
-  }),
+  setToken: (category, key, value) =>
+    set((state) => {
+      const next = clone(state.theme)
+      const group = next.tokens[category] as unknown as Record<string, string>
+      group[String(key)] = value
+      return commit(state, next)
+    }),
 
-  setLayerProperty: (layer, selector, property, value) => set((state) => {
-    const next = clone(state.theme)
-    next.layers[layer][selector] ??= {}
-    next.layers[layer][selector][property] = value
-    return commit(state, next)
-  }),
+  setLayerProperty: (layer, selector, property, value) =>
+    set((state) => {
+      const next = clone(state.theme)
+      next.layers[layer][selector] ??= {}
+      next.layers[layer][selector][property] = value
+      return commit(state, next)
+    }),
 
-  removeLayerProperty: (layer, selector, property) => set((state) => {
-    const next = clone(state.theme)
-    delete next.layers[layer][selector]?.[property]
-    if (next.layers[layer][selector] && Object.keys(next.layers[layer][selector]).length === 0) {
-      delete next.layers[layer][selector]
-    }
-    return commit(state, next)
-  }),
+  removeLayerProperty: (layer, selector, property) =>
+    set((state) => {
+      const next = clone(state.theme)
+      delete next.layers[layer][selector]?.[property]
+      if (
+        next.layers[layer][selector] &&
+        Object.keys(next.layers[layer][selector]).length === 0
+      ) {
+        delete next.layers[layer][selector]
+      }
+      return commit(state, next)
+    }),
 
-  // Família e pilha no mesmo commit, para o undo reverter as duas juntas.
-  // stack ausente = só mexe no @import (limpar preserva o texto da pilha).
-  setFontFace: (role, face, stack) => set((state) => {
-    const next = clone(state.theme)
-    const fonts = { ...(next.fonts ?? {}) }
-    if (face) fonts[role] = face
-    else delete fonts[role]
-    next.fonts = Object.keys(fonts).length ? fonts : undefined
-    if (stack !== undefined) {
-      const tokenKey = role === 'body' ? 'fontBody' : role === 'heading' ? 'fontHeading' : 'fontMono'
-      next.tokens.typography[tokenKey] = stack
-    }
-    return commit(state, next)
-  }),
+  // Family and stack in the same commit, so undo reverts both together.
+  // Missing stack = only touches the @import (clearing preserves stack text).
+  setFontFace: (role, face, stack) =>
+    set((state) => {
+      const next = clone(state.theme)
+      const fonts = { ...(next.fonts ?? {}) }
+      if (face) fonts[role] = face
+      else delete fonts[role]
+      next.fonts = Object.keys(fonts).length ? fonts : undefined
+      if (stack !== undefined) {
+        const tokenKey =
+          role === 'body'
+            ? 'fontBody'
+            : role === 'heading'
+              ? 'fontHeading'
+              : 'fontMono'
+        next.tokens.typography[tokenKey] = stack
+      }
+      return commit(state, next)
+    }),
 
-  setIconLibrary: (library) => set((state) => {
-    const next = clone(state.theme)
-    next.icons = { library }
-    return commit(state, next)
-  }),
+  setIconLibrary: (library) =>
+    set((state) => {
+      const next = clone(state.theme)
+      next.icons = { library }
+      return commit(state, next)
+    }),
+
+  setQuartoSidebarTone: (tone) =>
+    set((state) => {
+      const next = clone(state.theme)
+      next.quarto = { ...(next.quarto ?? {}), sidebarTone: tone }
+      return commit(state, next)
+    }),
 
   setUiIconLibrary: (library) => {
     try {
       localStorage.setItem(UI_ICON_STORAGE_KEY, library)
     } catch {
-      // Sem persistência: a troca vale só para a sessão.
+      // No persistence: the switch only lasts for the session.
     }
     return set({ uiIconLibrary: library })
   },
 
-  resetBaseRule: (selector) => set((state) => {
-    const seeded = seedBaseRules()[selector]
-    if (!seeded) return state
-    const next = clone(state.theme)
-    next.layers.base[selector] = { ...seeded }
-    return commit(state, next, 'Regra-base restaurada.')
-  }),
-
-  toggleBaseRule: (selector, enabled) => set((state) => {
-    const next = clone(state.theme)
-    if (enabled) {
+  resetBaseRule: (selector) =>
+    set((state) => {
       const seeded = seedBaseRules()[selector]
       if (!seeded) return state
-      next.layers.base = withSeedPosition(next.layers.base, selector, { ...seeded })
-    } else {
-      delete next.layers.base[selector]
-    }
-    return commit(state, next)
-  }),
+      const next = clone(state.theme)
+      next.layers.base[selector] = { ...seeded }
+      return commit(state, next, 'Base rule restored.')
+    }),
 
-  setElementTargets: (targets, value) => set((state) => {
-    const next = clone(state.theme)
-    const elements = next.layers.elements
-    for (const target of targets) {
-      if (value) {
-        elements[target.selector] ??= {}
-        elements[target.selector][target.property] = value
+  toggleBaseRule: (selector, enabled) =>
+    set((state) => {
+      const next = clone(state.theme)
+      if (enabled) {
+        const seeded = seedBaseRules()[selector]
+        if (!seeded) return state
+        next.layers.base = withSeedPosition(next.layers.base, selector, {
+          ...seeded,
+        })
       } else {
-        delete elements[target.selector]?.[target.property]
-        if (elements[target.selector] && Object.keys(elements[target.selector]).length === 0) {
-          delete elements[target.selector]
+        delete next.layers.base[selector]
+      }
+      return commit(state, next)
+    }),
+
+  setElementTargets: (targets, value) =>
+    set((state) => {
+      const next = clone(state.theme)
+      const elements = next.layers.elements
+      for (const target of targets) {
+        if (value) {
+          elements[target.selector] ??= {}
+          elements[target.selector][target.property] = value
+        } else {
+          delete elements[target.selector]?.[target.property]
+          if (
+            elements[target.selector] &&
+            Object.keys(elements[target.selector]).length === 0
+          ) {
+            delete elements[target.selector]
+          }
         }
       }
-    }
-    return commit(state, next)
-  }),
+      return commit(state, next)
+    }),
 
-  setReset: (enabled) => set((state) => {
-    const next = clone(state.theme)
-    next.options.includeMinimalReset = enabled
-    return commit(state, next)
-  }),
+  setReset: (enabled) =>
+    set((state) => {
+      const next = clone(state.theme)
+      next.options.includeMinimalReset = enabled
+      return commit(state, next)
+    }),
 
   setEditMode: (editMode) => set({ editMode }),
   setPreviewMode: (previewMode) => set({ previewMode }),
   setViewport: (viewport) => set({ viewport }),
-  setCustomWidth: (customWidth) => set({ customWidth: Math.max(280, Math.min(1800, customWidth)) }),
+  setCustomWidth: (customWidth) =>
+    set({ customWidth: Math.max(280, Math.min(1800, customWidth)) }),
   setSpecimen: (specimen) => set({ specimen }),
   setSection: (section) => set({ section }),
   setSelectedElement: (selectedElement) => set({ selectedElement }),
   setSelectedState: (selectedState) => set({ selectedState }),
 
-  applyPreset: (name) => set((state) => ({
-    ...commit(state, clone(presets[name]), `${name} preset applied.`),
-    presetName: name,
-  })),
+  applyPreset: (name) =>
+    set((state) => ({
+      ...commit(state, clone(presets[name]), `${name} preset applied.`),
+      presetName: name,
+    })),
 
-  importTheme: (theme) => set((state) => ({
-    ...commit(state, clone(theme), 'Theme imported.'),
-    presetName: 'Imported',
-  })),
+  importTheme: (theme) =>
+    set((state) => ({
+      ...commit(state, clone(theme), 'Theme imported.'),
+      presetName: 'Imported',
+    })),
 
-  newTheme: () => set((state) => ({
-    ...commit(state, clone(defaultTheme), 'New theme created.'),
-    presetName: 'Minimal',
-  })),
+  newTheme: () =>
+    set((state) => ({
+      ...commit(state, clone(defaultTheme), 'New theme created.'),
+      presetName: 'Minimal',
+    })),
 
-  resetTheme: () => set((state) => ({
-    ...commit(state, clone(defaultTheme), 'Theme reset.'),
-    presetName: 'Minimal',
-  })),
+  resetTheme: () =>
+    set((state) => ({
+      ...commit(state, clone(defaultTheme), 'Theme reset.'),
+      presetName: 'Minimal',
+    })),
 
-  undo: () => set((state) => {
-    const previous = state.past.at(-1)
-    if (!previous) return state
-    return {
-      theme: clone(previous),
-      past: state.past.slice(0, -1),
-      future: [clone(state.theme), ...state.future].slice(0, HISTORY_LIMIT),
-      presetName: 'Custom',
-      notice: 'Undo',
-    }
-  }),
+  undo: () =>
+    set((state) => {
+      const previous = state.past.at(-1)
+      if (!previous) return state
+      return {
+        theme: clone(previous),
+        past: state.past.slice(0, -1),
+        future: [clone(state.theme), ...state.future].slice(0, HISTORY_LIMIT),
+        presetName: 'Custom',
+        notice: 'Undo',
+      }
+    }),
 
-  redo: () => set((state) => {
-    const next = state.future[0]
-    if (!next) return state
-    return {
-      theme: clone(next),
-      past: [...state.past, clone(state.theme)].slice(-HISTORY_LIMIT),
-      future: state.future.slice(1),
-      presetName: 'Custom',
-      notice: 'Redo',
-    }
-  }),
+  redo: () =>
+    set((state) => {
+      const next = state.future[0]
+      if (!next) return state
+      return {
+        theme: clone(next),
+        past: [...state.past, clone(state.theme)].slice(-HISTORY_LIMIT),
+        future: state.future.slice(1),
+        presetName: 'Custom',
+        notice: 'Redo',
+      }
+    }),
 
   clearNotice: () => set({ notice: null }),
 }))

@@ -11570,6 +11570,3199 @@ export const corporativoPreset = {
   }
 } satisfies Theme
 
+export const maracujaPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Maracujá',
+    description:
+      'Passion-fruit purple over sun-washed cream with leaf-green accents.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#fbf7ee',
+      surface: '#f4eddd',
+      surfaceAlt: '#eae0c8',
+      text: '#2f2337',
+      textMuted: '#6f6280',
+      primary: '#6d2380',
+      primaryHover: '#551a65',
+      primaryText: '#fcf7ef',
+      secondary: '#57794f',
+      border: '#ded2ba',
+      success: '#3f7d4e',
+      warning: '#b07d10',
+      danger: '#c23a3a',
+      codeBackground: '#2f2337',
+      codeText: '#f6efe0',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Playfair Display, Georgia, serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.7',
+      lineHeightHeading: '1.1',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '700',
+    },
+    radius: {
+      radiusSm: '0.5rem',
+      radiusMd: '0.9rem',
+      radiusLg: '1.4rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(45 20 60 / 0.10)',
+      shadowMd: '0 12px 32px rgb(45 20 60 / 0.14)',
+      shadowLg: '0 24px 60px rgb(45 20 60 / 0.18)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#191224',
+        surface: '#221a30',
+        surfaceAlt: '#2d2240',
+        text: '#efe8f6',
+        textMuted: '#a79ec2',
+        primary: '#b57fd4',
+        primaryHover: '#c99ce4',
+        primaryText: '#241031',
+        border: '#3a2d55',
+        codeBackground: '#0e0917',
+        codeText: '#f0e6fa',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.4rem, 7vw, 4.4rem)',
+        letterSpacing: '-0.03em',
+      },
+      h2: {
+        fontSize: 'clamp(1.75rem, 4vw, 2.75rem)',
+        letterSpacing: '-0.02em',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '3px solid var(--color-primary)',
+        color: 'var(--color-text)',
+        fontFamily: 'Georgia, "Times New Roman", serif',
+        fontStyle: 'italic',
+        fontSize: '1.15em',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+  fonts: {
+    heading: {
+      family: 'Playfair Display',
+      weights: [400, 600, 700],
+      italic: true,
+    },
+  },
+} satisfies Theme
+
+export const pitayaPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Pitaya',
+    description: 'Dragon-fruit magenta and scale-green on a neon-dark base.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#1a0b15',
+      surface: '#251020',
+      surfaceAlt: '#32182b',
+      text: '#f7e9f1',
+      textMuted: '#c3a4b8',
+      primary: '#ea3f96',
+      primaryHover: '#ff5cab',
+      primaryText: '#2b0716',
+      secondary: '#9a7f95',
+      border: '#412136',
+      success: '#9adb4f',
+      warning: '#f2b544',
+      danger: '#ff6b5e',
+      codeBackground: '#120710',
+      codeText: '#faecf5',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Space Grotesk, Inter, ui-sans-serif, system-ui, sans-serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.65',
+      lineHeightHeading: '1.05',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '700',
+    },
+    radius: {
+      radiusSm: '0.375rem',
+      radiusMd: '0.75rem',
+      radiusLg: '1.25rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(0 0 0 / 0.45)',
+      shadowMd: '0 12px 32px rgb(234 63 150 / 0.22)',
+      shadowLg: '0 24px 60px rgb(234 63 150 / 0.30)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#12060f',
+        surface: '#1b0c18',
+        surfaceAlt: '#261223',
+        border: '#361b2e',
+        codeBackground: '#0a040a',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.4rem, 7vw, 4.5rem)',
+        letterSpacing: '-0.04em',
+      },
+      h2: {
+        fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
+        letterSpacing: '-0.03em',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '4px solid var(--color-primary)',
+        color: 'var(--color-text-muted)',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+  fonts: {
+    heading: {
+      family: 'Space Grotesk',
+      weights: [400, 600, 700],
+    },
+  },
+} satisfies Theme
+
+export const goiabaPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Goiaba',
+    description:
+      'Guava-blush pink and leaf green with soft serifs for a homemade feel.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#fdf7f3',
+      surface: '#f7ebe5',
+      surfaceAlt: '#f0dcd3',
+      text: '#40252b',
+      textMuted: '#8a6a70',
+      primary: '#d34f6f',
+      primaryHover: '#b83a58',
+      primaryText: '#fff6f2',
+      secondary: '#6f8a5c',
+      border: '#ecd6cc',
+      success: '#4c7c4a',
+      warning: '#b07a1e',
+      danger: '#c23c3c',
+      codeBackground: '#40252b',
+      codeText: '#f9efe8',
+    },
+    typography: {
+      fontBody: 'Lora, Georgia, serif',
+      fontHeading: 'Lora, Georgia, serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '17px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.75',
+      lineHeightHeading: '1.15',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '700',
+    },
+    radius: {
+      radiusSm: '0.5rem',
+      radiusMd: '1rem',
+      radiusLg: '1.5rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(120 40 60 / 0.08)',
+      shadowMd: '0 12px 32px rgb(120 40 60 / 0.12)',
+      shadowLg: '0 24px 60px rgb(120 40 60 / 0.16)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '70ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#241419',
+        surface: '#2f1c22',
+        surfaceAlt: '#3b242c',
+        text: '#f5e9e6',
+        textMuted: '#c0a3a8',
+        primary: '#e8879f',
+        primaryHover: '#f2a2b6',
+        primaryText: '#33101a',
+        border: '#4a3038',
+        codeBackground: '#150a0e',
+        codeText: '#f9ece8',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.3rem, 7vw, 4.2rem)',
+        letterSpacing: '-0.02em',
+      },
+      h2: {
+        fontSize: 'clamp(1.7rem, 5vw, 2.6rem)',
+        letterSpacing: '-0.015em',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '4px solid var(--color-primary)',
+        color: 'var(--color-text)',
+        fontStyle: 'italic',
+        fontSize: '1.15em',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+        borderRadius: 'var(--radius-full)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+  fonts: {
+    body: {
+      family: 'Lora',
+      weights: [400, 600, 700],
+      italic: true,
+    },
+    heading: {
+      family: 'Lora',
+      weights: [400, 600, 700],
+      italic: true,
+    },
+  },
+} satisfies Theme
+
+export const mangaPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Manga',
+    description:
+      'Ripe mango amber with pill buttons and chunky, juicy headings.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#fffdf4',
+      surface: '#fdf2d9',
+      surfaceAlt: '#f8e6b8',
+      text: '#3a2c12',
+      textMuted: '#7d6a42',
+      primary: '#e07a00',
+      primaryHover: '#b96300',
+      primaryText: '#fff8ea',
+      secondary: '#7f8a3a',
+      border: '#eeda9c',
+      success: '#57813a',
+      warning: '#a86e12',
+      danger: '#c43e2f',
+      codeBackground: '#33260d',
+      codeText: '#f8efdb',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.6',
+      lineHeightHeading: '1.05',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '750',
+    },
+    radius: {
+      radiusSm: '0.5rem',
+      radiusMd: '0.75rem',
+      radiusLg: '1.25rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(90 60 0 / 0.10)',
+      shadowMd: '0 12px 32px rgb(224 122 0 / 0.16)',
+      shadowLg: '0 24px 60px rgb(224 122 0 / 0.22)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#1c1408',
+        surface: '#271c0c',
+        surfaceAlt: '#33260f',
+        text: '#f5ecd8',
+        textMuted: '#bfa87e',
+        primary: '#f5a623',
+        primaryHover: '#ffc14d',
+        primaryText: '#2a1a03',
+        border: '#40331a',
+        codeBackground: '#120d05',
+        codeText: '#f6eed9',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.5rem, 8vw, 4.6rem)',
+        letterSpacing: '-0.035em',
+      },
+      h2: {
+        fontSize: 'clamp(1.8rem, 5vw, 2.8rem)',
+        letterSpacing: '-0.025em',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '4px solid var(--color-primary)',
+        color: 'var(--color-text)',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+        borderRadius: 'var(--radius-full)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} satisfies Theme
+
+export const pauBrasilPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Pau-brasil',
+    description:
+      'Brazilwood red on aged paper with didone headlines. Heritage print.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#faf6ee',
+      surface: '#f2ead9',
+      surfaceAlt: '#e8dcbe',
+      text: '#2b1d16',
+      textMuted: '#6f5a4c',
+      primary: '#a32a16',
+      primaryHover: '#7f1f10',
+      primaryText: '#fdf3e7',
+      secondary: '#7d5a3a',
+      border: '#d9c9ae',
+      success: '#4d7a3a',
+      warning: '#a86e12',
+      danger: '#a32a16',
+      codeBackground: '#2b1d16',
+      codeText: '#f5ecd9',
+    },
+    typography: {
+      fontBody: 'Georgia, "Times New Roman", serif',
+      fontHeading: '"Bodoni Moda", Georgia, serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '17px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.7',
+      lineHeightHeading: '1.12',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '700',
+    },
+    radius: {
+      radiusSm: '0.125rem',
+      radiusMd: '0.25rem',
+      radiusLg: '0.5rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(43 29 22 / 0.08)',
+      shadowMd: '0 8px 24px rgb(43 29 22 / 0.10)',
+      shadowLg: '0 20px 50px rgb(43 29 22 / 0.12)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '68ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#1a100d',
+        surface: '#241711',
+        surfaceAlt: '#2f1e16',
+        text: '#f2e8dc',
+        textMuted: '#b5a28c',
+        primary: '#e07a5e',
+        primaryHover: '#eda27e',
+        primaryText: '#2b0e06',
+        border: '#3a2a20',
+        codeBackground: '#100a07',
+        codeText: '#f5ecd9',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.3rem, 6vw, 4rem)',
+      },
+      h2: {
+        fontSize: 'clamp(1.7rem, 4vw, 2.5rem)',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '3px solid var(--color-primary)',
+        color: 'var(--color-text-muted)',
+        fontFamily: 'Georgia, "Times New Roman", serif',
+        fontStyle: 'italic',
+        fontSize: '1.1em',
+      },
+      hr: {
+        border: '0',
+        borderTop: '3px double var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+  fonts: {
+    heading: {
+      family: 'Bodoni Moda',
+      weights: [400, 700],
+      italic: true,
+    },
+  },
+} satisfies Theme
+
+export const imbuiaPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Imbuia',
+    description:
+      'Cozy espresso browns with golden imbuia streaks for slow reading.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#1b130c',
+      surface: '#261a11',
+      surfaceAlt: '#322215',
+      text: '#f2e7d8',
+      textMuted: '#bfa88e',
+      primary: '#d9a441',
+      primaryHover: '#e6b95c',
+      primaryText: '#2a1c07',
+      secondary: '#8f7a5f',
+      border: '#3d2e1e',
+      success: '#9ccb8f',
+      warning: '#dfa04e',
+      danger: '#e07a6a',
+      codeBackground: '#110b06',
+      codeText: '#f3e9d9',
+    },
+    typography: {
+      fontBody: 'Newsreader, Georgia, serif',
+      fontHeading: 'Newsreader, Georgia, serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '18px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.75',
+      lineHeightHeading: '1.12',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '700',
+    },
+    radius: {
+      radiusSm: '0.375rem',
+      radiusMd: '0.75rem',
+      radiusLg: '1.25rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(0 0 0 / 0.45)',
+      shadowMd: '0 12px 32px rgb(50 30 10 / 0.45)',
+      shadowLg: '0 24px 60px rgb(50 30 10 / 0.5)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '68ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#130d07',
+        surface: '#1c140c',
+        surfaceAlt: '#261a0f',
+        border: '#33261a',
+        codeBackground: '#0b0704',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.3rem, 7vw, 4.2rem)',
+        letterSpacing: '-0.02em',
+      },
+      h2: {
+        fontSize: 'clamp(1.7rem, 5vw, 2.6rem)',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '3px solid var(--color-primary)',
+        color: 'var(--color-text)',
+        fontStyle: 'italic',
+        fontSize: '1.15em',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+  fonts: {
+    body: {
+      family: 'Newsreader',
+      weights: [400, 600, 700],
+      italic: true,
+    },
+    heading: {
+      family: 'Newsreader',
+      weights: [400, 600, 700],
+      italic: true,
+    },
+  },
+} satisfies Theme
+
+export const cerejeiraPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Cerejeira',
+    description:
+      'Cherry-wood tan and rust with slab serifs for a sturdy workshop feel.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#faf4ec',
+      surface: '#f1e5d6',
+      surfaceAlt: '#e4d2bd',
+      text: '#33231c',
+      textMuted: '#7a6252',
+      primary: '#b05238',
+      primaryHover: '#8f3f2a',
+      primaryText: '#fdf5ec',
+      secondary: '#6a7a52',
+      border: '#dfccba',
+      success: '#587d43',
+      warning: '#a86e12',
+      danger: '#b03a2e',
+      codeBackground: '#33231c',
+      codeText: '#f5ead9',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: '"Zilla Slab", Georgia, serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.65',
+      lineHeightHeading: '1.1',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '700',
+    },
+    radius: {
+      radiusSm: '0.25rem',
+      radiusMd: '0.5rem',
+      radiusLg: '0.75rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(51 35 28 / 0.10)',
+      shadowMd: '0 4px 12px rgb(51 35 28 / 0.12)',
+      shadowLg: '0 16px 36px rgb(51 35 28 / 0.16)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '72ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#1d1410',
+        surface: '#281c15',
+        surfaceAlt: '#342418',
+        text: '#f2e8dd',
+        textMuted: '#bda78e',
+        primary: '#d98a6a',
+        primaryHover: '#e6a284',
+        primaryText: '#2e1206',
+        border: '#3d2c1e',
+        codeBackground: '#120c08',
+        codeText: '#f5ece0',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.3rem, 7vw, 4.25rem)',
+        letterSpacing: '-0.02em',
+      },
+      h2: {
+        fontSize: 'clamp(1.7rem, 5vw, 2.6rem)',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '4px solid var(--color-secondary)',
+        color: 'var(--color-text-muted)',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '4px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+  fonts: {
+    heading: {
+      family: 'Zilla Slab',
+      weights: [400, 600, 700],
+    },
+  },
+} satisfies Theme
+
+export const ebanoPreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'Ébano',
+    description:
+      'Near-black ebony with champagne accents and garamond elegance.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#0e0d0f',
+      surface: '#17151a',
+      surfaceAlt: '#221e26',
+      text: '#ece9f0',
+      textMuted: '#a5a0ad',
+      primary: '#d3c692',
+      primaryHover: '#e4d9ae',
+      primaryText: '#1a1709',
+      secondary: '#7d7a85',
+      border: '#2b2731',
+      success: '#97bd8e',
+      warning: '#d9b45c',
+      danger: '#d98a7e',
+      codeBackground: '#080709',
+      codeText: '#edeaf2',
+    },
+    typography: {
+      fontBody: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontHeading: 'Cormorant Garamond, Georgia, serif',
+      fontMono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '17px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.8',
+      lineHeightHeading: '1.05',
+      fontWeightNormal: '400',
+      fontWeightMedium: '500',
+      fontWeightBold: '600',
+    },
+    radius: {
+      radiusSm: '0.25rem',
+      radiusMd: '0.5rem',
+      radiusLg: '1rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 2px rgb(0 0 0 / 0.55)',
+      shadowMd: '0 12px 36px rgb(0 0 0 / 0.5)',
+      shadowLg: '0 28px 70px rgb(0 0 0 / 0.6)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.25rem',
+      space2xl: '4rem',
+      space2xlXs: '2.5rem',
+    },
+    layout: {
+      contentWidth: '70ch',
+      wideWidth: '1120px',
+      bodyPadding: '1.25rem',
+      sectionSpacing: '3.5rem',
+      headerWidth: '1120px',
+      footerWidth: '1120px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2rem',
+    },
+    scroll: {
+      scrollbarWidth: 'auto',
+      scrollbarSize: '12px',
+      scrollbarTrack: 'var(--color-surface)',
+      scrollbarThumb: 'var(--color-border)',
+      scrollbarThumbHover: 'var(--color-text-muted)',
+      scrollbarRadius: 'var(--radius-full)',
+      scrollbarGutter: 'auto',
+      scrollBehavior: 'auto',
+      scrollPaddingTop: '0',
+      overscrollBehavior: 'auto',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#0a090b',
+        surface: '#121014',
+        surfaceAlt: '#1b181f',
+        border: '#241f2a',
+        codeBackground: '#050406',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+    },
+    elements: {
+      // Sobreposicao contextual de `code`: neutraliza o chrome do codigo inline
+      // dentro de um <pre>. Precisa da camada elements — em `base` sairia como
+      // `:where(pre code)`, especificidade 0, e perderia para `code`.
+      'pre code': {
+        background: 'transparent',
+        color: 'inherit',
+        padding: '0',
+      },
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-primary)',
+        backgroundColor: 'var(--color-surface)',
+        padding: 'var(--space-md)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+      },
+      h1: {
+        fontSize: 'clamp(2.6rem, 7vw, 4.8rem)',
+      },
+      h2: {
+        fontSize: 'clamp(1.8rem, 4vw, 2.7rem)',
+      },
+      h3: {
+        fontSize: '1.5rem',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      },
+      a: {
+        color: 'var(--color-primary)',
+        textUnderlineOffset: '0.2em',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-md) var(--space-lg)',
+        borderInlineStart: '2px solid var(--color-primary)',
+        color: 'var(--color-text-muted)',
+        fontFamily: 'Georgia, "Times New Roman", serif',
+        fontStyle: 'italic',
+        fontSize: '1.15em',
+        letterSpacing: '0.01em',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-border)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.1em 0.35em',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-md)',
+        overflowX: 'auto',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-border)',
+        borderBottomWidth: '3px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface)',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 'var(--radius-md)',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-md)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-medium)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+      },
+      'a:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 45%, transparent)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'translateY(1px)',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline:
+          '3px solid color-mix(in srgb, var(--color-primary) 35%, transparent)',
+        borderColor: 'var(--color-primary)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+  fonts: {
+    heading: {
+      family: 'Cormorant Garamond',
+      weights: [500, 600, 700],
+      italic: true,
+    },
+  },
+} satisfies Theme
+
 export const presets = {
   Minimal: minimalPreset,
   Editorial: editorialPreset,
@@ -11600,6 +14793,14 @@ export const presets = {
   Jornal: jornalPreset,
   'Algodão-doce': algodaoDocePreset,
   Corporativo: corporativoPreset,
+  'Maracujá': maracujaPreset,
+  'Pitaya': pitayaPreset,
+  'Goiaba': goiabaPreset,
+  'Manga': mangaPreset,
+  'Pau-brasil': pauBrasilPreset,
+  'Imbuia': imbuiaPreset,
+  'Cerejeira': cerejeiraPreset,
+  'Ébano': ebanoPreset,
 } as const
 
 export type PresetName = keyof typeof presets

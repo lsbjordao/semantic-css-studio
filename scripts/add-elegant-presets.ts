@@ -1,9 +1,9 @@
 /**
- * Codemod de uso único: cria os presets Noir, Porcelain e Sage clonando um
- * preset existente e aplicando overrides curados, com gates de contraste (AA)
- * e validação pelo migrateThemeV2 + compileTheme antes de tocar o arquivo.
+ * One-shot codemod: creates the Noir, Porcelain and Sage presets by cloning
+ * an existing preset and applying curated overrides, with contrast gates (AA)
+ * and migrateThemeV2 + compileTheme validation before touching the file.
  *
- * Rodar uma vez: npx vite-node scripts/add-elegant-presets.ts
+ * Run once: npx vite-node scripts/add-elegant-presets.ts
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -16,7 +16,10 @@ import { contrastRatio } from '../src/validators/contrast'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 
-function deepMerge(target: Record<string, unknown>, patch: Record<string, unknown>): void {
+function deepMerge(
+  target: Record<string, unknown>,
+  patch: Record<string, unknown>,
+): void {
   for (const [key, value] of Object.entries(patch)) {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       const slot = (target[key] ??= {}) as Record<string, unknown>
@@ -39,11 +42,20 @@ interface PresetSpec {
 
 function buildPreset(spec: PresetSpec): Theme {
   const theme = structuredClone(spec.base)
-  theme.metadata = { ...theme.metadata, name: spec.metadata.name, description: spec.metadata.description }
+  theme.metadata = {
+    ...theme.metadata,
+    name: spec.metadata.name,
+    description: spec.metadata.description,
+  }
   deepMerge(theme.tokens as unknown as Record<string, unknown>, spec.tokens)
-  theme.modes.dark = { colors: { ...(spec.base.modes.dark?.colors ?? {}), ...spec.darkColors } }
+  theme.modes.dark = {
+    colors: { ...(spec.base.modes.dark?.colors ?? {}), ...spec.darkColors },
+  }
   for (const [selector, declarations] of Object.entries(spec.elements)) {
-    theme.layers.elements[selector] = { ...(theme.layers.elements[selector] ?? {}), ...declarations }
+    theme.layers.elements[selector] = {
+      ...(theme.layers.elements[selector] ?? {}),
+      ...declarations,
+    }
   }
   return migrateThemeV2(theme)
 }
@@ -51,7 +63,9 @@ function buildPreset(spec: PresetSpec): Theme {
 function gate(spec: PresetSpec, theme: Theme): void {
   const light = theme.tokens.colors as unknown as Record<string, string>
   const dark = (theme.modes.dark?.colors ?? {}) as Record<string, string>
-  const checks: Array<[string, string | undefined, string | undefined, number]> = [
+  const checks: Array<
+    [string, string | undefined, string | undefined, number]
+  > = [
     ['text/bg', light.text, light.background, 4.5],
     ['muted/bg', light.textMuted, light.background, 4.5],
     ['primaryText/primary', light.primaryText, light.primary, 4.5],
@@ -64,11 +78,17 @@ function gate(spec: PresetSpec, theme: Theme): void {
     if (!fg || !bg) continue
     const ratio = contrastRatio(fg, bg)
     console.log(`  ${ratio.toFixed(2)} (min ${min}) ${label}`)
-    if (ratio < min) throw new Error(`${spec.mapName}: contraste ${ratio.toFixed(2)} < ${min} em ${label}`)
+    if (ratio < min)
+      throw new Error(
+        `${spec.mapName}: contrast ${ratio.toFixed(2)} < ${min} on ${label}`,
+      )
   }
   const css = compileTheme(theme)
-  if (!css.includes(`/* ${spec.mapName} v1.0.0`)) throw new Error(`${spec.mapName}: cabecalho inesperado no CSS`)
-  console.log(`  CSS: ${css.length} bytes, deterministico: ${compileTheme(structuredClone(theme)) === css}`)
+  if (!css.includes(`/* ${spec.mapName} v1.0.0`))
+    throw new Error(`${spec.mapName}: unexpected header in CSS`)
+  console.log(
+    `  CSS: ${css.length} bytes, deterministico: ${compileTheme(structuredClone(theme)) === css}`,
+  )
 }
 
 const specs: PresetSpec[] = [
@@ -78,7 +98,8 @@ const specs: PresetSpec[] = [
     base: minimalPreset as unknown as Theme,
     metadata: {
       name: 'Noir',
-      description: 'A dark, editorial theme with champagne accents and serif display type.',
+      description:
+        'A dark, editorial theme with champagne accents and serif display type.',
     },
     tokens: {
       colors: {
@@ -125,7 +146,10 @@ const specs: PresetSpec[] = [
     },
     elements: {
       h1: { fontSize: 'clamp(2.4rem, 7vw, 4.5rem)', letterSpacing: '-0.02em' },
-      h2: { fontSize: 'clamp(1.8rem, 4.5vw, 2.9rem)', letterSpacing: '-0.015em' },
+      h2: {
+        fontSize: 'clamp(1.8rem, 4.5vw, 2.9rem)',
+        letterSpacing: '-0.015em',
+      },
       blockquote: {
         fontSize: '1.15em',
         fontStyle: 'italic',
@@ -140,7 +164,8 @@ const specs: PresetSpec[] = [
     base: editorialPreset as unknown as Theme,
     metadata: {
       name: 'Porcelain',
-      description: 'Warm paper, terracotta accents and serif headlines for long reads.',
+      description:
+        'Warm paper, terracotta accents and serif headlines for long reads.',
     },
     tokens: {
       colors: {
@@ -161,7 +186,8 @@ const specs: PresetSpec[] = [
         codeText: '#f5efe2',
       },
       typography: {
-        fontHeading: '"Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif',
+        fontHeading:
+          '"Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif',
       },
       radius: { radiusMd: '0.75rem', radiusLg: '1.25rem' },
       shadow: {
@@ -198,7 +224,8 @@ const specs: PresetSpec[] = [
     base: minimalPreset as unknown as Theme,
     metadata: {
       name: 'Sage',
-      description: 'A cool botanical light theme with deep-green accents and crisp grotesque type.',
+      description:
+        'A cool botanical light theme with deep-green accents and crisp grotesque type.',
     },
     tokens: {
       colors: {
@@ -256,15 +283,22 @@ const file = join(root, 'src', 'theme', 'presets', 'index.ts')
 const source = readFileSync(file, 'utf8')
 
 const anchor = 'export const presets = {'
-if (!source.includes(anchor)) throw new Error('ancora do mapa de presets nao encontrada')
+if (!source.includes(anchor))
+  throw new Error('ancora do mapa de presets nao encontrada')
 const blocks = built
-  .map(({ spec, theme }) => `export const ${spec.exportName} = ${JSON.stringify(theme, null, 2)} as unknown as Theme\n`)
+  .map(
+    ({ spec, theme }) =>
+      `export const ${spec.exportName} = ${JSON.stringify(theme, null, 2)} as unknown as Theme\n`,
+  )
   .join('\n')
 const withPresets = source.replace(anchor, `${blocks}\n${anchor}`)
 
 const mapAnchor = "  'Simple.css': simpleCssPreset,\n"
-if (!withPresets.includes(mapAnchor)) throw new Error('ancora de registro no mapa nao encontrada')
-const entries = built.map(({ spec }) => `  ${spec.mapName}: ${spec.exportName},\n`).join('')
+if (!withPresets.includes(mapAnchor))
+  throw new Error('ancora de registro no mapa nao encontrada')
+const entries = built
+  .map(({ spec }) => `  ${spec.mapName}: ${spec.exportName},\n`)
+  .join('')
 const next = withPresets.replace(mapAnchor, `${mapAnchor}${entries}`)
 
 writeFileSync(file, next)

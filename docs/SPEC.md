@@ -1,79 +1,74 @@
 # Semantic CSS Studio
 
-## 1. Visão geral
+## 1. Overview
 
-Construir uma aplicação web open source para criação visual de stylesheets CSS voltadas a **HTML semântico e classless CSS**.
+Build an open source web application for visual creation of CSS stylesheets aimed at **semantic HTML and classless CSS**.
 
-A aplicação deve permitir que uma pessoa configure visualmente:
+The application should allow a person to visually configure:
 
-- tipografia;
-- cores;
-- espaçamento;
-- largura e layout;
-- bordas;
-- raios;
-- sombras;
+- typography;
+- colors;
+- spacing;
+- width and layout;
+- borders;
+- radii;
+- shadows;
 - links;
 - headings;
-- parágrafos;
-- listas;
-- tabelas;
-- formulários;
-- botões;
-- elementos de código;
+- paragraphs;
+- lists;
+- tables;
+- forms;
+- buttons;
+- code elements;
 - blockquotes;
-- imagens e figuras;
+- images and figures;
 - `article`;
 - `aside`;
 - `details`;
-- navegação;
-- estados interativos;
+- navigation;
+- interactive states;
 - dark mode;
-- responsividade;
+- responsiveness;
 
-e visualizar imediatamente essas alterações em uma página de demonstração.
+and immediately visualize these changes on a demo page.
 
-Ao final, a aplicação deve gerar um arquivo CSS independente e portátil que possa ser usado diretamente sobre HTML semântico:
+Finally, the application should generate a standalone, portable CSS file that can be used directly on semantic HTML:
 
 ```html
-<link rel="stylesheet" href="theme.css">
-
+<link rel="stylesheet" href="theme.css" />
 ```
 
-O objetivo não é gerar componentes React, Vue ou Web Components.
+The goal is not to generate React, Vue, or Web Components.
 
-O objetivo é gerar **CSS puro**.
+The goal is to generate **pure CSS**.
 
 ---
 
-# 2. Conceito central
+# 2. Core concept
 
-A ideia principal do projeto é:
+The main idea of the project is:
 
 > Your HTML is your design system.
 
-Em vez de construir interfaces baseadas em classes como:
+Instead of building class-based interfaces like:
 
 ```html
 <div class="card">
-  <div class="card-header">
-    ...
-  </div>
+  <div class="card-header">...</div>
 </div>
-
 ```
 
-o stylesheet deve privilegiar:
+the stylesheet should favor:
 
 ```html
 <article>
   <h2>Title</h2>
   <p>Content</p>
 </article>
-
 ```
 
-A aplicação deve produzir CSS prioritariamente para seletores semânticos como:
+The application should produce CSS primarily for semantic selectors such as:
 
 ```css
 body
@@ -139,51 +134,51 @@ hr
 
 ```
 
-Classes auxiliares poderão existir, mas devem ser opcionais.
+Helper classes may exist, but they should be optional.
 
 ---
 
-# 3. Objetivos do projeto
+# 3. Project goals
 
-## 3.1 Objetivo principal
+## 3.1 Primary objective
 
-Criar um editor visual para geração de frameworks ou temas CSS classless.
+Create a visual editor for generating classless CSS frameworks or themes.
 
-## 3.2 Objetivos secundários
+## 3.2 Secondary objectives
 
-A ferramenta deve permitir:
+The tool should allow users to:
 
-1. criar um tema do zero;
-2. começar a partir de presets;
-3. modificar um tema visualmente;
-4. visualizar todas as alterações em tempo real;
-5. salvar o projeto em formato estruturado;
-6. gerar CSS;
-7. gerar CSS minificado;
-8. gerar uma página HTML de demonstração;
-9. suportar light mode e dark mode;
-10. testar responsividade;
-11. avaliar contraste e acessibilidade;
-12. futuramente importar stylesheets existentes.
+1. create a theme from scratch;
+2. start from presets;
+3. modify a theme visually;
+4. visualize all changes in real time;
+5. save the project in a structured format;
+6. generate CSS;
+7. generate minified CSS;
+8. generate an HTML demo page;
+9. support light mode and dark mode;
+10. test responsiveness;
+11. evaluate contrast and accessibility;
+12. in the future import existing stylesheets.
 
 ---
 
-# 4. Princípios de arquitetura
+# 4. Architecture principles
 
-O projeto deve seguir estes princípios.
+The project should follow these principles.
 
-## 4.1 CSS como artefato compilado
+## 4.1 CSS as a compiled artifact
 
-A fonte primária do tema não deve ser o arquivo CSS.
+The primary source of the theme should not be the CSS file.
 
-A fonte primária deve ser um modelo estruturado:
+The primary source should be a structured model:
 
 ```text
 theme.json
 
 ```
 
-Exemplo:
+Example:
 
 ```json
 {
@@ -205,10 +200,9 @@ Exemplo:
     "button": {}
   }
 }
-
 ```
 
-O CSS será produzido por um compilador:
+The CSS will be produced by a compiler:
 
 ```text
 theme.json
@@ -219,11 +213,11 @@ theme.css
 
 ```
 
-Isso permitirá no futuro gerar diferentes formatos a partir do mesmo tema.
+This will allow generating different formats from the same theme in the future.
 
 ---
 
-# 5. Arquitetura conceitual
+# 5. Conceptual architecture
 
 ```text
                    ┌───────────────────┐
@@ -251,25 +245,25 @@ Isso permitirá no futuro gerar diferentes formatos a partir do mesmo tema.
 
 ---
 
-# 6. Escopo do MVP
+# 6. MVP scope
 
-O MVP deve funcionar completamente no browser.
+The MVP should run entirely in the browser.
 
-Não utilizar backend no primeiro milestone.
+Do not use a backend in the first milestone.
 
-Todos os dados devem ser mantidos localmente.
+All data should be kept locally.
 
-Persistência:
+Persistence:
 
 - `localStorage`;
-- importação de JSON;
-- exportação de JSON.
+- JSON import;
+- JSON export.
 
 ---
 
-# 7. Stack recomendada
+# 7. Recommended stack
 
-Preferir uma stack simples.
+Prefer a simple stack.
 
 ## Frontend
 
@@ -277,42 +271,42 @@ Preferir uma stack simples.
 - React;
 - Vite.
 
-Alternativamente, Svelte também seria adequado, mas usar React caso não haja motivo concreto para outra escolha.
+Alternatively, Svelte would also be suitable, but use React unless there is a concrete reason for another choice.
 
-## Estado
+## State
 
-Evitar Redux.
+Avoid Redux.
 
-Usar:
+Use:
 
 - Zustand;
 
-ou
+or
 
 - React Context + reducers;
 
-caso a estrutura continue simples.
+if the structure remains simple.
 
-## CSS do próprio editor
+## CSS of the editor itself
 
-Pode usar CSS Modules, vanilla CSS ou uma solução leve.
+You may use CSS Modules, vanilla CSS, or a lightweight solution.
 
-Não confundir o CSS interno da aplicação com o CSS que está sendo gerado.
+Do not confuse the application's internal CSS with the CSS being generated.
 
-## Testes
+## Tests
 
 - Vitest;
 - React Testing Library;
 - Playwright.
 
-## Formatação/lint
+## Formatting/lint
 
 - ESLint;
 - Prettier.
 
 ---
 
-# 8. Estrutura recomendada
+# 8. Recommended structure
 
 ```text
 semantic-css-studio/
@@ -375,44 +369,43 @@ semantic-css-studio/
 
 ---
 
-# 9. Modelo de dados
+# 9. Data model
 
-Criar um schema TypeScript formal.
+Create a formal TypeScript schema.
 
-Exemplo inicial:
+Initial example:
 
 ```ts
 interface Theme {
-  schemaVersion: number;
+  schemaVersion: number
 
   metadata: {
-    name: string;
-    description?: string;
-    author?: string;
-    version: string;
-  };
+    name: string
+    description?: string
+    author?: string
+    version: string
+  }
 
-  tokens: ThemeTokens;
+  tokens: ThemeTokens
 
   modes: {
-    light: ThemeMode;
-    dark?: ThemeMode;
-  };
+    light: ThemeMode
+    dark?: ThemeMode
+  }
 
-  elements: Record<string, ElementStyle>;
+  elements: Record<string, ElementStyle>
 
-  responsive: ResponsiveConfig;
+  responsive: ResponsiveConfig
 }
-
 ```
 
 ---
 
 # 10. Design tokens
 
-## 10.1 Cores
+## 10.1 Colors
 
-Suportar inicialmente:
+Initially support:
 
 ```text
 background
@@ -439,13 +432,13 @@ codeText
 
 ```
 
-Não limitar o modelo para sempre a estes valores.
+Do not limit the model to these values forever.
 
-Permitir tokens adicionais posteriormente.
+Allow additional tokens later.
 
 ---
 
-# 11. Tipografia
+# 11. Typography
 
 Tokens:
 
@@ -473,9 +466,9 @@ fontWeightBold
 
 ---
 
-# 12. Espaçamento
+# 12. Spacing
 
-Usar escala configurável:
+Use a configurable scale:
 
 ```text
 spaceXs
@@ -491,7 +484,7 @@ space2xl
 
 # 13. Layout
 
-Configurações globais:
+Global settings:
 
 ```text
 contentWidth
@@ -505,14 +498,13 @@ footerWidth
 
 ```
 
-Exemplo:
+Example:
 
 ```css
 main {
   max-width: var(--content-width);
   margin-inline: auto;
 }
-
 ```
 
 ---
@@ -531,7 +523,7 @@ radiusFull
 
 ---
 
-# 15. Sombras
+# 15. Shadows
 
 ```text
 shadowSm
@@ -544,9 +536,9 @@ shadowLg
 
 # 16. Element Style Model
 
-Cada elemento HTML deve poder sobrescrever os tokens globais.
+Each HTML element should be able to override the global tokens.
 
-Exemplo:
+Example:
 
 ```json
 {
@@ -559,10 +551,9 @@ Exemplo:
     }
   }
 }
-
 ```
 
-O editor deve oferecer propriedades organizadas por grupos:
+The editor should offer properties organized by groups:
 
 ```text
 Typography
@@ -578,9 +569,9 @@ Interaction
 
 ---
 
-# 17. Elementos suportados no MVP
+# 17. Elements supported in the MVP
 
-## Estrutura
+## Structure
 
 ```text
 body
@@ -594,7 +585,7 @@ footer
 
 ```
 
-## Tipografia
+## Typography
 
 ```text
 h1
@@ -615,7 +606,7 @@ ins
 
 ```
 
-## Listas
+## Lists
 
 ```text
 ul
@@ -627,7 +618,7 @@ dd
 
 ```
 
-## Conteúdo
+## Content
 
 ```text
 blockquote
@@ -635,7 +626,7 @@ hr
 
 ```
 
-## Código
+## Code
 
 ```text
 code
@@ -644,7 +635,7 @@ kbd
 
 ```
 
-## Tabelas
+## Tables
 
 ```text
 table
@@ -658,7 +649,7 @@ caption
 
 ```
 
-## Formulários
+## Forms
 
 ```text
 form
@@ -673,7 +664,7 @@ button
 
 ```
 
-## Mídia
+## Media
 
 ```text
 img
@@ -692,9 +683,9 @@ summary
 
 ---
 
-# 18. Estados CSS
+# 18. CSS states
 
-Suportar inicialmente:
+Initially support:
 
 ```text
 :hover
@@ -706,7 +697,7 @@ Suportar inicialmente:
 
 ```
 
-Principalmente para:
+Mainly for:
 
 ```text
 a
@@ -718,7 +709,7 @@ summary
 
 ```
 
-A UI pode apresentar:
+The UI may present:
 
 ```text
 Button
@@ -734,17 +725,17 @@ Button
 
 # 19. Live Preview
 
-A pré-visualização é parte central do produto.
+The preview is a central part of the product.
 
-Cada alteração feita no editor deve aparecer imediatamente.
+Every change made in the editor should appear immediately.
 
-Preferencialmente renderizar o conteúdo dentro de um `iframe` isolado.
+Preferably render the content inside an isolated `iframe`.
 
-Motivos:
+Reasons:
 
-- impedir que o CSS do editor afete o preview;
-- impedir que o stylesheet sendo construído afete a interface;
-- simular melhor uma página real.
+- prevent the editor CSS from affecting the preview;
+- prevent the stylesheet being built from affecting the interface;
+- better simulate a real page.
 
 Pipeline:
 
@@ -763,15 +754,15 @@ instant preview
 
 # 20. Specimens
 
-Criar diferentes páginas de demonstração.
+Create different demo pages.
 
 ## Overview
 
-Visão resumida dos principais elementos.
+Summary view of the main elements.
 
 ## Typography
 
-Mostrar:
+Show:
 
 ```text
 h1-h6
@@ -787,7 +778,7 @@ blockquote
 
 ## Content
 
-Mostrar:
+Show:
 
 ```text
 article
@@ -801,7 +792,7 @@ details
 
 ## Forms
 
-Mostrar todos os tipos principais:
+Show all main types:
 
 ```text
 text
@@ -818,7 +809,7 @@ button
 
 ```
 
-Mostrar estados:
+Show states:
 
 ```text
 normal
@@ -830,37 +821,36 @@ required
 
 ## Tables
 
-Tabela com:
+Table with:
 
 - caption;
 - header;
 - body;
 - footer;
-- números;
-- textos longos.
+- numbers;
+- long texts.
 
 ## Code
 
-Mostrar:
+Show:
 
 ```html
 <code>
-<pre>
-<kbd>
-
+  <pre></pre>
+</code>
 ```
 
 ## Kitchen Sink
 
-Uma única página contendo praticamente todos os elementos suportados.
+A single page containing practically all supported elements.
 
-Esta deve ser considerada o principal teste visual de integração do tema.
+This should be considered the main visual integration test for the theme.
 
 ---
 
 # 21. Responsive preview
 
-Adicionar seletor:
+Add a selector:
 
 ```text
 Desktop
@@ -870,7 +860,7 @@ Custom
 
 ```
 
-Sugestões:
+Suggestions:
 
 ```text
 Desktop: 1440 px
@@ -879,13 +869,13 @@ Mobile: 390 px
 
 ```
 
-A viewport do preview deve poder ser redimensionada.
+The preview viewport should be resizable.
 
 ---
 
 # 22. Dark mode
 
-A aplicação deve suportar:
+The application should support:
 
 ```text
 Light
@@ -894,7 +884,7 @@ Auto
 
 ```
 
-O tema pode conter:
+The theme may contain:
 
 ```json
 {
@@ -903,10 +893,9 @@ O tema pode conter:
     "dark": {}
   }
 }
-
 ```
 
-O CSS gerado deve poder usar:
+The generated CSS should be able to use:
 
 ```css
 @media (prefers-color-scheme: dark) {
@@ -917,20 +906,20 @@ O CSS gerado deve poder usar:
 
 ```
 
-Opcionalmente permitir também classes futuras como:
+Optionally also allow future classes such as:
 
 ```css
 [data-theme="dark"]
 
 ```
 
-Mas isso não é prioridade no MVP.
+But this is not a priority for the MVP.
 
 ---
 
-# 23. Editor principal
+# 23. Main editor
 
-Layout sugerido:
+Suggested layout:
 
 ```text
 ┌─────────────────────────────────────────────────┐
@@ -961,13 +950,13 @@ Layout sugerido:
 
 ---
 
-# 24. Editor de propriedades
+# 24. Property editor
 
-Evitar mostrar todas as propriedades CSS possíveis no primeiro MVP.
+Avoid showing all possible CSS properties in the first MVP.
 
-Criar um conjunto selecionado.
+Create a curated set.
 
-Por exemplo:
+For example:
 
 ## Typography
 
@@ -1037,29 +1026,29 @@ box-shadow
 
 ---
 
-# 25. Controles visuais
+# 25. Visual controls
 
-Usar controles apropriados.
+Use appropriate controls.
 
-Cores:
+Colors:
 
 ```text
 color picker
 +
-campo hexadecimal
+hex field
 
 ```
 
-Tamanhos:
+Sizes:
 
 ```text
-campo numérico
+numeric field
 +
-unidade
+unit
 
 ```
 
-Unidades:
+Units:
 
 ```text
 px
@@ -1072,41 +1061,41 @@ vh
 
 ```
 
-Seleções:
+Selections:
 
 ```text
 dropdown
 
 ```
 
-Propriedades complexas:
+Complex properties:
 
 ```text
-input textual avançado
+advanced text input
 
 ```
 
 ---
 
-# 26. Modo Simple e Advanced
+# 26. Simple and Advanced modes
 
-Preparar arquitetura para dois níveis.
+Prepare the architecture for two levels.
 
 ## Simple
 
-Mostra apenas os controles principais.
+Shows only the main controls.
 
 ## Advanced
 
-Permite controlar propriedades mais específicas.
+Allows controlling more specific properties.
 
-Pode não ser necessário implementar Advanced completamente no primeiro milestone.
+It may not be necessary to fully implement Advanced in the first milestone.
 
 ---
 
 # 27. CSS Compiler
 
-Este é um módulo central e deve ser independente da UI.
+This is a central module and should be independent of the UI.
 
 Interface:
 
@@ -1115,21 +1104,21 @@ compileTheme(theme: Theme): string
 
 ```
 
-Entrada:
+Input:
 
 ```text
 Theme
 
 ```
 
-Saída:
+Output:
 
 ```text
-CSS válido
+valid CSS
 
 ```
 
-Exemplo:
+Example:
 
 ```css
 :root {
@@ -1146,16 +1135,15 @@ body {
 article {
   padding: var(--space-lg);
 }
-
 ```
 
 ---
 
-# 28. Ordem determinística
+# 28. Deterministic order
 
-O CSS deve sempre ser produzido na mesma ordem.
+The CSS should always be produced in the same order.
 
-Sugestão:
+Suggestion:
 
 ```text
 1. metadata comment
@@ -1175,22 +1163,22 @@ Sugestão:
 
 ```
 
-Isso facilita:
+This makes it easier to handle:
 
-- comparação;
+- comparison;
 - Git diff;
-- testes;
-- manutenção.
+- tests;
+- maintenance.
 
 ---
 
 # 29. CSS Reset
 
-Não implementar um reset agressivo.
+Do not implement an aggressive reset.
 
-Adicionar somente uma base mínima, opcional.
+Add only a minimal, optional base.
 
-Por exemplo:
+For example:
 
 ```css
 *,
@@ -1198,10 +1186,9 @@ Por exemplo:
 *::after {
   box-sizing: border-box;
 }
-
 ```
 
-O usuário deve poder desligar a opção:
+The user should be able to turn off the option:
 
 ```text
 Include minimal reset
@@ -1210,16 +1197,16 @@ Include minimal reset
 
 ---
 
-# 30. Exportação
+# 30. Export
 
-Botão:
+Button:
 
 ```text
 Export
 
 ```
 
-Opções:
+Options:
 
 ```text
 CSS
@@ -1230,7 +1217,7 @@ Complete package
 
 ```
 
-O pacote completo pode produzir:
+The complete package may produce:
 
 ```text
 my-theme/
@@ -1245,31 +1232,29 @@ my-theme/
 
 # 31. Theme JSON
 
-O JSON deve conter versão de schema:
+The JSON should contain a schema version:
 
 ```json
 {
   "schemaVersion": 1
 }
-
 ```
 
-Isso será importante para futuras migrações.
+This will be important for future migrations.
 
-Nunca alterar silenciosamente schemas antigos.
+Never silently change old schemas.
 
-Criar mecanismo:
+Create a mechanism:
 
 ```ts
 migrateTheme(theme)
-
 ```
 
 ---
 
-# 32. Presets iniciais
+# 32. Initial presets
 
-Criar pelo menos:
+Create at least:
 
 ```text
 Minimal
@@ -1280,15 +1265,15 @@ Terminal
 
 ```
 
-Não tentar criar dezenas inicialmente.
+Do not try to create dozens initially.
 
-O importante é demonstrar que um mesmo HTML pode assumir aparências significativamente diferentes.
+The important thing is to demonstrate that the same HTML can take on significantly different appearances.
 
 ---
 
 # 33. Undo / Redo
 
-Implementar histórico de mudanças:
+Implement a change history:
 
 ```text
 Ctrl+Z
@@ -1296,7 +1281,7 @@ Ctrl+Shift+Z
 
 ```
 
-O estado do tema deve suportar:
+The theme state should support:
 
 ```text
 past
@@ -1305,61 +1290,61 @@ future
 
 ```
 
-Evitar salvar cada alteração de slider como dezenas de estados se isso prejudicar desempenho.
+Avoid saving every slider change as dozens of states if that harms performance.
 
 ---
 
 # 34. Autosave
 
-Salvar automaticamente o tema atual em:
+Automatically save the current theme to:
 
 ```text
 localStorage
 
 ```
 
-Deve existir:
+There should be:
 
 ```text
 New Theme
 
 ```
 
-e:
+and:
 
 ```text
 Reset Theme
 
 ```
 
-com confirmação antes de apagar alterações.
+with confirmation before discarding changes.
 
 ---
 
-# 35. Importação
+# 35. Import
 
-No MVP:
+In the MVP:
 
 ```text
 Import theme.json
 
 ```
 
-Validar schema.
+Validate the schema.
 
-Mostrar erros adequados.
+Show appropriate errors.
 
-Não aceitar JSON arbitrário sem validação.
+Do not accept arbitrary JSON without validation.
 
 ---
 
-# 36. Importação de CSS
+# 36. CSS import
 
-Não implementar no MVP.
+Do not implement in the MVP.
 
-Preparar apenas documentação e arquitetura para um milestone futuro.
+Only prepare documentation and architecture for a future milestone.
 
-Problema futuro:
+Future problem:
 
 ```text
 CSS
@@ -1374,7 +1359,7 @@ Theme model
 
 ```
 
-Bibliotecas futuras possíveis:
+Possible future libraries:
 
 ```text
 PostCSS
@@ -1386,11 +1371,11 @@ CSSTree
 
 # 37. Accessibility Inspector
 
-Começar simples.
+Start simple.
 
-## Contraste
+## Contrast
 
-Mostrar contraste entre:
+Show contrast between:
 
 ```text
 text / background
@@ -1399,7 +1384,7 @@ button text / button background
 
 ```
 
-Apresentar:
+Present:
 
 ```text
 Contrast ratio: 7.2:1
@@ -1410,7 +1395,7 @@ WCAG AAA: PASS
 
 ## Focus
 
-Detectar se elementos interativos possuem estilo para:
+Detect whether interactive elements have a style for:
 
 ```text
 :focus-visible
@@ -1419,28 +1404,27 @@ Detectar se elementos interativos possuem estilo para:
 
 ## Motion
 
-Se futuramente forem adicionadas animações:
+If animations are added in the future:
 
 ```css
-@media (prefers-reduced-motion: reduce)
-
+@media (prefers-reduced-motion: reduce);
 ```
 
 ---
 
 # 38. CSS validation
 
-O compilador nunca deve gerar CSS inválido.
+The compiler should never generate invalid CSS.
 
-Criar testes de parsing para todos os presets.
+Create parsing tests for all presets.
 
-Sempre que possível, processar o CSS gerado em um parser durante testes.
+Whenever possible, process the generated CSS with a parser during tests.
 
 ---
 
-# 39. Não objetivos do MVP
+# 39. MVP non-goals
 
-Não implementar inicialmente:
+Do not initially implement:
 
 - editor drag-and-drop;
 - page builder;
@@ -1448,17 +1432,17 @@ Não implementar inicialmente:
 - Bootstrap-like grid;
 - Tailwind generator;
 - backend;
-- autenticação;
+- authentication;
 - cloud sync;
 - multiplayer;
 - marketplace;
 - AI;
-- importação automática de qualquer CSS;
-- exportação Sass;
-- exportação Less;
+- automatic import of any CSS;
+- Sass export;
+- Less export;
 - plugins.
 
-Essas funcionalidades podem diluir o conceito central.
+These features may dilute the core concept.
 
 ---
 
@@ -1466,11 +1450,11 @@ Essas funcionalidades podem diluir o conceito central.
 
 ## Milestone 0 — Foundation
 
-Objetivo:
+Goal:
 
-criar arquitetura mínima.
+create a minimal architecture.
 
-Entregas:
+Deliverables:
 
 - Vite;
 - React;
@@ -1479,31 +1463,31 @@ Entregas:
 - Prettier;
 - Vitest;
 - Playwright;
-- estrutura inicial;
-- schema `Theme`;
-- preset default;
-- compilador mínimo;
-- preview isolado.
+- initial structure;
+- `Theme` schema;
+- default preset;
+- minimal compiler;
+- isolated preview.
 
-Critério:
+Criterion:
 
-alterar uma cor no estado e observar a mudança no preview.
+change a color in the state and observe the change in the preview.
 
 ---
 
 # Milestone 1 — Theme engine
 
-Implementar:
+Implement:
 
 - tokens;
 - schema;
 - store;
-- persistência;
+- persistence;
 - compiler;
 - CSS variables;
 - light mode.
 
-Suportar:
+Support:
 
 ```text
 colors
@@ -1514,15 +1498,15 @@ layout
 
 ```
 
-Critério:
+Criterion:
 
-um `theme.json` deve compilar deterministicamente para CSS.
+a `theme.json` should compile deterministically to CSS.
 
 ---
 
 # Milestone 2 — Semantic specimens
 
-Criar:
+Create:
 
 ```text
 Overview
@@ -1535,17 +1519,17 @@ Kitchen Sink
 
 ```
 
-Critério:
+Criterion:
 
-todos os elementos do MVP devem aparecer pelo menos uma vez no Kitchen Sink.
+all MVP elements should appear at least once in the Kitchen Sink.
 
 ---
 
 # Milestone 3 — Visual editor
 
-Implementar sidebar.
+Implement sidebar.
 
-Editor para:
+Editor for:
 
 ```text
 Global
@@ -1558,13 +1542,13 @@ Shadows
 
 ```
 
-Alterações refletidas instantaneamente.
+Changes reflected instantly.
 
 ---
 
 # Milestone 4 — Element editor
 
-Permitir customizar:
+Allow customizing:
 
 ```text
 body
@@ -1581,13 +1565,13 @@ details
 
 ```
 
-Suportar overrides individuais.
+Support individual overrides.
 
 ---
 
 # Milestone 5 — States
 
-Adicionar edição de:
+Add editing for:
 
 ```text
 hover
@@ -1602,7 +1586,7 @@ checked
 
 # Milestone 6 — Dark mode
 
-Adicionar:
+Add:
 
 ```text
 Light
@@ -1611,13 +1595,13 @@ Auto
 
 ```
 
-Gerar corretamente media queries.
+Correctly generate media queries.
 
 ---
 
 # Milestone 7 — Responsive preview
 
-Adicionar:
+Add:
 
 ```text
 Desktop
@@ -1626,13 +1610,13 @@ Mobile
 
 ```
 
-e viewport customizável.
+and customizable viewport.
 
 ---
 
 # Milestone 8 — Export
 
-Adicionar:
+Add:
 
 ```text
 theme.css
@@ -1642,23 +1626,23 @@ demo.html
 
 ```
 
-e pacote ZIP.
+and ZIP package.
 
 ---
 
 # Milestone 9 — Accessibility
 
-Implementar:
+Implement:
 
-- contraste;
+- contrast;
 - focus visibility;
-- alertas básicos.
+- basic alerts.
 
 ---
 
-# Milestone 10 — Presets e refinamento
+# Milestone 10 — Presets and refinement
 
-Criar:
+Create:
 
 ```text
 Minimal
@@ -1669,19 +1653,19 @@ Terminal
 
 ```
 
-Refinar UX.
+Refine UX.
 
-Adicionar documentação.
+Add documentation.
 
 ---
 
-# 41. Milestones futuros
+# 41. Future milestones
 
 ## Milestone 11 — CSS Importer
 
-Importar CSS classless existente.
+Import existing classless CSS.
 
-Exemplo:
+Example:
 
 ```text
 simple.css
@@ -1690,13 +1674,13 @@ custom.css
 
 ```
 
-O parser deve tentar reconhecer seletores semânticos.
+The parser should try to recognize semantic selectors.
 
 ---
 
 ## Milestone 12 — Theme Gallery
 
-Galeria local ou pública:
+Local or public gallery:
 
 ```text
 theme
@@ -1711,28 +1695,28 @@ tags
 
 ## Milestone 13 — Shareable themes
 
-Um tema pode ser serializado em URL ou gist.
+A theme can be serialized into a URL or gist.
 
-Não criar infraestrutura própria inicialmente.
+Do not create your own infrastructure initially.
 
 ---
 
 ## Milestone 14 — Plugin architecture
 
-Permitir que extensões adicionem:
+Allow extensions to add:
 
 - tokens;
-- elementos;
+- elements;
 - validators;
 - exporters.
 
 ---
 
-# 42. Testes
+# 42. Tests
 
 ## Unit tests
 
-Cobrir:
+Cover:
 
 ```text
 theme schema
@@ -1749,9 +1733,9 @@ contrast calculator
 
 ## Snapshot tests
 
-Cada preset deve possuir snapshot do CSS gerado.
+Each preset should have a snapshot of the generated CSS.
 
-Exemplo:
+Example:
 
 ```text
 minimal.css.snapshot
@@ -1759,22 +1743,22 @@ editorial.css.snapshot
 
 ```
 
-Alterações nesses snapshots devem ser revisadas conscientemente.
+Changes to these snapshots should be reviewed consciously.
 
 ---
 
 ## UI tests
 
-Testar:
+Test:
 
 ```text
-alterar cor
-alterar font-size
-trocar preset
-trocar viewport
-ativar dark mode
-exportar CSS
-importar JSON
+change color
+change font-size
+switch preset
+switch viewport
+enable dark mode
+export CSS
+import JSON
 undo
 redo
 
@@ -1784,7 +1768,7 @@ redo
 
 ## E2E
 
-Fluxo essencial:
+Essential flow:
 
 ```text
 open application
@@ -1805,62 +1789,62 @@ verify exported CSS
 
 ---
 
-# 43. Critérios de qualidade
+# 43. Quality criteria
 
-## Código
+## Code
 
 - TypeScript strict;
-- funções pequenas;
-- módulos desacoplados;
-- compiler independente da interface;
-- sem dependências desnecessárias.
+- small functions;
+- decoupled modules;
+- compiler independent of the interface;
+- no unnecessary dependencies.
 
-## CSS gerado
+## Generated CSS
 
-- legível;
-- determinístico;
-- sem propriedades redundantes;
-- sem seletores específicos demais;
-- preferir HTML semântico;
-- CSS válido.
+- readable;
+- deterministic;
+- no redundant properties;
+- no overly specific selectors;
+- prefer semantic HTML;
+- valid CSS.
 
 ## UX
 
-Toda edição deve ter feedback visual imediato.
+Every edit should have immediate visual feedback.
 
 ---
 
 # 44. Performance
 
-Não fazer otimização prematura.
+Do not optimize prematurely.
 
-Entretanto:
+However:
 
-- recompilar CSS deve ser rápido;
-- evitar rerender completo da aplicação;
-- debounce apenas quando necessário;
-- preview deve permanecer responsivo.
+- recompiling CSS should be fast;
+- avoid full application rerender;
+- debounce only when necessary;
+- preview should remain responsive.
 
-O sistema deve lidar facilmente com themes de algumas centenas de regras.
-
----
-
-# 45. Segurança
-
-Como o preview pode futuramente receber HTML customizado:
-
-- não executar JavaScript fornecido pelo usuário;
-- usar iframe sandbox;
-- sanitizar HTML externo;
-- nunca usar `eval`.
-
-No MVP, usar specimens internos, reduzindo significativamente a superfície de risco.
+The system should easily handle themes with a few hundred rules.
 
 ---
 
-# 46. README inicial
+# 45. Security
 
-O README deve começar com algo semelhante a:
+Since the preview may receive custom HTML in the future:
+
+- do not execute user-provided JavaScript;
+- use sandboxed iframe;
+- sanitize external HTML;
+- never use `eval`.
+
+In the MVP, use internal specimens, significantly reducing the risk surface.
+
+---
+
+# 46. Initial README
+
+The README should start with something similar to:
 
 ```text
 # Semantic CSS Studio
@@ -1883,13 +1867,13 @@ Just HTML + CSS.
 
 ---
 
-# 47. Filosofia
+# 47. Philosophy
 
-O projeto não deve tentar competir com Tailwind, Bootstrap ou Storybook.
+The project should not try to compete with Tailwind, Bootstrap, or Storybook.
 
-Eles resolvem problemas diferentes.
+They solve different problems.
 
-Este projeto deve ocupar a interseção:
+This project should occupy the intersection:
 
 ```text
 Semantic HTML
@@ -1904,10 +1888,10 @@ CSS Generator
 
 ```
 
-A proposta é tornar possível:
+The idea is to make possible:
 
 ```text
-HTML semântico
+Semantic HTML
       ↓
 Visual styling
       ↓
@@ -1917,114 +1901,110 @@ Portable CSS
 
 ---
 
-# 48. Exemplo de uso final
+# 48. Final usage example
 
-O usuário cria um tema e exporta:
+The user creates a theme and exports:
 
 ```text
 academic.css
 
 ```
 
-Então utiliza:
+Then uses:
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="academic.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="academic.css" />
+  </head>
 
-<body>
-  <header>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/docs">Documentation</a>
-    </nav>
-  </header>
+  <body>
+    <header>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/docs">Documentation</a>
+      </nav>
+    </header>
 
-  <main>
-    <article>
-      <h1>Semantic CSS</h1>
+    <main>
+      <article>
+        <h1>Semantic CSS</h1>
 
-      <p>
-        This page requires no CSS classes.
-      </p>
+        <p>This page requires no CSS classes.</p>
 
-      <blockquote>
-        HTML provides the structure. The theme provides the design.
-      </blockquote>
+        <blockquote>
+          HTML provides the structure. The theme provides the design.
+        </blockquote>
 
-      <details>
-        <summary>Learn more</summary>
-        <p>Everything is styled through semantic selectors.</p>
-      </details>
-    </article>
-  </main>
-</body>
+        <details>
+          <summary>Learn more</summary>
+          <p>Everything is styled through semantic selectors.</p>
+        </details>
+      </article>
+    </main>
+  </body>
 </html>
-
 ```
 
-Não deveria ser necessário escrever:
+It should not be necessary to write:
 
 ```html
 class="container ..."
-
 ```
 
-para obter uma página apresentável.
+to get a presentable page.
 
 ---
 
-# 49. Definition of Done do primeiro release
+# 49. Definition of Done for the first release
 
-O release `0.1.0` estará pronto quando:
+The `0.1.0` release will be ready when:
 
-1. o projeto puder ser executado localmente;
-2. existirem pelo menos cinco presets;
-3. tokens globais puderem ser editados visualmente;
-4. pelo menos 30 elementos HTML forem demonstrados;
-5. estilos específicos por elemento puderem ser modificados;
-6. preview funcionar em tempo real;
-7. light e dark mode funcionarem;
-8. preview desktop/tablet/mobile funcionar;
-9. CSS puder ser exportado;
-10. JSON puder ser importado/exportado;
-11. existir Kitchen Sink completo;
-12. contraste básico for calculado;
-13. compiler possuir testes;
-14. presets possuírem snapshots;
-15. o README explicar claramente o conceito;
-16. o CSS exportado funcionar sem JavaScript e sem qualquer runtime do Semantic CSS Studio.
+1. the project can be run locally;
+2. there are at least five presets;
+3. global tokens can be edited visually;
+4. at least 30 HTML elements are demonstrated;
+5. per-element styles can be modified;
+6. preview works in real time;
+7. light and dark mode work;
+8. desktop/tablet/mobile preview works;
+9. CSS can be exported;
+10. JSON can be imported/exported;
+11. there is a complete Kitchen Sink;
+12. basic contrast is calculated;
+13. compiler has tests;
+14. presets have snapshots;
+15. the README clearly explains the concept;
+16. the exported CSS works without JavaScript and without any Semantic CSS Studio runtime.
 
 ---
 
-# 50. Instruções para implementação pelo LLM
+# 50. Instructions for LLM implementation
 
-Não implementar todos os milestones de uma vez.
+Do not implement all milestones at once.
 
-Começar pelo Milestone 0 e avançar sequencialmente.
+Start with Milestone 0 and advance sequentially.
 
-Antes de cada milestone:
+Before each milestone:
 
-1. inspecionar o estado atual do repositório;
-2. revisar tipos e arquitetura existentes;
-3. evitar duplicação;
-4. implementar;
-5. executar testes;
-6. corrigir regressões;
-7. atualizar documentação;
-8. realizar commit lógico se estiver trabalhando com Git.
+1. inspect the current state of the repository;
+2. review existing types and architecture;
+3. avoid duplication;
+4. implement;
+5. run tests;
+6. fix regressions;
+7. update documentation;
+8. make a logical commit if working with Git.
 
-Não adicionar bibliotecas apenas por conveniência.
+Do not add libraries just for convenience.
 
-Evitar abstrações prematuras.
+Avoid premature abstractions.
 
-O `Theme` e o `CSS Compiler` devem permanecer independentes da camada React.
+The `Theme` and the `CSS Compiler` should remain independent of the React layer.
 
-Um princípio arquitetural fundamental deve ser preservado durante todo o projeto:
+A fundamental architectural principle should be preserved throughout the project:
 
 ```text
 Theme model != UI
@@ -2038,7 +2018,7 @@ CSS
 
 ```
 
-Isso permitirá no futuro:
+This will allow in the future:
 
 ```text
 CLI
@@ -2050,13 +2030,13 @@ AI generator
 
 ```
 
-sem reescrever o núcleo.
+without rewriting the core.
 
 ---
 
-# 51. Possível evolução estratégica
+# 51. Possible strategic evolution
 
-Depois de estabilizar o core, o projeto pode evoluir de simples editor para um pequeno ecossistema:
+After stabilizing the core, the project can evolve from a simple editor to a small ecosystem:
 
 ```text
                      Theme JSON
@@ -2077,4 +2057,4 @@ Depois de estabilizar o core, o projeto pode evoluir de simples editor para um p
 
 ```
 
-Nesse ponto o projeto deixa de ser apenas um editor CSS e passa a funcionar como uma infraestrutura para criação, armazenamento, compartilhamento e compilação de **semantic CSS themes**.
+At that point the project is no longer just a CSS editor and starts working as an infrastructure for creating, storing, sharing, and compiling **semantic CSS themes**.

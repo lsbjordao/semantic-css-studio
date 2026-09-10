@@ -1,8 +1,9 @@
 import type { ScrollTokens } from './schema'
 
 /**
- * Estes tokens entram no schema v2 já nesta entrega, mesmo só sendo emitidos e
- * editados na entrega de Scroll, para que exista exatamente uma migração.
+ * These tokens enter schema v2 in this delivery already, even though they are
+ * only emitted and edited in the Scroll delivery, so there is exactly one
+ * migration.
  */
 export const scrollDefaults: ScrollTokens = {
   scrollbarWidth: 'auto',

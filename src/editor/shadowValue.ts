@@ -122,9 +122,9 @@ export function parseShadowValue(value: string): ParsedShadow | null {
 }
 
 /**
- * Todas as camadas de um `box-shadow`, cada uma com seu próprio `inset` —
- * é o que permite combinar sombra externa e interna na mesma regra.
- * Devolve `null` quando alguma camada não é editável estruturalmente.
+ * All layers of a `box-shadow`, each with its own `inset` — what allows
+ * combining outer and inner shadows in the same rule. Returns `null` when a
+ * layer is not structurally editable.
  */
 export function parseShadowLayers(value: string): ParsedShadow[] | null {
   const trimmed = value.trim()
@@ -168,7 +168,7 @@ export const defaultShadowValue = '0 8px 24px 0px rgb(0 0 0 / 0.14)'
 
 export const defaultInnerShadowValue = 'inset 0 2px 6px 0px rgb(0 0 0 / 0.12)'
 
-/** Camada inicial para os botões "add layer" do painel. */
+/** Initial layer for the panel "add layer" buttons. */
 export function defaultShadowLayer(inset: boolean): ParsedShadow {
   return (
     parseSingleLayer(inset ? defaultInnerShadowValue : defaultShadowValue) ?? {

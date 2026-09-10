@@ -5,7 +5,7 @@ import { presets } from '../src/theme/presets'
 const css = () => scrollRules(presets.Minimal).join('\n\n')
 
 describe('scrollRules', () => {
-  it('emite as propriedades padrao sem gate', () => {
+  it('emits the default properties without a gate', () => {
     const out = css()
     expect(out).toContain('scrollbar-gutter: var(--scrollbar-gutter);')
     expect(out).toContain('scroll-behavior: var(--scroll-behavior);')
@@ -13,7 +13,7 @@ describe('scrollRules', () => {
     expect(out).toContain('overscroll-behavior: var(--overscroll-behavior);')
   })
 
-  it('emite as partes WebKit', () => {
+  it('emits the WebKit parts', () => {
     const out = css()
     expect(out).toContain(':where(html)::-webkit-scrollbar {')
     expect(out).toContain(':where(html)::-webkit-scrollbar-track {')
@@ -21,34 +21,41 @@ describe('scrollRules', () => {
     expect(out).toContain(':where(html)::-webkit-scrollbar-thumb:hover {')
   })
 
-  it('poe scrollbar-color e scrollbar-width atras do gate @supports', () => {
+  it('puts scrollbar-color and scrollbar-width behind the @supports gate', () => {
     const out = css()
-    // No Chrome 121+, definir scrollbar-color desativa ::-webkit-scrollbar.
-    // Emitir os dois sem gate perderia as partes ricas.
+    // On Chrome 121+, setting scrollbar-color disables ::-webkit-scrollbar.
+    // Emitting both without a gate would lose the rich parts.
     const gate = out.indexOf('@supports not selector(::-webkit-scrollbar)')
     expect(gate).toBeGreaterThan(-1)
-    const dentro = out.slice(gate)
-    expect(dentro).toContain('scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);')
-    expect(dentro).toContain('scrollbar-width: var(--scrollbar-width);')
+    const inside = out.slice(gate)
+    expect(inside).toContain(
+      'scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);',
+    )
+    expect(inside).toContain('scrollbar-width: var(--scrollbar-width);')
   })
 
-  it('scrollbar-color e scrollbar-width existem SO dentro do gate', () => {
+  it('scrollbar-color and scrollbar-width exist ONLY inside the gate', () => {
     const out = css()
     const gate = out.indexOf('@supports not selector(::-webkit-scrollbar)')
-    const antes = out.slice(0, gate)
-    const dentro = out.slice(gate)
+    const before = out.slice(0, gate)
+    const inside = out.slice(gate)
 
-    // Exclusividade nos dois sentidos: fora do gate nenhuma das duas aparece, e
-    // dentro do gate ambas aparecem exatamente uma vez. Um emissor que
-    // duplicasse scrollbar-width nos dois blocos passaria por uma checagem que
-    // so olhasse ausencia.
+    // Exclusivity in both directions: outside the gate neither appears, and
+    // inside the gate both appear exactly once. An emitter duplicating
+    // scrollbar-width in both blocks would pass a check looking only at
+    // absence.
     for (const prop of ['scrollbar-color', 'scrollbar-width']) {
-      expect(antes, `${prop} fora do gate`).not.toContain(prop)
-      expect(dentro.split(`${prop}:`).length - 1, `${prop} dentro do gate`).toBe(1)
+      expect(before, `${prop} outside the gate`).not.toContain(prop)
+      expect(
+        inside.split(`${prop}:`).length - 1,
+        `${prop} inside the gate`,
+      ).toBe(1)
     }
   })
 
-  it('e deterministico', () => {
-    expect(scrollRules(presets.Minimal)).toEqual(scrollRules(structuredClone(presets.Minimal)))
+  it('is deterministic', () => {
+    expect(scrollRules(presets.Minimal)).toEqual(
+      scrollRules(structuredClone(presets.Minimal)),
+    )
   })
 })

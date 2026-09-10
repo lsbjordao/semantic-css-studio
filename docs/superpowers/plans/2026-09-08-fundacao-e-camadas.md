@@ -1,10 +1,10 @@
-# Fundação e Camadas — Plano de Implementação
+# Foundation and Layers — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Migrar o `Theme` para o schema v2 com mapas por camada e fazer o compilador emitir CSS em `@layer` com regras-base em `:where()` e editáveis pelo usuário.
+**Goal:** Migrate the `Theme` to the v2 schema with per-layer maps and make the compiler emit CSS in `@layer` with base rules in `:where()` and editable by the user.
 
-**Architecture:** O `Theme` deixa de ter `elements`/`states`/`responsive` soltos e passa a ter `layers: { base, elements, states, responsive }`, cada um um `Record<seletor, declarações>`. As regras hoje hardcoded em `baseRules()` e `responsiveRules()` do compilador viram dados semeados na camada `base` e `responsive`, o que as torna visíveis e editáveis. O compilador emite `@layer reset, base, elements, states, responsive`, envolvendo a camada base em `:where()` para especificidade zero, de modo que o CSS de quem consome o tema sempre vença sem `!important`.
+**Architecture:** The `Theme` stops having loose `elements`/`states`/`responsive` and gains `layers: { base, elements, states, responsive }`, each a `Record<selector, declarations>`. The rules today hardcoded in the compiler's `baseRules()` and `responsiveRules()` become seeded data in the `base` and `responsive` layers, which makes them visible and editable. The compiler emits `@layer reset, base, elements, states, responsive`, wrapping the base layer in `:where()` for zero specificity, so that the theme consumer's CSS always wins without `!important`.
 
 **Tech Stack:** TypeScript 5.8, React 19, Zustand 5, Vite 7, Vitest 3, Playwright 1.55.
 
@@ -12,75 +12,78 @@
 
 ## Global Constraints
 
-**Aviso de método, aprendido em execução.** O código de referência deste plano
-já embarcou dois defeitos reais que os testes do próprio plano não pegaram — o
-guard `blocks.length === 0` do minificador na Task 2, e as falsas rejeições do
-validador de seletor na Task 3. A causa é a mesma nos dois casos: os testes
-foram escritos com os mesmos pontos cegos do código que testam.
+**Method warning, learned in execution.** This plan's reference code has
+already shipped two real defects that the plan's own tests did not catch — the
+minifier's `blocks.length === 0` guard in Task 2, and the selector
+validator's false rejections in Task 3. The cause is the same in both cases: the tests
+were written with the same blind spots as the code they test.
 
-Ao executar qualquer tarefa, trate o código do plano como proposta, não como
-verdade. Antes de transcrever, gere você mesmo uma entrada que o plano não
-previu e rode contra ela. Para funções de validação, procure especificamente
-**falsas rejeições**: uma entrada válida recusada vira perda de dados
-silenciosa do ponto de vista de quem usa.
+When executing any task, treat the plan's code as a proposal, not as
+truth. Before transcribing, come up with an input the plan did not
+foresee and run against it. For validation functions, look specifically
+for **false rejections**: a valid input refused becomes a silent data
+loss from the user's point of view.
 
-
-- As invariantes 1 a 6 de `docs/ARCHITECTURE.md` permanecem válidas. Em particular: o compilador **não** pode importar React nem usar API de browser (`document`, `window`, `localStorage`).
-- O CSS gerado é determinístico: mesmo tema, mesmos bytes. Todo teste de compilador deve poder compilar duas vezes e comparar.
-- Seletores são ordenados por ordem canônica de domínio para tags conhecidas e `localeCompare` para o restante. Declarações são ordenadas alfabeticamente pelo nome kebab dentro de cada regra.
-- `SCHEMA_VERSION` passa de `1` para `2`. Existe exatamente **uma** migração nesta entrega; os tokens de scroll entram no schema agora, mesmo só sendo usados na entrega seguinte, para não exigir uma v3.
-- Alvo de browser do CSS gerado: Chrome/Edge 99+, Firefox 97+, Safari 15.4+ (piso do `@layer`).
-- Chaves de `CssPropertyMap` são camelCase. Propriedades customizadas são a exceção: armazenadas literalmente começando por `--` e emitidas sem transformação.
-- As chaves de `layers.responsive` correspondem exatamente às chaves de `breakpoints`. Chave órfã é erro de validação.
-- Rodar `npm run lint` antes de cada commit. Rodar `npm test` em todo passo de verificação.
+- Invariants 1 through 6 of `docs/ARCHITECTURE.md` remain valid. In particular: the compiler **must not** import React nor use browser APIs (`document`, `window`, `localStorage`).
+- Generated CSS is deterministic: same theme, same bytes. Every compiler test must be able to compile twice and compare.
+- Selectors are ordered by canonical domain order for known tags and `localeCompare` for the rest. Declarations are ordered alphabetically by kebab name within each rule.
+- `SCHEMA_VERSION` goes from `1` to `2`. There is exactly **one** migration in this delivery; the scroll tokens enter the schema now, even though they are only used in the following delivery, so as not to require a v3.
+- Browser target of the generated CSS: Chrome/Edge 99+, Firefox 97+, Safari 15.4+ (`@layer` floor).
+- `CssPropertyMap` keys are camelCase. Custom properties are the exception: stored literally starting with `--` and emitted without transformation.
+- The keys of `layers.responsive` match exactly the keys of `breakpoints`. An orphan key is a validation error.
+- Run `npm run lint` before each commit. Run `npm test` on every verification step.
 
 ---
 
-## Estrutura de arquivos
+## File structure
 
-**Criar:**
-- `src/theme/tokenNames.ts` — mapa de prefixo por grupo de token; substitui a cadeia de `.replace()`
-- `src/compiler/minify.ts` — minificador por tokenização, respeitando strings, comentários e `url()`
-- `src/compiler/selectorValidation.ts` — validador puro de seletor e gerador de avisos
-- `src/theme/baseRules.ts` — `seedBaseRules()` e `seedResponsiveRules()`
-- `src/theme/scrollDefaults.ts` — valores padrão dos tokens de scroll
-- `src/editor/BaseRulesEditor.tsx` — painel da camada base
-- `scripts/migrate-presets.ts` — codemod de uso único que reescreve presets e defaults em v2
+**Create:**
+
+- `src/theme/tokenNames.ts` — per-token-group prefix map; replaces the `.replace()` chain
+- `src/compiler/minify.ts` — tokenizing minifier, respecting strings, comments and `url()`
+- `src/compiler/selectorValidation.ts` — pure selector validator and warning generator
+- `src/theme/baseRules.ts` — `seedBaseRules()` and `seedResponsiveRules()`
+- `src/theme/scrollDefaults.ts` — default scroll token values
+- `src/editor/BaseRulesEditor.tsx` — base-layer panel
+- `scripts/migrate-presets.ts` — one-shot codemod that rewrites presets and defaults in v2
 - `tests/tokenNames.test.ts`, `tests/minify.test.ts`, `tests/selectorValidation.test.ts`, `tests/baseRules.test.ts`, `tests/layers.test.ts`
-- `tests/fixtures/theme-v1.json` — snapshot do `defaultTheme` v1, congelado antes da troca
+- `tests/fixtures/theme-v1.json` — snapshot of the v1 `defaultTheme`, frozen before the swap
 
-**Modificar:**
-- `src/theme/schema.ts` — tipos v2
-- `src/theme/migration.ts` — migração v1 → v2 de verdade
-- `src/theme/defaults.ts` — forma v2
-- `src/theme/presets/index.ts` — seis presets em v2 (gerado pelo codemod)
-- `src/compiler/compileTheme.ts` — lê `layers`, emite `@layer`
-- `src/theme/store.ts` — API por camada, `readStoredTheme` via migração
-- `src/editor/ElementEditor.tsx`, `src/editor/StateEditor.tsx` — leem e escrevem `layers`
-- `src/editor/EditorSidebar.tsx` — seção Base
-- `src/app/App.tsx` — rota da seção Base
+**Modify:**
+
+- `src/theme/schema.ts` — v2 types
+- `src/theme/migration.ts` — real v1 → v2 migration
+- `src/theme/defaults.ts` — v2 shape
+- `src/theme/presets/index.ts` — six presets in v2 (generated by the codemod)
+- `src/compiler/compileTheme.ts` — reads `layers`, emits `@layer`
+- `src/theme/store.ts` — per-layer API, `readStoredTheme` via migration
+- `src/editor/ElementEditor.tsx`, `src/editor/StateEditor.tsx` — read and write `layers`
+- `src/editor/EditorSidebar.tsx` — Base section
+- `src/app/App.tsx` — Base section route
 - `tests/compiler.test.ts`, `tests/migration.test.ts`
-- `tests/snapshots/presets/*.css` — regerados
+- `tests/snapshots/presets/*.css` — regenerated
 
 ---
 
-## Fase 1 — Fundação
+## Phase 1 — Foundation
 
-### Task 1: Corrigir a nomeação de tokens
+### Task 1: Fix token naming
 
-Bug em produção: `tokenName()` em `src/compiler/compileTheme.ts:26-53` é uma cadeia de trinta `.replace()`. A chave `space2xl` não tem letra maiúscula, então `kebab()` a deixa intacta e nenhum `.replace()` casa. O resultado é que `:root` declara `--space2xl` enquanto `main` consome `var(--space-2xl)` — que só é definida dentro do media query de 390px. Acima do mobile o shorthand `padding` fica inválido em tempo de computação e o `main` fica sem padding algum. Afeta os seis presets.
+Production bug: `tokenName()` in `src/compiler/compileTheme.ts:26-53` is a chain of thirty `.replace()` calls. The key `space2xl` has no uppercase letter, so `kebab()` leaves it intact and no `.replace()` matches. The result is that `:root` declares `--space2xl` while `main` consumes `var(--space-2xl)` — which is only defined inside the 390px media query. Above mobile the `padding` shorthand is invalid at computed time and `main` ends up with no padding at all. Affects all six presets.
 
 **Files:**
+
 - Create: `src/theme/tokenNames.ts`
 - Create: `tests/tokenNames.test.ts`
-- Modify: `src/compiler/compileTheme.ts:26-53` (remove `tokenName`), `:69-79` (`tokenEntries`), `:148-158` (`darkModeRule`)
-- Modify: `tests/snapshots/presets/*.css` (regerados)
+- Modify: `src/compiler/compileTheme.ts:26-53` (removes `tokenName`), `:69-79` (`tokenEntries`), `:148-158` (`darkModeRule`)
+- Modify: `tests/snapshots/presets/*.css` (regenerated)
 
 **Interfaces:**
-- Consumes: `ThemeTokens` de `src/theme/schema.ts`
+
+- Consumes: `ThemeTokens` from `src/theme/schema.ts`
 - Produces: `tokenName(group: keyof ThemeTokens, key: string): string`
 
-- [ ] **Step 1: Escrever o teste que falha**
+- [ ] **Step 1: Write the failing test**
 
 `tests/tokenNames.test.ts`:
 
@@ -113,12 +116,12 @@ describe('tokenName', () => {
 })
 ```
 
-- [ ] **Step 2: Rodar para verificar que falha**
+- [ ] **Step 2: Run to verify it fails**
 
 Run: `npx vitest run tests/tokenNames.test.ts`
 Expected: FAIL — `Cannot find module '../src/theme/tokenNames'`
 
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
 `src/theme/tokenNames.ts`:
 
@@ -157,44 +160,50 @@ export function tokenName(group: keyof ThemeTokens, key: string): string {
 }
 ```
 
-- [ ] **Step 4: Rodar para verificar que passa**
+- [ ] **Step 4: Run to verify it passes**
 
 Run: `npx vitest run tests/tokenNames.test.ts`
-Expected: PASS, 4 testes
+Expected: PASS, 4 tests
 
-- [ ] **Step 5: Ligar o compilador ao novo nomeador**
+- [ ] **Step 5: Wire the compiler to the new namer**
 
-Em `src/compiler/compileTheme.ts`, apagar a função `tokenName` inteira (linhas 26-53) e adicionar o import. A função `kebab` local **permanece**: ela serve nomes de propriedade CSS e precisa manter o comportamento atual, em que maiúscula inicial vira hífen inicial (`WebkitLineClamp` → `-webkit-line-clamp`).
+In `src/compiler/compileTheme.ts`, delete the entire `tokenName` function (lines 26-53) and add the import. The local `kebab` function **stays**: it serves CSS property names and must keep the current behavior, where a leading uppercase letter becomes a leading hyphen (`WebkitLineClamp` → `-webkit-line-clamp`).
 
 ```ts
 import { tokenName } from '../theme/tokenNames'
 import type { ThemeTokens } from '../theme/schema'
 ```
 
-Substituir `tokenEntries` (linhas 69-79) por:
+Replace `tokenEntries` (lines 69-79) with:
 
 ```ts
 const tokenGroups: Array<keyof ThemeTokens> = [
-  'colors', 'typography', 'spacing', 'radius', 'shadow', 'layout',
+  'colors',
+  'typography',
+  'spacing',
+  'radius',
+  'shadow',
+  'layout',
 ]
 
 function tokenEntries(theme: Theme): Array<[string, string]> {
   return tokenGroups.flatMap((group) =>
     Object.entries(theme.tokens[group]).map(
-      ([key, value]) => [tokenName(group, key), String(value)] as [string, string],
+      ([key, value]) =>
+        [tokenName(group, key), String(value)] as [string, string],
     ),
   )
 }
 ```
 
-Em `darkModeRule` (linhas 148-158), a chamada `tokenName(key)` passa a ser `tokenName('colors', key)`, porque `modes.dark.colors` só contém chaves de cor.
+In `darkModeRule` (lines 148-158), the `tokenName(key)` call becomes `tokenName('colors', key)`, because `modes.dark.colors` only contains color keys.
 
-- [ ] **Step 6: Regerar os snapshots e conferir o diff**
+- [ ] **Step 6: Regenerate the snapshots and check the diff**
 
 Run: `npx vitest run tests/presets.test.ts`
-Expected: FAIL nos seis presets — o `:root` agora emite `--space-2xl` no lugar de `--space2xl`.
+Expected: FAIL on all six presets — `:root` now emits `--space-2xl` instead of `--space2xl`.
 
-Regerar cada snapshot:
+Regenerate each snapshot:
 
 ```bash
 npx vite-node scripts/regenerate-snapshots.ts
@@ -202,9 +211,9 @@ git diff --stat tests/snapshots/
 git diff tests/snapshots/presets/minimal.css
 ```
 
-Expected: o diff de cada arquivo tem **exatamente uma linha alterada**, `--space2xl: 4rem;` → `--space-2xl: 4rem;`. Qualquer outra linha alterada é regressão e deve ser investigada antes de commitar.
+Expected: each file's diff has **exactly one changed line**, `--space2xl: 4rem;` → `--space-2xl: 4rem;`. Any other changed line is a regression and must be investigated before committing.
 
-- [ ] **Step 7: Rodar a suíte inteira**
+- [ ] **Step 7: Run the full suite**
 
 Run: `npm test && npm run lint`
 Expected: PASS
@@ -226,20 +235,22 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 ---
 
-### Task 2: Minificador por tokenização
+### Task 2: Tokenizing minifier
 
-O `minifyCss()` atual (`src/compiler/compileTheme.ts:166-172`) é regex sobre string. Ele sobrevive hoje porque os valores emitidos são simples, mas corrompe strings, comentários dentro de valor e `url(data:…)` — todos alcançáveis assim que o catálogo exaustivo de propriedades liberar `content`, gradientes e imagens embutidas.
+The current `minifyCss()` (`src/compiler/compileTheme.ts:166-172`) is regex over string. It survives today because the emitted values are simple, but it corrupts strings, comments inside values and `url(data:…)` — all reachable as soon as the exhaustive property catalog frees `content`, gradients and embedded images.
 
 **Files:**
+
 - Create: `src/compiler/minify.ts`
 - Create: `tests/minify.test.ts`
-- Modify: `src/compiler/compileTheme.ts:166-172` (remove `minifyCss`), `src/compiler/index.ts`
+- Modify: `src/compiler/compileTheme.ts:166-172` (removes `minifyCss`), `src/compiler/index.ts`
 
 **Interfaces:**
-- Consumes: nada
+
+- Consumes: nothing
 - Produces: `minifyCss(css: string): string`
 
-- [ ] **Step 1: Escrever o teste que falha**
+- [ ] **Step 1: Write the failing test**
 
 `tests/minify.test.ts`:
 
@@ -257,17 +268,22 @@ describe('minifyCss', () => {
   })
 
   it('preserva o conteudo de strings', () => {
-    expect(minifyCss('a::after { content: "a;  b" }')).toBe('a::after{content:"a;  b"}')
+    expect(minifyCss('a::after { content: "a;  b" }')).toBe(
+      'a::after{content:"a;  b"}',
+    )
   })
 
   it('nao quebra comentario dentro de string', () => {
-    expect(minifyCss('a::after { content: "/* nao e comentario */" }'))
-      .toBe('a::after{content:"/* nao e comentario */"}')
+    expect(minifyCss('a::after { content: "/* nao e comentario */" }')).toBe(
+      'a::after{content:"/* nao e comentario */"}',
+    )
   })
 
   it('preserva url() sem aspas', () => {
     const css = 'a { background: url(data:image/svg+xml;base64,AA==) }'
-    expect(minifyCss(css)).toBe('a{background:url(data:image/svg+xml;base64,AA==)}')
+    expect(minifyCss(css)).toBe(
+      'a{background:url(data:image/svg+xml;base64,AA==)}',
+    )
   })
 
   it('preserva o combinador descendente antes de pseudo-classe', () => {
@@ -277,43 +293,50 @@ describe('minifyCss', () => {
   })
 
   it('preserva virgula em lista de fontes', () => {
-    expect(minifyCss('a { font-family: "Iowan Old Style", Georgia, serif }'))
-      .toBe('a{font-family:"Iowan Old Style",Georgia,serif}')
+    expect(
+      minifyCss('a { font-family: "Iowan Old Style", Georgia, serif }'),
+    ).toBe('a{font-family:"Iowan Old Style",Georgia,serif}')
   })
 
   it('mantem o media query valido', () => {
-    expect(minifyCss('@media (max-width: 768px) {\n  a { color: red }\n}'))
-      .toBe('@media (max-width: 768px){a{color:red}}')
+    expect(
+      minifyCss('@media (max-width: 768px) {\n  a { color: red }\n}'),
+    ).toBe('@media (max-width: 768px){a{color:red}}')
   })
 
   it('preserva o combinador descendente dentro de at-rule', () => {
     // Um contador de profundidade simples trataria o interior de @media como
     // bloco de declaracao e apagaria o espaco, virando o seletor 'a:hover'.
-    expect(minifyCss('@media print {\n  a :hover { color: red }\n}'))
-      .toBe('@media print{a :hover{color:red}}')
+    expect(minifyCss('@media print {\n  a :hover { color: red }\n}')).toBe(
+      '@media print{a :hover{color:red}}',
+    )
   })
 
   it('at-rule sem bloco no topo nao contamina a regra seguinte', () => {
-    expect(minifyCss('@layer reset, base, elements;\na { color: red }'))
-      .toBe('@layer reset,base,elements;a{color:red}')
+    expect(minifyCss('@layer reset, base, elements;\na { color: red }')).toBe(
+      '@layer reset,base,elements;a{color:red}',
+    )
   })
 
   it('at-rule sem bloco aninhada nao contamina a regra irma', () => {
     // Com um guard `blocks.length === 0` no reset, o `;` interno nao zeraria
     // a flag e o `a {}` seguinte seria tratado como corpo de at-rule,
     // deixando 'color: red' sem minificar.
-    expect(minifyCss('@layer components { @layer buttons, cards; a { color: red } }'))
-      .toBe('@layer components{@layer buttons,cards;a{color:red}}')
+    expect(
+      minifyCss(
+        '@layer components { @layer buttons, cards; a { color: red } }',
+      ),
+    ).toBe('@layer components{@layer buttons,cards;a{color:red}}')
   })
 })
 ```
 
-- [ ] **Step 2: Rodar para verificar que falha**
+- [ ] **Step 2: Run to verify it fails**
 
 Run: `npx vitest run tests/minify.test.ts`
 Expected: FAIL — `Cannot find module '../src/compiler/minify'`
 
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
 `src/compiler/minify.ts`:
 
@@ -333,7 +356,8 @@ export function minifyCss(css: string): string {
   let i = 0
 
   const last = (): string => (out.length ? out[out.length - 1] : '')
-  const inDeclarations = (): boolean => blocks[blocks.length - 1] === 'declarations'
+  const inDeclarations = (): boolean =>
+    blocks[blocks.length - 1] === 'declarations'
 
   while (i < css.length) {
     const char = css[i]
@@ -420,24 +444,24 @@ export function minifyCss(css: string): string {
 }
 ```
 
-- [ ] **Step 4: Rodar para verificar que passa**
+- [ ] **Step 4: Run to verify it passes**
 
 Run: `npx vitest run tests/minify.test.ts`
-Expected: PASS, 11 testes
+Expected: PASS, 11 tests
 
-- [ ] **Step 5: Trocar a implementação antiga**
+- [ ] **Step 5: Swap the old implementation**
 
-Em `src/compiler/compileTheme.ts`, apagar a função `minifyCss` (linhas 166-172). Em `src/compiler/index.ts`, reexportar a nova:
+In `src/compiler/compileTheme.ts`, delete the `minifyCss` function (lines 166-172). In `src/compiler/index.ts`, re-export the new one:
 
 ```ts
 export { compileTheme } from './compileTheme'
 export { minifyCss } from './minify'
 ```
 
-- [ ] **Step 6: Rodar a suíte inteira**
+- [ ] **Step 6: Run the full suite**
 
 Run: `npm test && npm run lint`
-Expected: PASS. `tests/compiler.test.ts` já assertava que o minificado é menor e não tem `\n`; ambas continuam valendo.
+Expected: PASS. `tests/compiler.test.ts` already asserted that the minified output is smaller and has no `\n`; both still hold.
 
 - [ ] **Step 7: Commit**
 
@@ -456,25 +480,30 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 ---
 
-### Task 3: Validador puro de seletor
+### Task 3: Pure selector validator
 
-O escape hatch de seletor livre precisa validar sem `document.querySelector`, porque o compilador não pode usar API de browser (invariante 3). Este validador roda na importação de tema; a interface usa `querySelector` em paralelo, em tempo de edição.
+The free-selector escape hatch needs to validate without `document.querySelector`, because the compiler cannot use browser APIs (invariant 3). This validator runs on theme import; the interface uses `querySelector` in parallel, at edit time.
 
 **Files:**
+
 - Create: `src/compiler/selectorValidation.ts`
 - Create: `tests/selectorValidation.test.ts`
 
 **Interfaces:**
-- Consumes: nada
+
+- Consumes: nothing
 - Produces: `isValidSelector(selector: string): boolean`, `selectorWarnings(selector: string): string[]`
 
-- [ ] **Step 1: Escrever o teste que falha**
+- [ ] **Step 1: Write the failing test**
 
 `tests/selectorValidation.test.ts`:
 
 ```ts
 import { describe, expect, it } from 'vitest'
-import { isValidSelector, selectorWarnings } from '../src/compiler/selectorValidation'
+import {
+  isValidSelector,
+  selectorWarnings,
+} from '../src/compiler/selectorValidation'
 
 describe('isValidSelector', () => {
   it('aceita os seletores que o catalogo produz', () => {
@@ -536,12 +565,12 @@ describe('selectorWarnings', () => {
 })
 ```
 
-- [ ] **Step 2: Rodar para verificar que falha**
+- [ ] **Step 2: Run to verify it fails**
 
 Run: `npx vitest run tests/selectorValidation.test.ts`
 Expected: FAIL — `Cannot find module '../src/compiler/selectorValidation'`
 
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
 `src/compiler/selectorValidation.ts`:
 
@@ -614,21 +643,25 @@ export function selectorWarnings(selector: string): string[] {
   // seletor de classe — nao avisaria nada.
   const bare = stripQuoted(selector)
   if (/(?<!\\)\.[A-Za-z_-]/.test(bare)) {
-    warnings.push('Este seletor usa classe, o que contraria a premissa classless do tema.')
+    warnings.push(
+      'Este seletor usa classe, o que contraria a premissa classless do tema.',
+    )
   }
   if (/(?<!\\)#[A-Za-z_-]/.test(bare)) {
-    warnings.push('Este seletor usa id, o que contraria a premissa classless do tema.')
+    warnings.push(
+      'Este seletor usa id, o que contraria a premissa classless do tema.',
+    )
   }
   return warnings
 }
 ```
 
-- [ ] **Step 4: Rodar para verificar que passa**
+- [ ] **Step 4: Run to verify it passes**
 
 Run: `npx vitest run tests/selectorValidation.test.ts`
-Expected: PASS, 11 testes
+Expected: PASS, 11 tests
 
-- [ ] **Step 5: Rodar a suíte inteira e commitar**
+- [ ] **Step 5: Run the full suite and commit**
 
 Run: `npm test && npm run lint`
 Expected: PASS
@@ -646,21 +679,23 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 ---
 
-### Task 4: Tipos v2 e regras semeadas
+### Task 4: V2 types and seeded rules
 
-Aditivo por completo: o tipo `Theme` continua sendo v1 e nada passa a consumir os tipos novos ainda. Isso mantém o projeto compilando e a suíte verde até a troca da Task 6.
+Fully additive: the `Theme` type stays v1 and nothing consumes the new types yet. This keeps the project compiling and the suite green until the Task 6 swap.
 
 **Files:**
-- Modify: `src/theme/schema.ts` (adiciona tipos, não altera os existentes)
+
+- Modify: `src/theme/schema.ts` (adds types, does not change existing ones)
 - Create: `src/theme/scrollDefaults.ts`
 - Create: `src/theme/baseRules.ts`
 - Create: `tests/baseRules.test.ts`
 
 **Interfaces:**
-- Consumes: `CssPropertyMap`, `ThemeTokens`, `Theme` de `src/theme/schema.ts`
-- Produces: os tipos `ScrollTokens`, `RuleMap`, `ThemeLayers`, `SpacingTokensV2`, `LayoutTokensV2`, `ThemeTokensV2`, `ThemeV2`; as funções `seedBaseRules(): RuleMap`, `seedResponsiveRules(): Record<string, RuleMap>`, e a constante `scrollDefaults: ScrollTokens`
 
-- [ ] **Step 1: Escrever o teste que falha**
+- Consumes: `CssPropertyMap`, `ThemeTokens`, `Theme` from `src/theme/schema.ts`
+- Produces: the `ScrollTokens`, `RuleMap`, `ThemeLayers`, `SpacingTokensV2`, `LayoutTokensV2`, `ThemeTokensV2`, `ThemeV2` types; the `seedBaseRules(): RuleMap`, `seedResponsiveRules(): Record<string, RuleMap>` functions, and the `scrollDefaults: ScrollTokens` constant
+
+- [ ] **Step 1: Write the failing test**
 
 `tests/baseRules.test.ts`:
 
@@ -687,7 +722,11 @@ describe('seedBaseRules', () => {
 
   it('mantem as declaracoes das regras semeadas', () => {
     const base = seedBaseRules()
-    expect(base['pre code']).toEqual({ background: 'transparent', color: 'inherit', padding: '0' })
+    expect(base['pre code']).toEqual({
+      background: 'transparent',
+      color: 'inherit',
+      padding: '0',
+    })
     expect(base.button).toEqual({
       background: 'var(--color-primary)',
       color: 'var(--color-primary-text)',
@@ -734,18 +773,18 @@ describe('scrollDefaults', () => {
 })
 ```
 
-- [ ] **Step 2: Rodar para verificar que falha**
+- [ ] **Step 2: Run to verify it fails**
 
 Run: `npx vitest run tests/baseRules.test.ts`
 Expected: FAIL — `Cannot find module '../src/theme/baseRules'`
 
-- [ ] **Step 3: Adicionar os tipos v2 em `src/theme/schema.ts`**
+- [ ] **Step 3: Add the v2 types in `src/theme/schema.ts`**
 
-Primeiro, renomear a interface `Theme` existente para `ThemeV1` e reintroduzir o
-nome antigo como alias. Isso é retrocompatível — todo consumidor atual continua
-importando `Theme` e enxergando exatamente o mesmo tipo — e é o que permite que
-`ThemeV2` referencie `ThemeV1['metadata']` sem virar referência circular quando
-a Task 6 apontar `Theme` para `ThemeV2`.
+First, rename the existing `Theme` interface to `ThemeV1` and reintroduce the
+old name as an alias. This is backward compatible — every current consumer keeps
+importing `Theme` and seeing exactly the same type — and it is what lets
+`ThemeV2` reference `ThemeV1['metadata']` without becoming a circular reference when
+Task 6 points `Theme` at `ThemeV2`.
 
 ```ts
 export interface ThemeV1 {
@@ -755,7 +794,7 @@ export interface ThemeV1 {
 export type Theme = ThemeV1
 ```
 
-Depois, acrescentar ao final do arquivo:
+Then, append at the end of the file:
 
 ```ts
 export interface ScrollTokens {
@@ -810,7 +849,7 @@ export interface ThemeV2 {
 }
 ```
 
-- [ ] **Step 4: Implementar os padrões de scroll**
+- [ ] **Step 4: Implement the scroll defaults**
 
 `src/theme/scrollDefaults.ts`:
 
@@ -835,7 +874,7 @@ export const scrollDefaults: ScrollTokens = {
 }
 ```
 
-- [ ] **Step 5: Implementar as regras semeadas**
+- [ ] **Step 5: Implement the seeded rules**
 
 `src/theme/baseRules.ts`:
 
@@ -921,15 +960,15 @@ export function seedResponsiveRules(): Record<string, RuleMap> {
 }
 ```
 
-- [ ] **Step 6: Rodar para verificar que passa**
+- [ ] **Step 6: Run to verify it passes**
 
 Run: `npx vitest run tests/baseRules.test.ts`
-Expected: PASS, 6 testes
+Expected: PASS, 6 tests
 
-- [ ] **Step 7: Rodar a suíte inteira e commitar**
+- [ ] **Step 7: Run the full suite and commit**
 
 Run: `npm test && npm run lint`
-Expected: PASS — nada consome os tipos novos ainda, então os snapshots não mudam.
+Expected: PASS — nothing consumes the new types yet, so the snapshots do not change.
 
 ```bash
 git add src/theme/schema.ts src/theme/scrollDefaults.ts src/theme/baseRules.ts tests/baseRules.test.ts
@@ -944,24 +983,26 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 ---
 
-### Task 5: Migração v1 para v2
+### Task 5: V1-to-V2 migration
 
-`migrateTheme` hoje só valida e rejeita. A peça central é o achatamento de estados, que é sem perda: `states[el][state]` vira a chave `"el:state"`.
+`migrateTheme` today only validates and rejects. The centerpiece is the state flattening, which is lossless: `states[el][state]` becomes the `"el:state"` key.
 
-A nova função é adicionada **ao lado** da existente, para que `src/app/Topbar.tsx` continue funcionando até a troca da Task 6.
+The new function is added **alongside** the existing one, so that `src/app/Topbar.tsx` keeps working until the Task 6 swap.
 
 **Files:**
+
 - Modify: `src/theme/migration.ts`
 - Create: `tests/fixtures/theme-v1.json`
 - Modify: `tests/migration.test.ts`
 
 **Interfaces:**
-- Consumes: `seedBaseRules`, `seedResponsiveRules` de `src/theme/baseRules.ts`; `scrollDefaults` de `src/theme/scrollDefaults.ts`; `isValidSelector` de `src/compiler/selectorValidation.ts`; tipos v2 de `src/theme/schema.ts`
+
+- Consumes: `seedBaseRules`, `seedResponsiveRules` from `src/theme/baseRules.ts`; `scrollDefaults` from `src/theme/scrollDefaults.ts`; `isValidSelector` from `src/compiler/selectorValidation.ts`; v2 types from `src/theme/schema.ts`
 - Produces: `migrateThemeV2(input: unknown): ThemeV2`
 
-- [ ] **Step 1: Congelar o tema v1 como fixture**
+- [ ] **Step 1: Freeze the v1 theme as a fixture**
 
-Precisa acontecer **antes** da Task 6, que converte `defaults.ts` para v2.
+Must happen **before** Task 6, which converts `defaults.ts` to v2.
 
 ```bash
 mkdir -p tests/fixtures scripts
@@ -982,11 +1023,11 @@ head -5 tests/fixtures/theme-v1.json
 rm scripts/dump-v1-fixture.ts
 ```
 
-Expected: o arquivo começa com `"schemaVersion": 1`.
+Expected: the file starts with `"schemaVersion": 1`.
 
-- [ ] **Step 2: Escrever o teste que falha**
+- [ ] **Step 2: Write the failing test**
 
-Acrescentar a `tests/migration.test.ts`:
+Append to `tests/migration.test.ts`:
 
 ```ts
 import { readFileSync } from 'node:fs'
@@ -1003,11 +1044,18 @@ describe('migrateThemeV2', () => {
 
   it('achata estados sem perda', () => {
     const { layers } = migrateThemeV2(themeV1)
-    expect(layers.states['a:hover']).toEqual({ color: 'var(--color-primary-hover)' })
-    expect(layers.states['button:disabled']).toEqual({ opacity: '0.55', cursor: 'not-allowed' })
+    expect(layers.states['a:hover']).toEqual({
+      color: 'var(--color-primary-hover)',
+    })
+    expect(layers.states['button:disabled']).toEqual({
+      opacity: '0.55',
+      cursor: 'not-allowed',
+    })
     expect(layers.states['input:focus-visible']).toBeDefined()
     // nenhuma chave aninhada sobrou
-    expect(Object.keys(layers.states).every((key) => key.includes(':'))).toBe(true)
+    expect(Object.keys(layers.states).every((key) => key.includes(':'))).toBe(
+      true,
+    )
   })
 
   it('copia elements sem alteracao', () => {
@@ -1023,7 +1071,11 @@ describe('migrateThemeV2', () => {
   })
 
   it('converte responsive em breakpoints', () => {
-    expect(migrateThemeV2(themeV1).breakpoints).toEqual({ mobile: 390, tablet: 768, desktop: 1440 })
+    expect(migrateThemeV2(themeV1).breakpoints).toEqual({
+      mobile: 390,
+      tablet: 768,
+      desktop: 1440,
+    })
   })
 
   it('adiciona tokens de scroll e os tokens novos de espacamento e layout', () => {
@@ -1058,14 +1110,14 @@ describe('migrateThemeV2', () => {
 })
 ```
 
-- [ ] **Step 3: Rodar para verificar que falha**
+- [ ] **Step 3: Run to verify it fails**
 
 Run: `npx vitest run tests/migration.test.ts`
 Expected: FAIL — `migrateThemeV2 is not a function`
 
-- [ ] **Step 4: Implementar**
+- [ ] **Step 4: Implement**
 
-Acrescentar a `src/theme/migration.ts`, mantendo `migrateTheme` e `validateTheme` intactos:
+Append to `src/theme/migration.ts`, keeping `migrateTheme` and `validateTheme` intact:
 
 ```ts
 import { isValidSelector } from '../compiler/selectorValidation'
@@ -1099,16 +1151,20 @@ function assertSelectors(rules: RuleMap, layer: string): void {
 function assertBreakpointsMatch(theme: ThemeV2): void {
   for (const key of Object.keys(theme.layers.responsive)) {
     if (!(key in theme.breakpoints)) {
-      throw new Error(`Breakpoint ausente para a chave de layers.responsive: ${key}`)
+      throw new Error(
+        `Breakpoint ausente para a chave de layers.responsive: ${key}`,
+      )
     }
   }
 }
 
 export function migrateThemeV2(input: unknown): ThemeV2 {
-  if (!input || typeof input !== 'object') throw new Error('Theme must be a JSON object.')
+  if (!input || typeof input !== 'object')
+    throw new Error('Theme must be a JSON object.')
   const candidate = input as Partial<ThemeV2> & Partial<ThemeV1>
 
-  if (typeof candidate.schemaVersion !== 'number') throw new Error('Missing schemaVersion.')
+  if (typeof candidate.schemaVersion !== 'number')
+    throw new Error('Missing schemaVersion.')
   if (candidate.schemaVersion > SCHEMA_VERSION_V2) {
     throw new Error(
       `Theme schema ${candidate.schemaVersion} is newer than supported schema ${SCHEMA_VERSION_V2}.`,
@@ -1124,7 +1180,9 @@ export function migrateThemeV2(input: unknown): ThemeV2 {
   assertSelectors(upgraded.layers.base, 'base')
   assertSelectors(upgraded.layers.elements, 'elements')
   assertSelectors(upgraded.layers.states, 'states')
-  for (const [breakpoint, rules] of Object.entries(upgraded.layers.responsive)) {
+  for (const [breakpoint, rules] of Object.entries(
+    upgraded.layers.responsive,
+  )) {
     assertSelectors(rules, `responsive.${breakpoint}`)
   }
   assertBreakpointsMatch(upgraded)
@@ -1151,7 +1209,10 @@ function upgradeFromV1(theme: ThemeV1): ThemeV2 {
       typography: structuredClone(theme.tokens.typography),
       radius: structuredClone(theme.tokens.radius),
       shadow: structuredClone(theme.tokens.shadow),
-      spacing: { ...structuredClone(theme.tokens.spacing), space2xlXs: '2.5rem' },
+      spacing: {
+        ...structuredClone(theme.tokens.spacing),
+        space2xlXs: '2.5rem',
+      },
       layout: {
         ...structuredClone(theme.tokens.layout),
         bodyPaddingSm: '1rem',
@@ -1176,14 +1237,14 @@ function upgradeFromV1(theme: ThemeV1): ThemeV2 {
 }
 ```
 
-Os valores `'2.5rem'`, `'1rem'`, `'0.8rem'` e `'2rem'` são exatamente os literais que `responsiveRules()` grava hoje, preservados para que a aparência padrão não mude.
+The `'2.5rem'`, `'1rem'`, `'0.8rem'` and `'2rem'` values are exactly the literals `responsiveRules()` writes today, preserved so the default appearance does not change.
 
-- [ ] **Step 5: Rodar para verificar que passa**
+- [ ] **Step 5: Run to verify it passes**
 
 Run: `npx vitest run tests/migration.test.ts`
-Expected: PASS, 13 testes (3 antigos, 10 novos)
+Expected: PASS, 13 tests (3 old, 10 new)
 
-- [ ] **Step 6: Rodar a suíte inteira e commitar**
+- [ ] **Step 6: Run the full suite and commit**
 
 Run: `npm test && npm run lint`
 Expected: PASS
@@ -1201,22 +1262,24 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 ---
 
-### Task 6: A troca
+### Task 6: The swap
 
-Task grande e deliberadamente atômica: o momento em que `Theme` passa a ser v2 quebra a tipagem de tudo que o consome, então defaults, presets, compilador, store e os dois editores mudam juntos. O codemod faz o trabalho mecânico.
+Big and deliberately atomic task: the moment `Theme` becomes v2 breaks the typing of everything consuming it, so defaults, presets, compiler, store and both editors change together. The codemod does the mechanical work.
 
-O compilador **continua emitindo CSS plano** aqui. `@layer` é a Task 8. Isso separa "mudou o modelo" de "mudou a saída", e torna o diff de snapshot desta task pequeno e auditável.
+The compiler **keeps emitting flat CSS** here. `@layer` is Task 8. This separates "changed the model" from "changed the output", and makes this task's snapshot diff small and auditable.
 
 **Files:**
+
 - Create: `scripts/migrate-presets.ts`
 - Modify: `src/theme/schema.ts`, `src/theme/defaults.ts`, `src/theme/presets/index.ts`, `src/theme/migration.ts`, `src/compiler/compileTheme.ts`, `src/theme/store.ts`, `src/editor/ElementEditor.tsx`, `src/editor/StateEditor.tsx`, `src/app/Topbar.tsx`
 - Modify: `tests/snapshots/presets/*.css`, `tests/compiler.test.ts`, `tests/elementProfiles.test.ts`
 
 **Interfaces:**
-- Consumes: `migrateThemeV2` da Task 5
-- Produces: `Theme` passa a ser o alias de `ThemeV2`; `SCHEMA_VERSION` passa a ser `2`; store expõe `setLayerProperty(layer, selector, property, value)` e `removeLayerProperty(layer, selector, property)`
 
-- [ ] **Step 1: Escrever o codemod**
+- Consumes: Task 5 `migrateThemeV2`
+- Produces: `Theme` becomes the `ThemeV2` alias; `SCHEMA_VERSION` becomes `2`; store exposes `setLayerProperty(layer, selector, property, value)` and `removeLayerProperty(layer, selector, property)`
+
+- [ ] **Step 1: Write the codemod**
 
 `scripts/migrate-presets.ts`:
 
@@ -1257,7 +1320,7 @@ writeFileSync(
 console.log('defaults e presets reescritos em v2')
 ```
 
-- [ ] **Step 2: Rodar o codemod**
+- [ ] **Step 2: Run the codemod**
 
 ```bash
 npx vite-node scripts/migrate-presets.ts
@@ -1265,25 +1328,25 @@ grep -c '"schemaVersion": 2' src/theme/defaults.ts src/theme/presets/index.ts
 npx prettier --write src/theme/defaults.ts src/theme/presets/index.ts
 ```
 
-Expected: `defaults.ts` tem 1 ocorrência, `presets/index.ts` tem 6.
+Expected: `defaults.ts` has 1 occurrence, `presets/index.ts` has 6.
 
-- [ ] **Step 3: Trocar os tipos em `src/theme/schema.ts`**
+- [ ] **Step 3: Swap the types in `src/theme/schema.ts`**
 
 ```ts
 export const SCHEMA_VERSION = 2 as const
 ```
 
-A interface já foi renomeada para `ThemeV1` na Task 4, então aqui basta virar o alias, que é a linha que faz todo o resto do projeto passar a enxergar v2:
+The interface was already renamed to `ThemeV1` in Task 4, so here just flip the alias, which is the line that makes the rest of the project start seeing v2:
 
 ```ts
 export type Theme = ThemeV2
 ```
 
-`src/theme/migration.ts` não precisa de ajuste de tipo — a Task 5 já escreveu `migrateThemeV2` contra `ThemeV1` explicitamente. Apagar a função `migrateTheme` antiga e trocar seu uso em `src/app/Topbar.tsx` por `migrateThemeV2`. A assinatura de `validateTheme` passa a ser `asserts candidate is ThemeV1`.
+`src/theme/migration.ts` needs no type adjustment — Task 5 already wrote `migrateThemeV2` against `ThemeV1` explicitly. Delete the old `migrateTheme` function and swap its use in `src/app/Topbar.tsx` for `migrateThemeV2`. The `validateTheme` signature becomes `asserts candidate is ThemeV1`.
 
-- [ ] **Step 4: Adaptar o compilador**
+- [ ] **Step 4: Adapt the compiler**
 
-Primeiro, `src/theme/tokenNames.ts` precisa aceitar o grupo novo. `ThemeTokens` v1 não tem `scroll`, então acrescentá-lo a `tokenGroups` sem isto é erro de compilação:
+First, `src/theme/tokenNames.ts` needs to accept the new group. V1 `ThemeTokens` has no `scroll`, so adding it to `tokenGroups` without this is a compile error:
 
 ```ts
 import type { ThemeTokensV2 } from './schema'
@@ -1303,12 +1366,12 @@ export function tokenName(group: keyof ThemeTokensV2, key: string): string {
 }
 ```
 
-As chaves de `ScrollTokens` já começam por `scrollbar`, `scroll` ou `overscroll`, então o prefixo vazio produz `--scrollbar-thumb-hover`, `--scroll-padding-top` e `--overscroll-behavior` corretamente.
+The `ScrollTokens` keys already start with `scrollbar`, `scroll` or `overscroll`, so the empty prefix correctly produces `--scrollbar-thumb-hover`, `--scroll-padding-top` and `--overscroll-behavior`.
 
-Depois, em `src/compiler/compileTheme.ts`:
+Then, in `src/compiler/compileTheme.ts`:
 
-- `tokenGroups` passa a ser `Array<keyof ThemeTokensV2>` e ganha `'scroll'` ao final, para que os tokens de scroll sejam emitidos no `:root`.
-- `baseRules(theme)` passa a ler `theme.layers.base` em vez das strings literais, mantendo apenas as duas regras estruturais que continuam geradas:
+- `tokenGroups` becomes `Array<keyof ThemeTokensV2>` and gains `'scroll'` at the end, so that the scroll tokens are emitted on `:root`.
+- `baseRules(theme)` now reads `theme.layers.base` instead of the literal strings, keeping only the two structural rules that stay generated:
 
 ```ts
 function baseRules(theme: Theme): string[] {
@@ -1320,13 +1383,15 @@ function baseRules(theme: Theme): string[] {
     const emitted = rule(selector, declarations)
     if (emitted) rules.push(emitted)
   }
-  rules.push(`:root[data-theme="light"] { color-scheme: light; }\n:root[data-theme="dark"] { color-scheme: dark; }`)
+  rules.push(
+    `:root[data-theme="light"] { color-scheme: light; }\n:root[data-theme="dark"] { color-scheme: dark; }`,
+  )
   return rules
 }
 ```
 
-- `elementRules` lê `theme.layers.elements` em vez de `theme.elements`.
-- `stateRules` passa a iterar `theme.layers.states` diretamente, já que as chaves são seletores completos. A ordenação usa a tag antes dos dois-pontos para consultar `elementOrder`:
+- `elementRules` reads `theme.layers.elements` instead of `theme.elements`.
+- `stateRules` now iterates `theme.layers.states` directly, since the keys are complete selectors. Sorting uses the tag before the colon to consult `elementOrder`:
 
 ```ts
 function stateRules(theme: Theme): string[] {
@@ -1338,18 +1403,22 @@ function stateRules(theme: Theme): string[] {
     if (bi === -1) return -1
     return ai - bi
   })
-  return selectors.map((selector) => rule(selector, theme.layers.states[selector])).filter(Boolean)
+  return selectors
+    .map((selector) => rule(selector, theme.layers.states[selector]))
+    .filter(Boolean)
 }
 ```
 
-- `responsiveRules` lê `theme.layers.responsive` e `theme.breakpoints`:
+- `responsiveRules` reads `theme.layers.responsive` and `theme.breakpoints`:
 
 ```ts
 function responsiveRules(theme: Theme): string[] {
   const order = ['tablet', 'mobile']
   const keys = [
     ...order.filter((key) => key in theme.layers.responsive),
-    ...Object.keys(theme.layers.responsive).filter((key) => !order.includes(key)).sort(),
+    ...Object.keys(theme.layers.responsive)
+      .filter((key) => !order.includes(key))
+      .sort(),
   ]
   return keys
     .map((key) => {
@@ -1360,13 +1429,15 @@ function responsiveRules(theme: Theme): string[] {
         })
         .filter(Boolean)
         .join('\n')
-      return body ? `@media (max-width: ${theme.breakpoints[key]}px) {\n${body}\n}` : ''
+      return body
+        ? `@media (max-width: ${theme.breakpoints[key]}px) {\n${body}\n}`
+        : ''
     })
     .filter(Boolean)
 }
 ```
 
-Isso reaproveita a função `declarations` que já existe no arquivo e já aceita o parâmetro `indent`. Ela precisa de um ajuste: uma propriedade cuja chave já começa por `--` é emitida sem passar por `kebab`, porque as regras `:root` do responsivo escrevem custom properties.
+This reuses the `declarations` function that already exists in the file and already accepts the `indent` parameter. It needs one adjustment: a property whose key already starts with `--` is emitted without going through `kebab`, because the responsive `:root` rules write custom properties.
 
 ```ts
 function declarations(styles: CssPropertyMap, indent = '  '): string {
@@ -1381,9 +1452,9 @@ function declarations(styles: CssPropertyMap, indent = '  '): string {
 }
 ```
 
-- [ ] **Step 5: Adaptar o store**
+- [ ] **Step 5: Adapt the store**
 
-Em `src/theme/store.ts`, substituir `setElementProperty`, `removeElementProperty`, `setStateProperty` e `removeStateProperty` por uma API por camada, e `setElementTargets` passa a escrever na camada `elements`:
+In `src/theme/store.ts`, replace `setElementProperty`, `removeElementProperty`, `setStateProperty` and `removeStateProperty` with a per-layer API, and `setElementTargets` now writes to the `elements` layer:
 
 ```ts
 export type LayerName = 'base' | 'elements' | 'states'
@@ -1405,13 +1476,13 @@ removeLayerProperty: (layer, selector, property) => set((state) => {
 }),
 ```
 
-`setElementTargets` troca `next.elements[...]` por `next.layers.elements[...]` nos quatro pontos onde aparece.
+`setElementTargets` swaps `next.elements[...]` for `next.layers.elements[...]` in the four places where it appears.
 
-- [ ] **Step 6: Adaptar os editores**
+- [ ] **Step 6: Adapt the editors**
 
-Em `src/editor/ElementEditor.tsx`, `valueFor` lê `theme.layers.elements[target.selector]?.[target.property]` e `overrideCount` soma sobre `theme.layers.elements`.
+In `src/editor/ElementEditor.tsx`, `valueFor` reads `theme.layers.elements[target.selector]?.[target.property]` and `overrideCount` sums over `theme.layers.elements`.
 
-Em `src/editor/StateEditor.tsx`, a leitura e a escrita passam a usar a chave achatada:
+In `src/editor/StateEditor.tsx`, reads and writes now use the flattened key:
 
 ```tsx
 const key = `${selectedElement}:${state}`
@@ -1422,33 +1493,33 @@ const change = (property: string, value: string) =>
     : removeLayerProperty('states', key, property)
 ```
 
-Trocar os hooks `setStateProperty`/`removeStateProperty` por `setLayerProperty`/`removeLayerProperty` na lista de seletores da store no topo do componente.
+Swap the `setStateProperty`/`removeStateProperty` hooks for `setLayerProperty`/`removeLayerProperty` in the store selector list at the top of the component.
 
-- [ ] **Step 7: Verificar que a saída não regrediu**
+- [ ] **Step 7: Verify the output did not regress**
 
 Run: `npx vitest run tests/presets.test.ts`
-Expected: FAIL nos seis presets.
+Expected: FAIL on all six presets.
 
 ```bash
 npx vite-node scripts/regenerate-snapshots.ts
 git diff tests/snapshots/presets/minimal.css
 ```
 
-Expected: **exatamente quatro** categorias de diferença, e nenhuma outra:
+Expected: **exactly four** categories of difference, and no other:
 
-1. dez linhas `--overscroll-behavior`, `--scroll-behavior`, `--scroll-padding-top`, `--scrollbar-*` acrescentadas ao `:root` — os tokens de scroll novos;
-2. quatro linhas `--body-padding-sm`, `--body-padding-xs`, `--section-spacing-sm`, `--space-2xl-xs` acrescentadas ao `:root`;
-3. reordenação alfabética das declarações em exatamente duas regras — `html` passa a `background` antes de `color-scheme`, e `input, textarea, select, button` passa a ter `background` antes de `border`. As regras semeadas passam por `declarations()`, que ordena alfabeticamente, enquanto as strings literais antigas não eram ordenadas;
-4. o par `:root[data-theme="light"]` / `:root[data-theme="dark"]` desce da terceira posição do bloco base para o fim dele, porque passa a ser emitido depois do laço sobre `layers.base`. É inerte: `:root[data-theme]` tem especificidade 0,1,1 e vence `html` 0,0,1 em qualquer ordem.
+1. ten added `--overscroll-behavior`, `--scroll-behavior`, `--scroll-padding-top`, `--scrollbar-*` lines on `:root` — the new scroll tokens;
+2. four added `--body-padding-sm`, `--body-padding-xs`, `--section-spacing-sm`, `--space-2xl-xs` lines on `:root`;
+3. alphabetical reordering of declarations in exactly two rules — `html` gets `background` before `color-scheme`, and `input, textarea, select, button` gets `background` before `border`. The seeded rules go through `declarations()`, which sorts alphabetically, while the old literal strings were not sorted;
+4. the `:root[data-theme="light"]` / `:root[data-theme="dark"]` pair moves from third position in the base block to its end, because it is now emitted after the loop over `layers.base`. It is inert: `:root[data-theme]` has 0,1,1 specificity and beats `html` 0,0,1 in any order.
 
-E, dentro dos media queries, `--body-padding: 1rem` vira `--body-padding: var(--body-padding-sm)`, com o token novo valendo `1rem` — mesmo valor computado.
+And, inside the media queries, `--body-padding: 1rem` becomes `--body-padding: var(--body-padding-sm)`, with the new token worth `1rem` — same computed value.
 
-Qualquer seletor que suma, qualquer valor que mude, é regressão. Investigar antes de commitar.
+Any selector that disappears, any value that changes, is a regression. Investigate before committing.
 
-- [ ] **Step 8: Rodar a suíte inteira**
+- [ ] **Step 8: Run the full suite**
 
 Run: `npm test && npm run lint && npm run build`
-Expected: PASS. `tests/elementProfiles.test.ts` pode precisar de ajuste se referenciar `theme.elements`; trocar para `theme.layers.elements`.
+Expected: PASS. `tests/elementProfiles.test.ts` may need adjusting if it references `theme.elements`; switch to `theme.layers.elements`.
 
 - [ ] **Step 9: Commit**
 
@@ -1468,19 +1539,21 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 ---
 
-### Task 7: Recuperar o tema salvo em vez de descartá-lo
+### Task 7: Recover the saved theme instead of discarding it
 
-`readStoredTheme()` em `src/theme/store.ts:64-74` descarta em silêncio qualquer conteúdo com `schemaVersion !== 1`, sem usar o `migrateTheme` que existe ao lado. Depois da Task 6 isso significa que **todo usuário existente perde o tema** ao abrir o app.
+`readStoredTheme()` in `src/theme/store.ts:64-74` silently discards any content with `schemaVersion !== 1`, without using the `migrateTheme` that exists next to it. After Task 6 this means **every existing user loses their theme** when opening the app.
 
 **Files:**
+
 - Modify: `src/theme/store.ts:64-74`
 - Create: `tests/storeMigration.test.ts`
 
 **Interfaces:**
-- Consumes: `migrateThemeV2` de `src/theme/migration.ts`
-- Produces: `readStoredTheme(): Theme` (não exportada; testada pelo efeito na store)
 
-- [ ] **Step 1: Escrever o teste que falha**
+- Consumes: `migrateThemeV2` from `src/theme/migration.ts`
+- Produces: `readStoredTheme(): Theme` (not exported; tested via its effect on the store)
+
+- [ ] **Step 1: Write the failing test**
 
 `tests/storeMigration.test.ts`:
 
@@ -1488,7 +1561,10 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 import { readFileSync } from 'node:fs'
 import { beforeEach, describe, expect, it } from 'vitest'
 
-const themeV1 = readFileSync(new URL('./fixtures/theme-v1.json', import.meta.url), 'utf8')
+const themeV1 = readFileSync(
+  new URL('./fixtures/theme-v1.json', import.meta.url),
+  'utf8',
+)
 const STORAGE_KEY = 'semantic-css-studio/theme-v1'
 
 describe('leitura do tema salvo', () => {
@@ -1521,16 +1597,16 @@ describe('leitura do tema salvo', () => {
 })
 ```
 
-Adicionar `import { vi } from 'vitest'` ao topo.
+Add `import { vi } from 'vitest'` at the top.
 
-- [ ] **Step 2: Rodar para verificar que falha**
+- [ ] **Step 2: Run to verify it fails**
 
 Run: `npx vitest run tests/storeMigration.test.ts`
-Expected: FAIL no primeiro teste — o tema v1 salvo é descartado e `layers.elements.article` vem do padrão, não do salvo. Para tornar a falha inequívoca, o teste checa `schemaVersion` antes.
+Expected: FAIL on the first test — the saved v1 theme is discarded and `layers.elements.article` comes from the default, not the saved one. To make the failure unambiguous, the test checks `schemaVersion` first.
 
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
-Em `src/theme/store.ts`, substituir `readStoredTheme`:
+In `src/theme/store.ts`, replace `readStoredTheme`:
 
 ```ts
 function readStoredTheme(): Theme {
@@ -1546,14 +1622,14 @@ function readStoredTheme(): Theme {
 }
 ```
 
-E adicionar o import de `migrateThemeV2`.
+And add the `migrateThemeV2` import.
 
-- [ ] **Step 4: Rodar para verificar que passa**
+- [ ] **Step 4: Run to verify it passes**
 
 Run: `npx vitest run tests/storeMigration.test.ts`
-Expected: PASS, 3 testes
+Expected: PASS, 3 tests
 
-- [ ] **Step 5: Rodar a suíte inteira e commitar**
+- [ ] **Step 5: Run the full suite and commit**
 
 Run: `npm test && npm run lint`
 Expected: PASS
@@ -1571,31 +1647,35 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 ---
 
-## Fase 2 — Camadas
+## Phase 2 — Layers
 
-### Task 8: Emitir o CSS em `@layer` com a base em `:where()`
+### Task 8: Emit CSS in `@layer` with the base in `:where()`
 
-O ganho: CSS sem camada sempre vence CSS em camada, independente de especificidade. Somado ao `:where()`, que zera a especificidade da base, o tema passa a ser piso e não teto — quem consome sobrescreve com uma linha, sem `!important` e sem caçar especificidade.
+The gain: CSS without a layer always beats CSS in a layer, regardless of specificity. Combined with `:where()`, which zeroes the base's specificity, the theme becomes floor rather than ceiling — consumers override with one line, no `!important` and no specificity hunting.
 
 **Files:**
+
 - Modify: `src/compiler/compileTheme.ts`
 - Modify: `tests/compiler.test.ts`
 - Modify: `tests/snapshots/presets/*.css`
 
 **Interfaces:**
-- Consumes: `Theme` v2 da Task 6
-- Produces: `compileTheme(theme: Theme): string` com saída em camadas
 
-- [ ] **Step 1: Escrever o teste que falha**
+- Consumes: Task 6 v2 `Theme`
+- Produces: `compileTheme(theme: Theme): string` with layered output
 
-Acrescentar a `tests/compiler.test.ts`:
+- [ ] **Step 1: Write the failing test**
+
+Append to `tests/compiler.test.ts`:
 
 ```ts
 describe('camadas', () => {
   const css = compileTheme(presets.Minimal)
 
   it('declara a ordem das camadas antes de qualquer regra', () => {
-    const declaration = css.indexOf('@layer reset, base, elements, states, responsive;')
+    const declaration = css.indexOf(
+      '@layer reset, base, elements, states, responsive;',
+    )
     expect(declaration).toBeGreaterThan(-1)
     expect(declaration).toBeLessThan(css.indexOf('@layer base'))
   })
@@ -1622,7 +1702,9 @@ describe('camadas', () => {
   })
 
   it('continua deterministico', () => {
-    expect(compileTheme(presets.Minimal)).toBe(compileTheme(structuredClone(presets.Minimal)))
+    expect(compileTheme(presets.Minimal)).toBe(
+      compileTheme(structuredClone(presets.Minimal)),
+    )
   })
 
   it('minifica sem quebrar as camadas', () => {
@@ -1633,17 +1715,23 @@ describe('camadas', () => {
 })
 ```
 
-- [ ] **Step 2: Rodar para verificar que falha**
+- [ ] **Step 2: Run to verify it fails**
 
 Run: `npx vitest run tests/compiler.test.ts`
-Expected: FAIL — a saída ainda é plana, sem `@layer`.
+Expected: FAIL — the output is still flat, with no `@layer`.
 
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
-Em `src/compiler/compileTheme.ts`, adicionar o utilitário de indentação e a montagem por camada:
+In `src/compiler/compileTheme.ts`, add the indentation utility and the per-layer assembly:
 
 ```ts
-const LAYER_ORDER = ['reset', 'base', 'elements', 'states', 'responsive'] as const
+const LAYER_ORDER = [
+  'reset',
+  'base',
+  'elements',
+  'states',
+  'responsive',
+] as const
 
 function indent(block: string): string {
   return block
@@ -1658,7 +1746,7 @@ function layerBlock(name: string, rules: string[]): string {
 }
 ```
 
-`baseRules` passa a envolver cada regra semeada em `:where()`. As duas regras estruturais **não** são envolvidas: `:root[data-theme]` precisa da especificidade de atributo para vencer os tokens claros, e o reset já é neutro por natureza.
+`baseRules` now wraps each seeded rule in `:where()`. The two structural rules are **not** wrapped: `:root[data-theme]` needs the attribute specificity to beat the light tokens, and the reset is already neutral by nature.
 
 ```ts
 function resetRules(theme: Theme): string[] {
@@ -1673,14 +1761,16 @@ function baseRules(theme: Theme): string[] {
     const emitted = rule(`:where(${selector})`, declarations)
     if (emitted) rules.push(emitted)
   }
-  rules.push(`:root[data-theme="light"] { color-scheme: light; }\n:root[data-theme="dark"] { color-scheme: dark; }`)
+  rules.push(
+    `:root[data-theme="light"] { color-scheme: light; }\n:root[data-theme="dark"] { color-scheme: dark; }`,
+  )
   const dark = darkModeRule(theme)
   if (dark) rules.push(dark)
   return rules
 }
 ```
 
-`compileTheme` passa a ser:
+`compileTheme` becomes:
 
 ```ts
 export function compileTheme(theme: Theme): string {
@@ -1697,14 +1787,14 @@ export function compileTheme(theme: Theme): string {
 }
 ```
 
-Os tokens e o dark mode passam a viver dentro de `@layer base`, conforme a spec: assim um `:root { --color-primary: red }` sem camada, escrito por quem consome o tema, vence.
+Tokens and dark mode now live inside `@layer base`, per the spec: that way a `:root { --color-primary: red }` without a layer, written by whoever consumes the theme, wins.
 
-- [ ] **Step 4: Rodar para verificar que passa**
+- [ ] **Step 4: Run to verify it passes**
 
 Run: `npx vitest run tests/compiler.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Regerar os snapshots e auditar**
+- [ ] **Step 5: Regenerate the snapshots and audit**
 
 ```bash
 npx vite-node scripts/regenerate-snapshots.ts
@@ -1712,23 +1802,23 @@ npx vitest run tests/presets.test.ts
 grep -c "@layer" tests/snapshots/presets/minimal.css
 ```
 
-Expected: os testes passam; o snapshot tem 6 ocorrências de `@layer` (a declaração de ordem mais os cinco blocos, descontando camadas vazias).
+Expected: the tests pass; the snapshot has 6 occurrences of `@layer` (the order declaration plus the five blocks, minus empty layers).
 
-Conferir manualmente em `tests/snapshots/presets/minimal.css` que nenhum seletor sumiu:
+Manually confirm in `tests/snapshots/presets/minimal.css` that no selector is gone:
 
 ```bash
 git diff tests/snapshots/presets/minimal.css | grep '^-' | grep -v '^---' | grep -v '^-\s*$' | head -40
 ```
 
-Expected: as linhas removidas são apenas reindentação e reposicionamento. Nenhum seletor ou declaração deve desaparecer do arquivo.
+Expected: the removed lines are only reindentation and repositioning. No selector or declaration should disappear from the file.
 
-- [ ] **Step 6: Verificar no browser**
+- [ ] **Step 6: Verify in the browser**
 
 ```bash
 npm run dev
 ```
 
-Abrir o preview, escolher o preset Minimal e confirmar que o documento continua estilizado — mesmas cores, tipografia e espaçamentos de antes. Uma camada mal fechada produz CSS silenciosamente inerte, e só a inspeção visual pega isso.
+Open the preview, pick the Minimal preset and confirm the document is still styled — same colors, typography and spacing as before. A badly closed layer produces silently inert CSS, and only visual inspection catches that.
 
 - [ ] **Step 7: Commit**
 
@@ -1748,17 +1838,19 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 ---
 
-### Task 9: Ações de store para a camada base
+### Task 9: Store actions for the base layer
 
 **Files:**
+
 - Modify: `src/theme/store.ts`
 - Create: `tests/baseLayerStore.test.ts`
 
 **Interfaces:**
-- Consumes: `seedBaseRules` de `src/theme/baseRules.ts`; `setLayerProperty`/`removeLayerProperty` da Task 6
-- Produces: `resetBaseRule(selector: string): void`, `toggleBaseRule(selector: string, enabled: boolean): void`, e o seletor derivado `isBaseRuleModified(theme, selector): boolean`
 
-- [ ] **Step 1: Escrever o teste que falha**
+- Consumes: `seedBaseRules` from `src/theme/baseRules.ts`; Task 6 `setLayerProperty`/`removeLayerProperty`
+- Produces: `resetBaseRule(selector: string): void`, `toggleBaseRule(selector: string, enabled: boolean): void`, and the derived selector `isBaseRuleModified(theme, selector): boolean`
+
+- [ ] **Step 1: Write the failing test**
 
 `tests/baseLayerStore.test.ts`:
 
@@ -1773,49 +1865,67 @@ describe('camada base na store', () => {
   })
 
   it('edita uma declaracao da regra base', () => {
-    useStudioStore.getState().setLayerProperty('base', 'pre code', 'padding', '4px')
-    expect(useStudioStore.getState().theme.layers.base['pre code'].padding).toBe('4px')
+    useStudioStore
+      .getState()
+      .setLayerProperty('base', 'pre code', 'padding', '4px')
+    expect(
+      useStudioStore.getState().theme.layers.base['pre code'].padding,
+    ).toBe('4px')
   })
 
   it('reconhece uma regra modificada', () => {
     const theme = () => useStudioStore.getState().theme
     expect(isBaseRuleModified(theme(), 'pre code')).toBe(false)
-    useStudioStore.getState().setLayerProperty('base', 'pre code', 'padding', '4px')
+    useStudioStore
+      .getState()
+      .setLayerProperty('base', 'pre code', 'padding', '4px')
     expect(isBaseRuleModified(theme(), 'pre code')).toBe(true)
   })
 
   it('restaura a regra ao padrao semeado', () => {
-    useStudioStore.getState().setLayerProperty('base', 'pre code', 'padding', '4px')
+    useStudioStore
+      .getState()
+      .setLayerProperty('base', 'pre code', 'padding', '4px')
     useStudioStore.getState().resetBaseRule('pre code')
-    expect(useStudioStore.getState().theme.layers.base['pre code']).toEqual(seedBaseRules()['pre code'])
+    expect(useStudioStore.getState().theme.layers.base['pre code']).toEqual(
+      seedBaseRules()['pre code'],
+    )
   })
 
   it('desliga e religa uma regra sem perder as declaracoes', () => {
     const store = useStudioStore.getState()
     store.setLayerProperty('base', 'pre code', 'padding', '4px')
     store.toggleBaseRule('pre code', false)
-    expect(useStudioStore.getState().theme.layers.base['pre code']).toBeUndefined()
+    expect(
+      useStudioStore.getState().theme.layers.base['pre code'],
+    ).toBeUndefined()
     useStudioStore.getState().toggleBaseRule('pre code', true)
     // religar traz de volta o padrao semeado, nao a edicao descartada
-    expect(useStudioStore.getState().theme.layers.base['pre code']).toEqual(seedBaseRules()['pre code'])
+    expect(useStudioStore.getState().theme.layers.base['pre code']).toEqual(
+      seedBaseRules()['pre code'],
+    )
   })
 
   it('registra a mudanca no historico de undo', () => {
-    useStudioStore.getState().setLayerProperty('base', 'pre code', 'padding', '4px')
+    useStudioStore
+      .getState()
+      .setLayerProperty('base', 'pre code', 'padding', '4px')
     useStudioStore.getState().undo()
-    expect(useStudioStore.getState().theme.layers.base['pre code'].padding).toBe('0')
+    expect(
+      useStudioStore.getState().theme.layers.base['pre code'].padding,
+    ).toBe('0')
   })
 })
 ```
 
-- [ ] **Step 2: Rodar para verificar que falha**
+- [ ] **Step 2: Run to verify it fails**
 
 Run: `npx vitest run tests/baseLayerStore.test.ts`
 Expected: FAIL — `isBaseRuleModified is not a function`
 
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
-Em `src/theme/store.ts`, acrescentar à interface `StudioState` e à implementação:
+In `src/theme/store.ts`, add to the `StudioState` interface and the implementation:
 
 ```ts
 resetBaseRule: (selector: string) => void
@@ -1844,7 +1954,7 @@ toggleBaseRule: (selector, enabled) => set((state) => {
 }),
 ```
 
-E, fora da store, o seletor derivado:
+And, outside the store, the derived selector:
 
 ```ts
 export function isBaseRuleModified(theme: Theme, selector: string): boolean {
@@ -1856,12 +1966,12 @@ export function isBaseRuleModified(theme: Theme, selector: string): boolean {
 }
 ```
 
-- [ ] **Step 4: Rodar para verificar que passa**
+- [ ] **Step 4: Run to verify it passes**
 
 Run: `npx vitest run tests/baseLayerStore.test.ts`
-Expected: PASS, 5 testes
+Expected: PASS, 5 tests
 
-- [ ] **Step 5: Rodar a suíte inteira e commitar**
+- [ ] **Step 5: Run the full suite and commit**
 
 Run: `npm test && npm run lint`
 Expected: PASS
@@ -1875,18 +1985,20 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 ---
 
-### Task 10: Painel da camada base
+### Task 10: Base-layer panel
 
 **Files:**
+
 - Create: `src/editor/BaseRulesEditor.tsx`
-- Modify: `src/editor/EditorSidebar.tsx`, `src/app/App.tsx`, `src/theme/store.ts` (tipo `EditorSection`), `src/studio.css`
+- Modify: `src/editor/EditorSidebar.tsx`, `src/app/App.tsx`, `src/theme/store.ts` (`EditorSection` type), `src/studio.css`
 - Create: `tests/baseRulesEditor.test.tsx`
 
 **Interfaces:**
-- Consumes: `seedBaseRules`, `isBaseRuleModified`, `resetBaseRule`, `toggleBaseRule`, `setLayerProperty`, `removeLayerProperty`
-- Produces: componente `BaseRulesEditor`; `EditorSection` ganha o valor `'Base'`
 
-- [ ] **Step 1: Escrever o teste que falha**
+- Consumes: `seedBaseRules`, `isBaseRuleModified`, `resetBaseRule`, `toggleBaseRule`, `setLayerProperty`, `removeLayerProperty`
+- Produces: `BaseRulesEditor` component; `EditorSection` gains the `'Base'` value
+
+- [ ] **Step 1: Write the failing test**
 
 `tests/baseRulesEditor.test.tsx`:
 
@@ -1916,33 +2028,41 @@ describe('BaseRulesEditor', () => {
     render(<BaseRulesEditor />)
     const field = screen.getByLabelText('padding em pre code')
     fireEvent.change(field, { target: { value: '4px' } })
-    expect(useStudioStore.getState().theme.layers.base['pre code'].padding).toBe('4px')
+    expect(
+      useStudioStore.getState().theme.layers.base['pre code'].padding,
+    ).toBe('4px')
   })
 
   it('marca a regra como modificada e permite restaurar', () => {
     render(<BaseRulesEditor />)
-    fireEvent.change(screen.getByLabelText('padding em pre code'), { target: { value: '4px' } })
+    fireEvent.change(screen.getByLabelText('padding em pre code'), {
+      target: { value: '4px' },
+    })
     const group = screen.getByRole('group', { name: /pre code/ })
     expect(within(group).getByText(/modificada/i)).toBeInTheDocument()
     fireEvent.click(within(group).getByRole('button', { name: /restaurar/i }))
-    expect(useStudioStore.getState().theme.layers.base['pre code'].padding).toBe('0')
+    expect(
+      useStudioStore.getState().theme.layers.base['pre code'].padding,
+    ).toBe('0')
   })
 
   it('desliga a regra', () => {
     render(<BaseRulesEditor />)
     const group = screen.getByRole('group', { name: /pre code/ })
     fireEvent.click(within(group).getByRole('checkbox'))
-    expect(useStudioStore.getState().theme.layers.base['pre code']).toBeUndefined()
+    expect(
+      useStudioStore.getState().theme.layers.base['pre code'],
+    ).toBeUndefined()
   })
 })
 ```
 
-- [ ] **Step 2: Rodar para verificar que falha**
+- [ ] **Step 2: Run to verify it fails**
 
 Run: `npx vitest run tests/baseRulesEditor.test.tsx`
 Expected: FAIL — `Cannot find module '../src/editor/BaseRulesEditor'`
 
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
 `src/editor/BaseRulesEditor.tsx`:
 
@@ -1959,69 +2079,110 @@ export function BaseRulesEditor() {
   const resetRule = useStudioStore((s) => s.resetBaseRule)
   const toggleRule = useStudioStore((s) => s.toggleBaseRule)
 
-  return <div className="editor-panel base-rules-editor">
-    <div className="panel-heading">
-      <div>
-        <h2>Regras-base</h2>
-        <p>O piso do tema, aplicado antes de qualquer override de elemento.</p>
+  return (
+    <div className="editor-panel base-rules-editor">
+      <div className="panel-heading">
+        <div>
+          <h2>Regras-base</h2>
+          <p>
+            O piso do tema, aplicado antes de qualquer override de elemento.
+          </p>
+        </div>
       </div>
+
+      <p className="panel-note" role="note">
+        Estas regras são emitidas dentro de <code>:where()</code>, com
+        especificidade zero, e dentro de <code>@layer base</code>. Qualquer CSS
+        escrito por quem consome o tema vence sobre elas sem precisar de
+        <code>!important</code>.
+      </p>
+
+      {Object.keys(seeded).map((selector) => {
+        const enabled = Boolean(theme.layers.base[selector])
+        const declarations = theme.layers.base[selector] ?? {}
+        const modified = enabled && isBaseRuleModified(theme, selector)
+
+        return (
+          <section
+            key={selector}
+            className="base-rule"
+            role="group"
+            aria-label={`Regra ${selector}`}
+          >
+            <header>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={enabled}
+                  aria-label={`Ativar regra ${selector}`}
+                  onChange={(event) =>
+                    toggleRule(selector, event.target.checked)
+                  }
+                />
+                <code>{selector}</code>
+              </label>
+              {modified && <span className="badge">modificada</span>}
+              {modified && (
+                <button
+                  type="button"
+                  className="tiny-button"
+                  onClick={() => resetRule(selector)}
+                >
+                  Restaurar
+                </button>
+              )}
+            </header>
+
+            {enabled && (
+              <div className="field-grid">
+                {Object.keys(seeded[selector]).map((property) => (
+                  <TextField
+                    key={property}
+                    label={`${property} em ${selector}`}
+                    value={declarations[property] ?? ''}
+                    onChange={(value) =>
+                      setProperty('base', selector, property, value)
+                    }
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        )
+      })}
     </div>
-
-    <p className="panel-note" role="note">
-      Estas regras são emitidas dentro de <code>:where()</code>, com
-      especificidade zero, e dentro de <code>@layer base</code>. Qualquer CSS
-      escrito por quem consome o tema vence sobre elas sem precisar de
-      <code>!important</code>.
-    </p>
-
-    {Object.keys(seeded).map((selector) => {
-      const enabled = Boolean(theme.layers.base[selector])
-      const declarations = theme.layers.base[selector] ?? {}
-      const modified = enabled && isBaseRuleModified(theme, selector)
-
-      return <section key={selector} className="base-rule" role="group" aria-label={`Regra ${selector}`}>
-        <header>
-          <label>
-            <input
-              type="checkbox"
-              checked={enabled}
-              aria-label={`Ativar regra ${selector}`}
-              onChange={(event) => toggleRule(selector, event.target.checked)}
-            />
-            <code>{selector}</code>
-          </label>
-          {modified && <span className="badge">modificada</span>}
-          {modified && <button type="button" className="tiny-button" onClick={() => resetRule(selector)}>Restaurar</button>}
-        </header>
-
-        {enabled && <div className="field-grid">
-          {Object.keys(seeded[selector]).map((property) => <TextField
-            key={property}
-            label={`${property} em ${selector}`}
-            value={declarations[property] ?? ''}
-            onChange={(value) => setProperty('base', selector, property, value)}
-          />)}
-        </div>}
-      </section>
-    })}
-  </div>
+  )
 }
 ```
 
-- [ ] **Step 4: Ligar à navegação**
+- [ ] **Step 4: Wire into navigation**
 
-Em `src/theme/store.ts`, `EditorSection` ganha `'Base'`:
+In `src/theme/store.ts`, `EditorSection` gains `'Base'`:
 
 ```ts
-export type EditorSection = 'Colors' | 'Typography' | 'Spacing' | 'Layout' | 'Radius' | 'Shadows' | 'Base' | 'Elements' | 'States' | 'Accessibility'
+export type EditorSection =
+  | 'Colors'
+  | 'Typography'
+  | 'Spacing'
+  | 'Layout'
+  | 'Radius'
+  | 'Shadows'
+  | 'Base'
+  | 'Elements'
+  | 'States'
+  | 'Accessibility'
 ```
 
-Em `src/editor/EditorSidebar.tsx`, substituir o `slice(0,6)`/`slice(6)` por agrupamento declarado, o que remove o acoplamento à ordem do array:
+In `src/editor/EditorSidebar.tsx`, replace the `slice(0,6)`/`slice(6)` with declared grouping, which removes the coupling to the array order:
 
 ```tsx
 import { useStudioStore, type EditorSection } from '../theme/store'
 
-const sections: Array<{ name: EditorSection; icon: string; group: 'TOKENS' | 'REGRAS' | 'CHECAGEM' }> = [
+const sections: Array<{
+  name: EditorSection
+  icon: string
+  group: 'TOKENS' | 'REGRAS' | 'CHECAGEM'
+}> = [
   { name: 'Colors', icon: '◐', group: 'TOKENS' },
   { name: 'Typography', icon: 'Aa', group: 'TOKENS' },
   { name: 'Spacing', icon: '↕', group: 'TOKENS' },
@@ -2040,56 +2201,112 @@ export function EditorSidebar() {
   const section = useStudioStore((s) => s.section)
   const setSection = useStudioStore((s) => s.setSection)
 
-  return <aside className="studio-sidebar">
-    {groups.map((group) => <div key={group}>
-      <div className="sidebar-label">{group}</div>
-      {sections.filter((item) => item.group === group).map((item) => <button
-        key={item.name}
-        className={section === item.name ? 'active' : ''}
-        aria-current={section === item.name ? 'page' : undefined}
-        onClick={() => setSection(item.name)}
-      ><span>{item.icon}</span>{item.name}</button>)}
-    </div>)}
-  </aside>
+  return (
+    <aside className="studio-sidebar">
+      {groups.map((group) => (
+        <div key={group}>
+          <div className="sidebar-label">{group}</div>
+          {sections
+            .filter((item) => item.group === group)
+            .map((item) => (
+              <button
+                key={item.name}
+                className={section === item.name ? 'active' : ''}
+                aria-current={section === item.name ? 'page' : undefined}
+                onClick={() => setSection(item.name)}
+              >
+                <span>{item.icon}</span>
+                {item.name}
+              </button>
+            ))}
+        </div>
+      ))}
+    </aside>
+  )
 }
 ```
 
-Em `src/app/App.tsx`, adicionar ao `switch` de `ActiveEditor`:
+In `src/app/App.tsx`, add to the `ActiveEditor` `switch`:
 
 ```tsx
 case 'Base': return <BaseRulesEditor />
 ```
 
-com o import correspondente.
+with the matching import.
 
-- [ ] **Step 5: Estilizar**
+- [ ] **Step 5: Style**
 
-Acrescentar a `src/studio.css`:
+Append to `src/studio.css`:
 
 ```css
-.panel-note { font-size:11px; line-height:1.5; color:#8b95a7; background:#141a24; border:1px solid #29303e; border-left:3px solid #7c3aed; border-radius:6px; padding:10px 12px; margin-bottom:16px; }
-.panel-note code { background:#1c2330; border-radius:3px; padding:1px 4px; }
-.base-rule { border:1px solid #2b3240; border-radius:8px; background:#11161e; padding:10px 12px; margin-bottom:10px; }
-.base-rule header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-.base-rule header label { display:flex; align-items:center; gap:8px; flex:1; min-width:0; cursor:pointer; }
-.base-rule header code { font-size:11px; color:#c8d0dd; overflow-wrap:anywhere; }
-.badge { font-size:9px; text-transform:uppercase; letter-spacing:.06em; color:#f0b429; border:1px solid #5c4a1a; background:#221c0d; border-radius:4px; padding:2px 5px; }
+.panel-note {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #8b95a7;
+  background: #141a24;
+  border: 1px solid #29303e;
+  border-left: 3px solid #7c3aed;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+}
+.panel-note code {
+  background: #1c2330;
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+.base-rule {
+  border: 1px solid #2b3240;
+  border-radius: 8px;
+  background: #11161e;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.base-rule header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.base-rule header label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+.base-rule header code {
+  font-size: 11px;
+  color: #c8d0dd;
+  overflow-wrap: anywhere;
+}
+.badge {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #f0b429;
+  border: 1px solid #5c4a1a;
+  background: #221c0d;
+  border-radius: 4px;
+  padding: 2px 5px;
+}
 ```
 
-- [ ] **Step 6: Rodar para verificar que passa**
+- [ ] **Step 6: Run to verify it passes**
 
 Run: `npx vitest run tests/baseRulesEditor.test.tsx`
-Expected: PASS, 5 testes
+Expected: PASS, 5 tests
 
-- [ ] **Step 7: Verificar no browser**
+- [ ] **Step 7: Verify in the browser**
 
 ```bash
 npm run dev
 ```
 
-Abrir a seção Base, desligar `pre code`, e confirmar no preview que o `<code>` dentro de `<pre>` volta a herdar o fundo de `code` — que é justamente o comportamento que a regra-base existia para suprimir. Religar e confirmar que volta ao normal.
+Open the Base section, switch off `pre code`, and confirm in the preview that `<code>` inside `<pre>` goes back to inheriting the `code` background — which is exactly the behavior the base rule existed to suppress. Switch back on and confirm it returns to normal.
 
-- [ ] **Step 8: Rodar a suíte inteira e commitar**
+- [ ] **Step 8: Run the full suite and commit**
 
 Run: `npm test && npm run lint && npm run build && npm run test:e2e`
 Expected: PASS
@@ -2108,16 +2325,16 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 ---
 
-## Verificação final da entrega
+## Final delivery verification
 
-- [ ] `npm test` — toda a suíte passa
-- [ ] `npm run lint` — sem erro
-- [ ] `npm run build` — compila
-- [ ] `npm run test:e2e` — fluxo essencial passa
-- [ ] `git diff --stat <commit-inicial>..HEAD tests/snapshots/` — os seis snapshots mudaram e nenhum seletor sumiu
-- [ ] Abrir o app com um tema v1 salvo no `localStorage` e confirmar que ele sobrevive à migração
-- [ ] Exportar o CSS e conferir que um `:root { --color-primary: red }` escrito depois do `<link>` do tema efetivamente vence
+- [ ] `npm test` — full suite passes
+- [ ] `npm run lint` — no errors
+- [ ] `npm run build` — compiles
+- [ ] `npm run test:e2e` — essential flow passes
+- [ ] `git diff --stat <commit-inicial>..HEAD tests/snapshots/` — all six snapshots changed and no selector is gone
+- [ ] Open the app with a v1 theme saved in `localStorage` and confirm it survives the migration
+- [ ] Export the CSS and check that a `:root { --color-primary: red }` written after the theme `<link>` effectively wins
 
-## Fora do escopo desta entrega
+## Out of scope for this delivery
 
-Emissão das regras de scroll, `@media print` e o bloco `prefers-reduced-motion` ficam para a entrega de Scroll — os tokens e a flag `options.reducedMotion` já existem no schema, mas não são consumidos aqui. O catálogo exaustivo de propriedades, as variantes de seletor e o campo de seletor livre na interface ficam para as entregas seguintes; o validador da Task 3 já está pronto para o escape hatch.
+Emitting the scroll rules, `@media print` and the `prefers-reduced-motion` block stay for the Scroll delivery — the tokens and the `options.reducedMotion` flag already exist in the schema, but are not consumed here. The exhaustive property catalog, the selector variants and the free selector field in the interface stay for the following deliveries; the Task 3 validator is already ready for the escape hatch.

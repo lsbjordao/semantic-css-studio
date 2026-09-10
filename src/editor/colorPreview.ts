@@ -7,7 +7,9 @@ const VAR_REF = /^\s*var\(\s*(--[A-Za-z0-9-_]+)\s*(?:,.*)?\)\s*$/
 function tokenValueFor(theme: Theme, cssVar: string): string | null {
   const groups = Object.keys(theme.tokens) as Array<keyof ThemeTokensV2>
   for (const group of groups) {
-    const entries = Object.entries(theme.tokens[group] as Record<string, string>)
+    const entries = Object.entries(
+      theme.tokens[group] as Record<string, string>,
+    )
     for (const [key, value] of entries) {
       if (`--${tokenName(group, key)}` === cssVar) return String(value)
     }
@@ -16,11 +18,11 @@ function tokenValueFor(theme: Theme, cssVar: string): string | null {
 }
 
 /**
- * Cor para a pastilha do controle de cor. Valores de preset quase sempre sao
- * `var(--token)`, e sem resolver a referencia a pastilha cai no preto
- * genérico — o botao azul aparecia com controle preto. Resolve um nivel de
- * `var()` (tokens podem referenciar outros tokens); o texto do campo segue
- * mostrando o valor real, so a pastilha e prevista.
+ * Swatch color for the color control. Preset values are almost always
+ * `var(--token)`, and without resolving the reference the swatch falls back
+ * to generic black — a blue button showed a black control. Resolves one level
+ * of `var()` (tokens may reference other tokens); the field text keeps
+ * showing the real value, only the swatch is previewed.
  */
 export function swatchColor(value: string, theme: Theme): string {
   if (HEX.test(value)) return value

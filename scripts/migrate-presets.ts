@@ -1,9 +1,9 @@
 /**
- * Codemod de uso unico. Importa os presets e o tema padrao ainda em v1,
- * roda a migracao e reescreve os arquivos como literais v2, para que os
- * presets sigam legiveis e nao precisem ser migrados em runtime.
+ * One-shot codemod. Imports the presets and the default theme still in v1,
+ * runs the migration and rewrites the files as v2 literals, so presets stay
+ * readable and do not need runtime migration.
  *
- * Rodar uma vez: npx vite-node scripts/migrate-presets.ts
+ * Run once: npx vite-node scripts/migrate-presets.ts
  */
 import { writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -19,8 +19,8 @@ function literal(value: unknown): string {
 }
 
 /**
- * `Simple.css` -> `simpleCssPreset`, `Minimal` -> `minimalPreset`. Preserva os
- * nomes de export que o arquivo ja usava.
+ * `Simple.css` -> `simpleCssPreset`, `Minimal` -> `minimalPreset`. Preserves
+ * the export names the file already used.
  */
 function constName(presetName: string): string {
   const parts = presetName.split(/[^A-Za-z0-9]+/).filter(Boolean)

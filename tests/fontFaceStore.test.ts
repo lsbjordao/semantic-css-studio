@@ -1,30 +1,50 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { useStudioStore } from '../src/theme/store'
 
-describe('fontes da store', () => {
+describe('store fonts', () => {
   beforeEach(() => {
     useStudioStore.getState().resetTheme()
   })
 
-  it('define familia e pilha no mesmo commit', () => {
-    useStudioStore.getState().setFontFace('heading', { family: 'Fraunces', weights: [400, 700], italic: true }, 'Fraunces, Georgia, serif')
+  it('sets family and stack in the same commit', () => {
+    useStudioStore
+      .getState()
+      .setFontFace(
+        'heading',
+        { family: 'Fraunces', weights: [400, 700], italic: true },
+        'Fraunces, Georgia, serif',
+      )
     const theme = useStudioStore.getState().theme
-    expect(theme.fonts?.heading).toEqual({ family: 'Fraunces', weights: [400, 700], italic: true })
+    expect(theme.fonts?.heading).toEqual({
+      family: 'Fraunces',
+      weights: [400, 700],
+      italic: true,
+    })
     expect(theme.tokens.typography.fontHeading).toBe('Fraunces, Georgia, serif')
   })
 
-  it('limpar remove o papel e some com fonts quando vazio', () => {
+  it('clearing removes the role and drops fonts when empty', () => {
     const store = useStudioStore.getState()
-    store.setFontFace('heading', { family: 'Fraunces' }, 'Fraunces, Georgia, serif')
+    store.setFontFace(
+      'heading',
+      { family: 'Fraunces' },
+      'Fraunces, Georgia, serif',
+    )
     useStudioStore.getState().setFontFace('heading', null)
     const theme = useStudioStore.getState().theme
     expect(theme.fonts).toBeUndefined()
-    // a pilha segue editavel a parte: limpar o import nao apaga o texto
+    // the stack stays separately editable: clearing the import does not erase the text
     expect(theme.tokens.typography.fontHeading).toBe('Fraunces, Georgia, serif')
   })
 
-  it('desfaz familia e pilha juntas', () => {
-    useStudioStore.getState().setFontFace('heading', { family: 'Fraunces' }, 'Fraunces, Georgia, serif')
+  it('undoes family and stack together', () => {
+    useStudioStore
+      .getState()
+      .setFontFace(
+        'heading',
+        { family: 'Fraunces' },
+        'Fraunces, Georgia, serif',
+      )
     useStudioStore.getState().undo()
     const theme = useStudioStore.getState().theme
     expect(theme.fonts).toBeUndefined()

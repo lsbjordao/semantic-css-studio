@@ -1,27 +1,34 @@
 /**
- * Codemod de uso único: cria 11 presets variados (Oceano, Floresta, Pôr-do-sol,
+ * One-shot codemod: creates 11 varied presets (Oceano, Floresta, Pôr-do-sol,
  * Lavanda, Cyberpunk, Drácula, Meia-noite, Brutalista, Jornal, Algodão-doce,
- * Corporativo) clonando um preset existente e aplicando overrides curados, com
- * gates de contraste (AA) e validação pelo migrateThemeV2 + compileTheme
- * antes de tocar o arquivo.
+ * Corporativo) by cloning an existing preset and applying curated overrides,
+ * with contrast gates (AA) and migrateThemeV2 + compileTheme validation
+ * before touching the file.
  *
- * Tudo é validado ANTES de qualquer escrita: se um gate falhar, o arquivo
- * de presets segue intacto. Recusar rodar duas vezes (checa os exportNames).
+ * Everything is validated BEFORE any write: if a gate fails, the presets file
+ * stays intact. Refuses to run twice (checks exportNames).
  *
- * Rodar uma vez: npx vite-node scripts/add-varied-presets.ts
+ * Run once: npx vite-node scripts/add-varied-presets.ts
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { compileTheme } from '../src/compiler/compileTheme'
-import { editorialPreset, minimalPreset, terminalPreset } from '../src/theme/presets'
+import {
+  editorialPreset,
+  minimalPreset,
+  terminalPreset,
+} from '../src/theme/presets'
 import { migrateThemeV2 } from '../src/theme/migration'
 import type { Theme } from '../src/theme/schema'
 import { contrastRatio } from '../src/validators/contrast'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 
-function deepMerge(target: Record<string, unknown>, patch: Record<string, unknown>): void {
+function deepMerge(
+  target: Record<string, unknown>,
+  patch: Record<string, unknown>,
+): void {
   for (const [key, value] of Object.entries(patch)) {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       const slot = (target[key] ??= {}) as Record<string, unknown>
@@ -44,11 +51,20 @@ interface PresetSpec {
 
 function buildPreset(spec: PresetSpec): Theme {
   const theme = structuredClone(spec.base)
-  theme.metadata = { ...theme.metadata, name: spec.metadata.name, description: spec.metadata.description }
+  theme.metadata = {
+    ...theme.metadata,
+    name: spec.metadata.name,
+    description: spec.metadata.description,
+  }
   deepMerge(theme.tokens as unknown as Record<string, unknown>, spec.tokens)
-  theme.modes.dark = { colors: { ...(spec.base.modes.dark?.colors ?? {}), ...spec.darkColors } }
+  theme.modes.dark = {
+    colors: { ...(spec.base.modes.dark?.colors ?? {}), ...spec.darkColors },
+  }
   for (const [selector, declarations] of Object.entries(spec.elements)) {
-    theme.layers.elements[selector] = { ...(theme.layers.elements[selector] ?? {}), ...declarations }
+    theme.layers.elements[selector] = {
+      ...(theme.layers.elements[selector] ?? {}),
+      ...declarations,
+    }
   }
   return migrateThemeV2(theme)
 }
@@ -56,7 +72,9 @@ function buildPreset(spec: PresetSpec): Theme {
 function gate(spec: PresetSpec, theme: Theme): void {
   const light = theme.tokens.colors as unknown as Record<string, string>
   const dark = (theme.modes.dark?.colors ?? {}) as Record<string, string>
-  const checks: Array<[string, string | undefined, string | undefined, number]> = [
+  const checks: Array<
+    [string, string | undefined, string | undefined, number]
+  > = [
     ['text/bg', light.text, light.background, 4.5],
     ['muted/bg', light.textMuted, light.background, 4.5],
     ['primaryText/primary', light.primaryText, light.primary, 4.5],
@@ -69,11 +87,15 @@ function gate(spec: PresetSpec, theme: Theme): void {
     if (!fg || !bg) continue
     const ratio = contrastRatio(fg, bg)
     console.log(`  ${ratio?.toFixed(2)} (min ${min}) ${label}`)
-    if (ratio === null || ratio < min) throw new Error(`${spec.mapName}: contraste ${ratio} < ${min} em ${label}`)
+    if (ratio === null || ratio < min)
+      throw new Error(`${spec.mapName}: contrast ${ratio} < ${min} on ${label}`)
   }
   const css = compileTheme(theme)
-  if (!css.includes(`/* ${spec.mapName} v1.0.0`)) throw new Error(`${spec.mapName}: cabecalho inesperado no CSS`)
-  console.log(`  CSS: ${css.length} bytes, deterministico: ${compileTheme(structuredClone(theme)) === css}`)
+  if (!css.includes(`/* ${spec.mapName} v1.0.0`))
+    throw new Error(`${spec.mapName}: unexpected header in CSS`)
+  console.log(
+    `  CSS: ${css.length} bytes, deterministico: ${compileTheme(structuredClone(theme)) === css}`,
+  )
 }
 
 const MINIMAL = minimalPreset as unknown as Theme
@@ -87,7 +109,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Oceano',
-      description: 'Cool aqua mist with deep-sea navy text and ocean-blue accents.',
+      description:
+        'Cool aqua mist with deep-sea navy text and ocean-blue accents.',
     },
     tokens: {
       colors: {
@@ -107,7 +130,11 @@ const specs: PresetSpec[] = [
         codeBackground: '#0f2a36',
         codeText: '#dff1f7',
       },
-      radius: { radiusSm: '0.375rem', radiusMd: '0.75rem', radiusLg: '1.25rem' },
+      radius: {
+        radiusSm: '0.375rem',
+        radiusMd: '0.75rem',
+        radiusLg: '1.25rem',
+      },
       shadow: {
         shadowSm: '0 1px 2px rgb(11 110 153 / 0.12)',
         shadowMd: '0 10px 28px rgb(11 110 153 / 0.14)',
@@ -139,7 +166,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Floresta',
-      description: 'Rich emerald greens with serif headlines for a deep-woods read.',
+      description:
+        'Rich emerald greens with serif headlines for a deep-woods read.',
     },
     tokens: {
       colors: {
@@ -184,8 +212,14 @@ const specs: PresetSpec[] = [
       codeText: '#e2eddf',
     },
     elements: {
-      h1: { fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '-0.02em' },
-      h2: { fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '-0.015em' },
+      h1: {
+        fontFamily: 'Georgia, "Times New Roman", serif',
+        letterSpacing: '-0.02em',
+      },
+      h2: {
+        fontFamily: 'Georgia, "Times New Roman", serif',
+        letterSpacing: '-0.015em',
+      },
       blockquote: { fontStyle: 'italic', fontSize: '1.12em' },
     },
   },
@@ -248,7 +282,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Lavanda',
-      description: 'Soft lilac mist with violet accents for a calm, dreamy read.',
+      description:
+        'Soft lilac mist with violet accents for a calm, dreamy read.',
     },
     tokens: {
       colors: {
@@ -268,7 +303,11 @@ const specs: PresetSpec[] = [
         codeBackground: '#2d2540',
         codeText: '#e8e2f8',
       },
-      radius: { radiusSm: '0.375rem', radiusMd: '0.75rem', radiusLg: '1.25rem' },
+      radius: {
+        radiusSm: '0.375rem',
+        radiusMd: '0.75rem',
+        radiusLg: '1.25rem',
+      },
       shadow: {
         shadowSm: '0 1px 2px rgb(110 80 180 / 0.12)',
         shadowMd: '0 10px 28px rgb(110 80 180 / 0.14)',
@@ -299,7 +338,8 @@ const specs: PresetSpec[] = [
     base: TERMINAL,
     metadata: {
       name: 'Cyberpunk',
-      description: 'Neon pink and cyan on near-black for a high-voltage night drive.',
+      description:
+        'Neon pink and cyan on near-black for a high-voltage night drive.',
     },
     tokens: {
       colors: {
@@ -353,7 +393,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Drácula',
-      description: 'The beloved dark purple palette with pink and cyan accents.',
+      description:
+        'The beloved dark purple palette with pink and cyan accents.',
     },
     tokens: {
       colors: {
@@ -406,7 +447,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Meia-noite',
-      description: 'Deep navy night with electric-blue highlights for late sessions.',
+      description:
+        'Deep navy night with electric-blue highlights for late sessions.',
     },
     tokens: {
       colors: {
@@ -458,7 +500,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Brutalista',
-      description: 'Raw black borders, hard shadows and uppercase type. No softness.',
+      description:
+        'Raw black borders, hard shadows and uppercase type. No softness.',
     },
     tokens: {
       colors: {
@@ -511,7 +554,11 @@ const specs: PresetSpec[] = [
         boxShadow: 'var(--shadow-md)',
         backgroundColor: 'var(--color-background)',
       },
-      h1: { fontSize: 'clamp(2.5rem, 8vw, 5rem)', textTransform: 'uppercase', letterSpacing: '-0.01em' },
+      h1: {
+        fontSize: 'clamp(2.5rem, 8vw, 5rem)',
+        textTransform: 'uppercase',
+        letterSpacing: '-0.01em',
+      },
       h2: {
         textTransform: 'uppercase',
         letterSpacing: '0.01em',
@@ -533,7 +580,10 @@ const specs: PresetSpec[] = [
       },
       code: { border: '2px solid var(--color-border)', borderRadius: '0' },
       details: { border: '3px solid var(--color-border)', borderRadius: '0' },
-      th: { backgroundColor: 'var(--color-text)', color: 'var(--color-background)' },
+      th: {
+        backgroundColor: 'var(--color-text)',
+        color: 'var(--color-background)',
+      },
       img: { border: '3px solid var(--color-border)', borderRadius: '0' },
       input: { border: '3px solid var(--color-border)', borderRadius: '0' },
     },
@@ -544,7 +594,8 @@ const specs: PresetSpec[] = [
     base: EDITORIAL,
     metadata: {
       name: 'Jornal',
-      description: 'Newsprint paper, serif columns and double rules. Extra, extra!',
+      description:
+        'Newsprint paper, serif columns and double rules. Extra, extra!',
     },
     tokens: {
       colors: {
@@ -586,8 +637,17 @@ const specs: PresetSpec[] = [
       codeText: '#ece5d8',
     },
     elements: {
-      article: { backgroundColor: 'transparent', border: '0', padding: '0', boxShadow: 'none' },
-      h1: { fontSize: 'clamp(2.6rem, 7vw, 5rem)', textAlign: 'center', letterSpacing: '-0.01em' },
+      article: {
+        backgroundColor: 'transparent',
+        border: '0',
+        padding: '0',
+        boxShadow: 'none',
+      },
+      h1: {
+        fontSize: 'clamp(2.6rem, 7vw, 5rem)',
+        textAlign: 'center',
+        letterSpacing: '-0.01em',
+      },
       h2: {
         textTransform: 'uppercase',
         letterSpacing: '0.06em',
@@ -603,7 +663,11 @@ const specs: PresetSpec[] = [
         borderBottom: '1px solid var(--color-border)',
         padding: 'var(--space-lg) var(--space-md)',
       },
-      th: { textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: 'var(--font-size-sm)' },
+      th: {
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        fontSize: 'var(--font-size-sm)',
+      },
       figcaption: { fontStyle: 'italic' },
     },
   },
@@ -613,7 +677,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Algodão-doce',
-      description: 'Candy pinks and baby blues with pill shapes for a sweet, soft read.',
+      description:
+        'Candy pinks and baby blues with pill shapes for a sweet, soft read.',
     },
     tokens: {
       colors: {
@@ -635,7 +700,8 @@ const specs: PresetSpec[] = [
       },
       typography: {
         fontBody: 'ui-rounded, "SF Pro Rounded", Inter, system-ui, sans-serif',
-        fontHeading: 'ui-rounded, "SF Pro Rounded", Inter, system-ui, sans-serif',
+        fontHeading:
+          'ui-rounded, "SF Pro Rounded", Inter, system-ui, sans-serif',
         lineHeightBody: '1.7',
       },
       radius: { radiusSm: '0.5rem', radiusMd: '1rem', radiusLg: '1.75rem' },
@@ -659,7 +725,10 @@ const specs: PresetSpec[] = [
       codeText: '#ffd9e8',
     },
     elements: {
-      article: { borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' },
+      article: {
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-md)',
+      },
       h1: { letterSpacing: '-0.02em' },
       button: { borderRadius: 'var(--radius-full)', padding: '0.7rem 1.4rem' },
       details: { borderRadius: 'var(--radius-lg)' },
@@ -672,7 +741,8 @@ const specs: PresetSpec[] = [
     base: MINIMAL,
     metadata: {
       name: 'Corporativo',
-      description: 'Crisp slate and corporate blue with sharp cards for business docs.',
+      description:
+        'Crisp slate and corporate blue with sharp cards for business docs.',
     },
     tokens: {
       colors: {
@@ -719,8 +789,14 @@ const specs: PresetSpec[] = [
         borderBottom: '2px solid var(--color-primary)',
         paddingBottom: '0.3em',
       },
-      article: { boxShadow: 'var(--shadow-md)', borderRadius: 'var(--radius-lg)' },
-      th: { backgroundColor: 'var(--color-primary)', color: 'var(--color-primary-text)' },
+      article: {
+        boxShadow: 'var(--shadow-md)',
+        borderRadius: 'var(--radius-lg)',
+      },
+      th: {
+        backgroundColor: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
     },
   },
 ]
@@ -737,21 +813,32 @@ const source = readFileSync(file, 'utf8')
 
 for (const { spec } of built) {
   if (source.includes(`export const ${spec.exportName} =`)) {
-    throw new Error(`${spec.exportName} já existe — reverta antes de rodar de novo`)
+    throw new Error(
+      `${spec.exportName} already exists — revert before running again`,
+    )
   }
 }
 
 const anchor = 'export const presets = {'
-if (!source.includes(anchor)) throw new Error('ancora do mapa de presets nao encontrada')
+if (!source.includes(anchor))
+  throw new Error('ancora do mapa de presets nao encontrada')
 const blocks = built
-  .map(({ spec, theme }) => `export const ${spec.exportName} = ${JSON.stringify(theme, null, 2)} satisfies Theme\n`)
+  .map(
+    ({ spec, theme }) =>
+      `export const ${spec.exportName} = ${JSON.stringify(theme, null, 2)} satisfies Theme\n`,
+  )
   .join('\n')
 const withPresets = source.replace(anchor, `${blocks}\n${anchor}`)
 
 const mapAnchor = '  Jacarandá: jacarandaPreset,\n'
-if (!withPresets.includes(mapAnchor)) throw new Error('ancora de registro no mapa nao encontrada')
+if (!withPresets.includes(mapAnchor))
+  throw new Error('ancora de registro no mapa nao encontrada')
 const entries = built
-  .map(({ spec }) => (/^[A-Za-z]+$/.test(spec.mapName) ? `  ${spec.mapName}: ${spec.exportName},\n` : `  '${spec.mapName}': ${spec.exportName},\n`))
+  .map(({ spec }) =>
+    /^[A-Za-z]+$/.test(spec.mapName)
+      ? `  ${spec.mapName}: ${spec.exportName},\n`
+      : `  '${spec.mapName}': ${spec.exportName},\n`,
+  )
   .join('')
 const next = withPresets.replace(mapAnchor, `${mapAnchor}${entries}`)
 

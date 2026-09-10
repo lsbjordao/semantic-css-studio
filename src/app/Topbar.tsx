@@ -58,7 +58,9 @@ export function Topbar() {
           <button onClick={() => { exportCss(theme); setExportOpen(false) }}>CSS <small>Readable stylesheet</small></button>
           <button onClick={() => { exportMinCss(theme); setExportOpen(false) }}>Minified CSS <small>Production size</small></button>
           <button onClick={() => { exportJson(theme); setExportOpen(false) }}>Theme JSON <small>Editable source</small></button>
-          <button onClick={() => { exportQuarto(theme); setExportOpen(false) }}>Quarto <small>theme.css after Bootstrap</small></button>
+          <button onClick={() => { exportQuarto(theme, previewMode); setExportOpen(false) }}>Quarto <small>theme.css after Bootstrap</small></button>
+          <button onClick={() => { exportQuarto(theme, 'light', 'theme-light.css'); setExportOpen(false) }}>Quarto light <small>locked light css</small></button>
+          <button onClick={() => { exportQuarto(theme, 'dark', 'theme-dark.css'); setExportOpen(false) }}>Quarto dark <small>locked dark css</small></button>
           <button onClick={() => { exportDemo(theme, previewMode); setExportOpen(false) }}>Demo HTML <small>Kitchen Sink page</small></button>
           <button onClick={() => { void exportPackage(theme, previewMode); setExportOpen(false) }}>Complete package <small>CSS + JSON + demo ZIP</small></button>
         </div>}

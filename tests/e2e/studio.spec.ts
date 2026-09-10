@@ -16,7 +16,9 @@ test('essential theme editing flow', async ({ page }) => {
   await expect(frame).toBeVisible()
 })
 
-test('selector catalog keeps the current story until Open story is requested', async ({ page }) => {
+test('selector catalog keeps the current story until Open story is requested', async ({
+  page,
+}) => {
   await page.goto('/')
   await page.getByLabel('Story').selectOption('All HTML')
   await page.getByRole('button', { name: /Elements/ }).click()
@@ -30,7 +32,9 @@ test('selector catalog keeps the current story until Open story is requested', a
   await expect(page.getByLabel('Font size value')).toHaveValue('0.125rem')
 })
 
-test('clicking preview content selects its element without forcing a story change', async ({ page }) => {
+test('clicking preview content selects its element without forcing a story change', async ({
+  page,
+}) => {
   await page.goto('/')
   await page.getByLabel('Story').selectOption('All HTML')
 
@@ -39,4 +43,28 @@ test('clicking preview content selects its element without forcing a story chang
 
   await expect(page.getByLabel('Story')).toHaveValue('All HTML')
   await expect(page.getByText('<blockquote>', { exact: true })).toBeVisible()
+})
+
+test('icon libraries keep checkbox controls visible in the preview', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: /Icons/ }).click()
+
+  const frame = page.frameLocator('iframe')
+  for (const label of [
+    'Lucide',
+    'Phosphor',
+    'Heroicons',
+    'Material Symbols',
+    'Font Awesome',
+    'Bootstrap Icons',
+    'Tabler',
+  ]) {
+    await page.getByRole('radio', { name: new RegExp(`^${label}`) }).click()
+    const checkbox = frame.locator('input[type="checkbox"]').first()
+    await expect(checkbox).toBeVisible()
+    await expect(checkbox).toHaveCSS('width', /\d/)
+    await expect(checkbox).toHaveCSS('background-image', /data:image\/svg\+xml/)
+  }
 })

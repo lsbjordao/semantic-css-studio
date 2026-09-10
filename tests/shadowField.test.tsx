@@ -5,7 +5,7 @@ import { ShadowField } from '../src/editor/ShadowField'
 afterEach(() => cleanup())
 
 describe('ShadowField', () => {
-  it('edita uma sombra externa e uma interna na mesma propriedade', () => {
+  it('edits an outer and an inner shadow in the same property', () => {
     const onChange = vi.fn()
     render(
       <ShadowField
@@ -28,7 +28,7 @@ describe('ShadowField', () => {
     )
   })
 
-  it('permite adicionar uma camada interna a uma sombra externa', () => {
+  it('allows adding an inner layer to an outer shadow', () => {
     const onChange = vi.fn()
     render(
       <ShadowField

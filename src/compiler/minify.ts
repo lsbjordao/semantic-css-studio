@@ -1,10 +1,10 @@
 const DROP_AROUND = '{};,'
 
 /**
- * Minificador por varredura de caracteres. Ao contrário de uma abordagem por
- * regex, este respeita strings, comentários e `url()` sem aspas, e só remove
- * espaço em torno de `:` dentro de bloco de declaração — em contexto de
- * seletor, `a :hover` e `a:hover` são regras diferentes.
+ * Character-scanning minifier. Unlike a regex approach, this respects
+ * strings, comments and unquoted `url()`, and only removes space around `:`
+ * inside a declaration block — in selector context, `a :hover` and `a:hover`
+ * are different rules.
  */
 export function minifyCss(css: string): string {
   const out: string[] = []
@@ -13,7 +13,8 @@ export function minifyCss(css: string): string {
   let i = 0
 
   const last = (): string => (out.length ? out[out.length - 1] : '')
-  const inDeclarations = (): boolean => blocks[blocks.length - 1] === 'declarations'
+  const inDeclarations = (): boolean =>
+    blocks[blocks.length - 1] === 'declarations'
 
   while (i < css.length) {
     const char = css[i]
@@ -66,9 +67,9 @@ export function minifyCss(css: string): string {
     }
 
     if (char === '{') {
-      // O bloco de uma at-rule contém regras, não declarações. Sem essa
-      // distinção, `@media (...) { a :hover { } }` perderia o espaço de
-      // `a :hover`, que é um seletor diferente de `a:hover`.
+      // An at-rule block contains rules, not declarations. Without this
+      // distinction, `@media (...) { a :hover { } }` would lose the space in
+      // `a :hover`, which is a different selector from `a:hover`.
       blocks.push(pendingAtRule ? 'at-rule' : 'declarations')
       pendingAtRule = false
       out.push('{')

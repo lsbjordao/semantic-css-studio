@@ -1,5 +1,5 @@
 import type { Theme } from '../theme/schema'
-import { getIconBody, isFillLibrary, strokeWidthFor } from './registry'
+import { getIconSourceFor, isFillLibrary, strokeWidthFor } from './registry'
 import type { IconLibraryId, IconName } from './types'
 
 function svgFor(
@@ -7,10 +7,11 @@ function svgFor(
   name: IconName,
   color: string,
 ): string {
-  const inner = getIconBody(library, name).replaceAll('currentColor', color)
+  const { body, viewBox } = getIconSourceFor(library, name)
+  const inner = body.replaceAll('currentColor', color)
   const open = isFillLibrary(library)
-    ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}">`
-    : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${strokeWidthFor(library)}" stroke-linecap="round" stroke-linejoin="round">`
+    ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" fill="${color}">`
+    : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" fill="none" stroke="${color}" stroke-width="${strokeWidthFor(library)}" stroke-linecap="round" stroke-linejoin="round">`
   return `${open}${inner}</svg>`
 }
 
@@ -51,7 +52,7 @@ export interface ControlIconColors {
   textMuted: string
 }
 
-/** Data-URIs dos quatro glifos usados nos controles, com as cores assadas. */
+/** Data-URIs of the four glyphs used in controls, with baked-in colors. */
 export function controlIconUris(
   library: Exclude<IconLibraryId, 'none'>,
   colors: ControlIconColors,
@@ -65,12 +66,12 @@ export function controlIconUris(
 }
 
 /**
- * Controles customizados (`appearance: none`) com glifos da biblioteca
- * escolhida embutidos como data-URI.
+ * Custom controls (`appearance: none`) with glyphs from the chosen library
+ * embedded as data-URIs.
  *
- * Portátil por construção: CSS puro, sem runtime, fonte ou requisição de
- * rede. `library: 'none'` (ou ausente em temas antigos) = comportamento
- * nativo anterior (`accent-color`), snapshots intactos.
+ * Portable by construction: pure CSS, no runtime, font or network request.
+ * `library: 'none'` (or absent in old themes) = previous native behavior
+ * (`accent-color`), snapshots intact.
  */
 export function iconControlRules(
   theme: Theme,
@@ -98,8 +99,8 @@ export function iconControlRules(
     `${scopedSelector('details[open] > summary::before', scopes, directBody)} {\n  transform: rotate(90deg);\n}`,
   ]
 
-  // As cores do glifo são assadas no data-URI em tempo de compilação, então
-  // cada token usado precisa da sua contraparte escura quando ela difere.
+  // Glyph colors are baked into the data-URI at compile time, so each used
+  // token needs its dark counterpart when it differs.
   const darkBlocks: string[] = []
   const pushDark = (selector: string, body: string) => {
     darkBlocks.push(

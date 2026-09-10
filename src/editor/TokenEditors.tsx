@@ -212,7 +212,7 @@ function GoogleFontField({ role }: { role: FontRole }) {
     ),
   )
   const showCustom = customizing || isCustomValue
-  // A amostra reflete a pilha real do token — o mesmo valor que o preview usa.
+  // The sample reflects the token's real stack — the same value the preview uses.
   const stack = theme.tokens.typography[fontRoleTokens[role]]
   const statusHref = googleFontsHref(theme.fonts)
 
@@ -261,10 +261,10 @@ function GoogleFontField({ role }: { role: FontRole }) {
     if (!value.trim()) setCustomizing(false)
   }
 
-  // Sem a API FontFaceSet (jsdom, navegador antigo), o status segue idle.
-  // Espera a folha de preview (efeito do TypographyControls, que roda depois
-  // deste): consultar document.fonts.load antes do <link> existir resolve
-  // vazio e marcaria "failed" para uma fonte válida.
+  // Without the FontFaceSet API (jsdom, old browsers), status stays idle.
+  // Waits for the preview sheet (TypographyControls effect, which runs after
+  // this one): querying document.fonts.load before the <link> exists resolves
+  // empty and would mark "failed" for a valid font.
   useEffect(() => {
     if (!face?.family) {
       setStatus('idle')
@@ -281,8 +281,8 @@ function GoogleFontField({ role }: { role: FontRole }) {
     const started = Date.now()
     const waitForSheet = () => {
       if (cancelled) return
-      // O <link> nasce no efeito do TypographyControls, que roda depois
-      // deste: ausência dele também é motivo para esperar, não para concluir.
+      // The <link> is born in the TypographyControls effect, which runs after
+      // this one: its absence is also a reason to wait, not to conclude.
       const link = document.getElementById(
         'studio-font-preview',
       ) as HTMLLinkElement | null
@@ -324,7 +324,7 @@ function GoogleFontField({ role }: { role: FontRole }) {
                 className="link-button"
                 onClick={() => setCustomizing(false)}
               >
-                Usar a lista
+                Use the list
               </button>
             )}
           </div>
@@ -389,14 +389,14 @@ function GoogleFontField({ role }: { role: FontRole }) {
         AaBbGg 123
       </p>
       {status === 'loading' && (
-        <p className="font-status">Buscando no Google Fonts…</p>
+        <p className="font-status">Fetching from Google Fonts…</p>
       )}
       {status === 'loaded' && (
-        <p className="font-status ok">Carregada e aplicada ao preview.</p>
+        <p className="font-status ok">Loaded and applied to the preview.</p>
       )}
       {status === 'failed' && (
         <p className="font-status bad">
-          Não encontrada — confira o nome ou a conexão.
+          Not found — check the name or the connection.
         </p>
       )}
     </div>
@@ -407,9 +407,9 @@ function TypographyControls() {
   const setToken = useStudioStore((s) => s.setToken)
   const fonts = useStudioStore((s) => s.theme.fonts)
 
-  // A amostra de cada cartão vive no documento do app, então o <link> de
-  // preview mora aqui — o iframe do preview usa o @import do próprio CSS.
-  // Dependência na URL (não no objeto): edição alheia não recria o <link>.
+  // Each card sample lives in the app document, so the preview <link> lives
+  // here — the preview iframe uses the CSS's own @import. URL (not object)
+  // dependency: unrelated edits do not recreate the <link>.
   const previewHref = googleFontsHref(fonts)
   useEffect(() => {
     const id = 'studio-font-preview'

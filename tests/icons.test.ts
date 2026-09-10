@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { compileTheme } from '../src/compiler'
 import { controlIconUris, iconControlRules } from '../src/icons/css'
-import { getIconBody } from '../src/icons/registry'
+import { getIconBody, getIconSourceFor } from '../src/icons/registry'
 import { iconLibraryIds, iconNames, isIconLibraryId } from '../src/icons/types'
 import { defaultTheme } from '../src/theme/defaults'
 import { presets } from '../src/theme/presets'
@@ -31,6 +31,14 @@ describe('icon registry', () => {
     expect(isIconLibraryId('none')).toBe(true)
     expect(isIconLibraryId('bogus')).toBe(false)
     expect(isIconLibraryId(undefined)).toBe(false)
+  })
+
+  it('keeps the source viewBox from each official package', () => {
+    expect(getIconSourceFor('lucide', 'check').body).toContain(
+      'M20 6 9 17l-5-5',
+    )
+    expect(getIconSourceFor('fontawesome', 'check').viewBox).toBe('0 0 448 512')
+    expect(getIconSourceFor('bootstrap', 'check').viewBox).toBe('0 0 16 16')
   })
 })
 
@@ -93,5 +101,18 @@ describe('compiler + icons', () => {
     const css = compileTheme(themed('phosphor'))
     expect(css).toContain('data:image/svg+xml')
     expect(css).toContain('input[type="checkbox"]:checked')
+  })
+
+  it('does not let task-list fallback styles hide library checkboxes', () => {
+    const css = compileTheme(themed('lucide'))
+    expect(css).toContain('input[type="checkbox"] {')
+    expect(css).toContain('.task-list input[type="checkbox"] {')
+    const taskRuleStart = css.indexOf('.task-list input[type="checkbox"]')
+    const taskRule = css.slice(
+      taskRuleStart,
+      css.indexOf('\n}', taskRuleStart) + 2,
+    )
+    expect(taskRule).toContain('margin-inline: 0 var(--space-sm) !important;')
+    expect(taskRule).not.toContain('background: transparent;')
   })
 })

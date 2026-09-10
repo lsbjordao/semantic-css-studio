@@ -1,23 +1,86 @@
-import { supportedElements, type CssPropertyMap, type Theme, type ThemeTokensV2 } from '../theme/schema'
+import {
+  supportedElements,
+  type CssPropertyMap,
+  type Theme,
+  type ThemeTokensV2,
+} from '../theme/schema'
 import { iconControlRules } from '../icons/css'
 import { tokenName } from '../theme/tokenNames'
 import { scrollRules } from './scrollRules'
 import { webfontImportRule } from './webfonts'
 
 const legacyElementOrder = [
-  'body','header','nav','main','section','article','aside','footer',
-  'h1','h2','h3','h4','h5','h6','p','a','strong','em','small','mark','del','ins',
-  'ul','ol','li','dl','dt','dd','blockquote','hr','code','pre','kbd',
-  'table','thead','tbody','tfoot','tr','th','td','caption',
-  'form','fieldset','legend','label','input','textarea','select','option','button',
-  'img','figure','figcaption','details','summary',
+  'body',
+  'header',
+  'nav',
+  'main',
+  'section',
+  'article',
+  'aside',
+  'footer',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'p',
+  'a',
+  'strong',
+  'em',
+  'small',
+  'mark',
+  'del',
+  'ins',
+  'ul',
+  'ol',
+  'li',
+  'dl',
+  'dt',
+  'dd',
+  'blockquote',
+  'hr',
+  'code',
+  'pre',
+  'kbd',
+  'table',
+  'thead',
+  'tbody',
+  'tfoot',
+  'tr',
+  'th',
+  'td',
+  'caption',
+  'form',
+  'fieldset',
+  'legend',
+  'label',
+  'input',
+  'textarea',
+  'select',
+  'option',
+  'button',
+  'img',
+  'figure',
+  'figcaption',
+  'details',
+  'summary',
 ]
 const elementOrder: string[] = [
   ...legacyElementOrder,
-  ...supportedElements.filter((selector) => !legacyElementOrder.includes(selector)),
+  ...supportedElements.filter(
+    (selector) => !legacyElementOrder.includes(selector),
+  ),
 ]
 
-const stateOrder = ['hover', 'focus', 'focus-visible', 'active', 'disabled', 'checked'] as const
+const stateOrder = [
+  'hover',
+  'focus',
+  'focus-visible',
+  'active',
+  'disabled',
+  'checked',
+] as const
 
 function kebab(value: string): string {
   return value.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`)
@@ -28,8 +91,8 @@ function declarations(styles: CssPropertyMap, indent = '  '): string {
     .filter(([, value]) => value !== '')
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([property, value]) => {
-      // Custom properties sao case-sensitive e ja vem no formato final;
-      // passar `--myVar` por kebab() corromperia o nome.
+      // Custom properties are case-sensitive and already come in final form;
+      // passing `--myVar` through kebab() would corrupt the name.
       const name = property.startsWith('--') ? property : kebab(property)
       return `${indent}${name}: ${value};`
     })
@@ -56,7 +119,8 @@ function scopeSelector(
         trimmed.startsWith(':root[') ||
         trimmed === 'html' ||
         trimmed === 'body'
-      ) return [trimmed]
+      )
+        return [trimmed]
       return [
         ...scopes.map((scope) => `${scope} ${trimmed}`),
         ...(directBody ? [`body > ${trimmed}`] : []),
@@ -66,13 +130,20 @@ function scopeSelector(
 }
 
 const tokenGroups: Array<keyof ThemeTokensV2> = [
-  'colors', 'typography', 'spacing', 'radius', 'shadow', 'layout', 'scroll',
+  'colors',
+  'typography',
+  'spacing',
+  'radius',
+  'shadow',
+  'layout',
+  'scroll',
 ]
 
 function tokenEntries(theme: Theme): Array<[string, string]> {
   return tokenGroups.flatMap((group) =>
     Object.entries(theme.tokens[group]).map(
-      ([key, value]) => [tokenName(group, key), String(value)] as [string, string],
+      ([key, value]) =>
+        [tokenName(group, key), String(value)] as [string, string],
     ),
   )
 }
@@ -84,7 +155,13 @@ function rootVariables(theme: Theme): string {
   return `:root {\n${body}\n}`
 }
 
-const LAYER_ORDER = ['reset', 'base', 'elements', 'states', 'responsive'] as const
+const LAYER_ORDER = [
+  'reset',
+  'base',
+  'elements',
+  'states',
+  'responsive',
+] as const
 
 function indent(block: string): string {
   return block
@@ -109,24 +186,31 @@ export interface CompileThemeOptions {
   omitElements?: string[]
   scopes?: string[]
   directBody?: boolean
+  colorMode?: CompileColorMode
 }
+
+export type CompileColorMode = 'light' | 'dark' | 'auto'
 
 function baseRules(
   theme: Theme,
   scopes: readonly string[] = [],
   directBody = false,
+  colorMode: CompileColorMode = 'auto',
 ): string[] {
   const rules: string[] = [rootVariables(theme)]
   for (const [selector, styles] of Object.entries(theme.layers.base)) {
-    const emitted = rule(`:where(${scopeSelector(selector, scopes, directBody)})`, styles)
+    const emitted = rule(
+      `:where(${scopeSelector(selector, scopes, directBody)})`,
+      styles,
+    )
     if (emitted) rules.push(emitted)
   }
   rules.push(...scrollRules(theme))
-  // Estrutural, nao escolha de estilo: continua gerado pelo compilador e fora
-  // do :where() — :root[data-theme] precisa da especificidade de atributo
-  // para vencer os tokens claros.
-  rules.push(`:root[data-theme="light"] { color-scheme: light; }\n:root[data-theme="dark"] { color-scheme: dark; }`)
-  const dark = darkModeRule(theme)
+  // Structural, not a style choice: still compiler-generated and outside
+  // :where() — :root[data-theme] needs attribute specificity to beat the
+  // light tokens.
+  rules.push(colorSchemeRule(colorMode))
+  const dark = darkModeRule(theme, colorMode)
   if (dark) rules.push(dark)
   return rules
 }
@@ -138,51 +222,78 @@ function elementRules(
   directBody = false,
 ): string[] {
   const elements = theme.layers.elements
-  const known = elementOrder.filter((key) => elements[key] && !omittedElements.has(key))
+  const known = elementOrder.filter(
+    (key) => elements[key] && !omittedElements.has(key),
+  )
   const extras = Object.keys(elements)
     .filter((key) => !elementOrder.includes(key) && !omittedElements.has(key))
     .sort()
   return [...known]
     .concat(extras)
-    .map((selector) => rule(scopeSelector(selector, scopes, directBody), elements[selector]))
+    .map((selector) =>
+      rule(scopeSelector(selector, scopes, directBody), elements[selector]),
+    )
     .filter(Boolean)
-    .concat(iconControlRules(theme, scopes, directBody), taskListRules(scopes, directBody))
+    .concat(
+      iconControlRules(theme, scopes, directBody),
+      taskListRules(theme, scopes, directBody),
+    )
 }
 
-function taskListRules(scopes: readonly string[] = [], directBody = false): string[] {
-  return [
+function taskListRules(
+  theme: Theme,
+  scopes: readonly string[] = [],
+  directBody = false,
+): string[] {
+  const taskCheckboxSelector = scopeSelector(
+    '.task-list input[type="checkbox"]',
+    scopes,
+    directBody,
+  )
+  const rules = [
     rule(scopeSelector('.task-list, .task-list-item', scopes, directBody), {
       listStyle: 'none',
       paddingInlineStart: '0',
     }),
-    rule(scopeSelector('.task-list input[type="checkbox"]', scopes, directBody), {
-      accentColor: 'var(--color-primary)',
-      background: 'transparent',
-      border: '0',
-      inlineSize: 'auto',
-      marginBlock: '0 !important',
-      marginInline: '0 var(--space-sm) !important',
-      padding: '0',
-      width: 'auto',
-    }),
+    rule(
+      taskCheckboxSelector,
+      (theme.icons?.library ?? 'none') === 'none'
+        ? {
+            accentColor: 'var(--color-primary)',
+            background: 'transparent',
+            border: '0',
+            inlineSize: 'auto',
+            marginBlock: '0 !important',
+            marginInline: '0 var(--space-sm) !important',
+            padding: '0',
+            width: 'auto',
+          }
+        : {
+            marginBlock: '0 !important',
+            marginInline: '0 var(--space-sm) !important',
+          },
+    ),
     rule(scopeSelector('.task-list-item', scopes, directBody), {
       alignItems: 'baseline',
       display: 'flex',
       gap: 'var(--space-sm)',
     }),
   ]
+  return rules
 }
 
 /**
- * As chaves de `layers.states` ja sao seletores completos (`button:hover`).
- * A ordenacao continua sendo elemento (por `elementOrder`) e depois estado
- * (por `stateOrder`): a ordem entre `:hover`, `:active` e `:disabled` do mesmo
- * elemento decide quem vence com especificidade igual, entao ordenar em
- * alfabetica trocaria o comportamento em vez de so mover linhas.
+ * `layers.states` keys are already complete selectors (`button:hover`).
+ * Ordering stays element-first (by `elementOrder`) then state (by
+ * `stateOrder`): the order between `:hover`, `:active` and `:disabled` of the
+ * same element decides what wins at equal specificity, so alphabetical
+ * sorting would change behavior instead of just moving lines.
  */
 function splitState(selector: string): [string, string] {
   const at = selector.indexOf(':')
-  return at === -1 ? [selector, ''] : [selector.slice(0, at), selector.slice(at + 1)]
+  return at === -1
+    ? [selector, '']
+    : [selector.slice(0, at), selector.slice(at + 1)]
 }
 
 function stateRank(state: string): number {
@@ -212,7 +323,11 @@ function stateRules(
     if (as !== bs) return as - bs
     return a.localeCompare(b)
   })
-  return selectors.map((selector) => rule(scopeSelector(selector, scopes, directBody), states[selector])).filter(Boolean)
+  return selectors
+    .map((selector) =>
+      rule(scopeSelector(selector, scopes, directBody), states[selector]),
+    )
+    .filter(Boolean)
 }
 
 function responsiveRules(
@@ -223,7 +338,9 @@ function responsiveRules(
   const order = ['tablet', 'mobile']
   const keys = [
     ...order.filter((key) => key in theme.layers.responsive),
-    ...Object.keys(theme.layers.responsive).filter((key) => !order.includes(key)).sort(),
+    ...Object.keys(theme.layers.responsive)
+      .filter((key) => !order.includes(key))
+      .sort(),
   ]
   return keys
     .map((key) => {
@@ -235,44 +352,60 @@ function responsiveRules(
         })
         .filter(Boolean)
         .join('\n')
-      return body ? `@media (max-width: ${theme.breakpoints[key]}px) {\n${body}\n}` : ''
+      return body
+        ? `@media (max-width: ${theme.breakpoints[key]}px) {\n${body}\n}`
+        : ''
     })
     .filter(Boolean)
 }
 
-function darkModeRule(theme: Theme): string {
+function colorSchemeRule(mode: CompileColorMode): string {
+  if (mode === 'light') return ':root { color-scheme: light; }'
+  if (mode === 'dark') return ':root { color-scheme: dark; }'
+  return `:root[data-theme="light"] { color-scheme: light; }\n:root[data-theme="dark"] { color-scheme: dark; }`
+}
+
+function darkModeRule(theme: Theme, mode: CompileColorMode = 'auto'): string {
   const colors = theme.modes.dark?.colors
-  if (!colors || Object.keys(colors).length === 0) return ''
+  if (mode === 'light' || !colors || Object.keys(colors).length === 0) return ''
   const vars = Object.entries(colors)
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([key, value]) => `    --${tokenName('colors', key)}: ${value};`)
     .join('\n')
+  if (mode === 'dark') return `:root {\n${vars.replaceAll('    ', '  ')}\n}`
   const manual = `:root[data-theme="dark"] {\n${vars.replaceAll('    ', '  ')}\n}`
   const automatic = `@media (prefers-color-scheme: dark) {\n  :root:not([data-theme="light"]) {\n${vars}\n  }\n}`
   return `${manual}\n\n${automatic}`
 }
 
-export function compileTheme(theme: Theme, options: CompileThemeOptions = {}): string {
+export function compileTheme(
+  theme: Theme,
+  options: CompileThemeOptions = {},
+): string {
   const layers = options.layers ?? true
   const omittedElements = new Set(options.omitElements)
   const scopes = options.scopes ?? []
   const directBody = options.directBody ?? false
+  const colorMode = options.colorMode ?? 'auto'
   const blocks = [
     `/* ${theme.metadata.name} v${theme.metadata.version} — generated by Semantic CSS Studio */`,
-    // O @import precede a declaração de camadas: fora isso o CSS o ignoraria.
+    // @import precedes the layer declaration: otherwise CSS would ignore it.
     webfontImportRule(theme.fonts),
     ...(layers
       ? [
           `@layer ${LAYER_ORDER.join(', ')};`,
           layerBlock('reset', resetRules(theme)),
-          layerBlock('base', baseRules(theme, scopes, directBody)),
-          layerBlock('elements', elementRules(theme, omittedElements, scopes, directBody)),
+          layerBlock('base', baseRules(theme, scopes, directBody, colorMode)),
+          layerBlock(
+            'elements',
+            elementRules(theme, omittedElements, scopes, directBody),
+          ),
           layerBlock('states', stateRules(theme, scopes, directBody)),
           layerBlock('responsive', responsiveRules(theme, scopes, directBody)),
         ]
       : [
           ...resetRules(theme),
-          ...baseRules(theme, scopes, directBody),
+          ...baseRules(theme, scopes, directBody, colorMode),
           ...elementRules(theme, omittedElements, scopes, directBody),
           ...stateRules(theme, scopes, directBody),
           ...responsiveRules(theme, scopes, directBody),

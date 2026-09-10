@@ -83,12 +83,7 @@ export interface ThemeTokens {
 export type CssPropertyMap = Record<string, string>
 
 export type InteractionState =
-  | 'hover'
-  | 'focus'
-  | 'focus-visible'
-  | 'active'
-  | 'disabled'
-  | 'checked'
+  'hover' | 'focus' | 'focus-visible' | 'active' | 'disabled' | 'checked'
 
 export interface ThemeMode {
   colors: Partial<ColorTokens>
@@ -122,14 +117,93 @@ export interface ThemeV1 {
 }
 
 export const selectorGroups = {
-  Document: ['body', 'header', 'nav', 'main', 'section', 'article', 'aside', 'footer', 'address', 'search'],
+  Document: [
+    'body',
+    'header',
+    'nav',
+    'main',
+    'section',
+    'article',
+    'aside',
+    'footer',
+    'address',
+    'search',
+  ],
   Headings: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hgroup'],
-  Text: ['p', 'blockquote', 'a', 'strong', 'em', 'small', 'mark', 'del', 'ins', 'abbr', 'b', 'bdi', 'bdo', 'cite', 'data', 'dfn', 'i', 'q', 's', 'span', 'sub', 'sup', 'time', 'u', 'br', 'wbr'],
+  Text: [
+    'p',
+    'blockquote',
+    'a',
+    'strong',
+    'em',
+    'small',
+    'mark',
+    'del',
+    'ins',
+    'abbr',
+    'b',
+    'bdi',
+    'bdo',
+    'cite',
+    'data',
+    'dfn',
+    'i',
+    'q',
+    's',
+    'span',
+    'sub',
+    'sup',
+    'time',
+    'u',
+    'br',
+    'wbr',
+  ],
   Lists: ['ul', 'ol', 'li', 'dl', 'dt', 'dd', 'menu'],
   Code: ['code', 'pre', 'kbd', 'samp', 'var'],
-  Tables: ['table', 'caption', 'colgroup', 'col', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td'],
-  Forms: ['form', 'fieldset', 'legend', 'label', 'input', 'textarea', 'select', 'optgroup', 'option', 'datalist', 'button', 'output', 'progress', 'meter'],
-  Media: ['img', 'picture', 'source', 'audio', 'video', 'track', 'figure', 'figcaption', 'iframe', 'embed', 'object', 'canvas', 'map', 'area'],
+  Tables: [
+    'table',
+    'caption',
+    'colgroup',
+    'col',
+    'thead',
+    'tbody',
+    'tfoot',
+    'tr',
+    'th',
+    'td',
+  ],
+  Forms: [
+    'form',
+    'fieldset',
+    'legend',
+    'label',
+    'input',
+    'textarea',
+    'select',
+    'optgroup',
+    'option',
+    'datalist',
+    'button',
+    'output',
+    'progress',
+    'meter',
+  ],
+  Media: [
+    'img',
+    'picture',
+    'source',
+    'audio',
+    'video',
+    'track',
+    'figure',
+    'figcaption',
+    'iframe',
+    'embed',
+    'object',
+    'canvas',
+    'map',
+    'area',
+  ],
   Interactive: ['details', 'summary', 'dialog'],
   Semantics: ['hr', 'ruby', 'rt', 'rp'],
 } as const
@@ -190,26 +264,31 @@ export interface ThemeV2 {
     reducedMotion: boolean
   }
   /**
-   * Webfonts opcionais (hoje: Google Fonts). Ausente = tema 100% portátil,
-   * sem nenhuma requisição de rede. Presente = o compilador emite um
-   * `@import` e as pilhas de fonte devem citar a família com fallbacks
-   * do sistema, para o tema degradar offline.
+   * Optional webfonts (today: Google Fonts). Absent = 100% portable theme,
+   * with no network requests. Present = the compiler emits an `@import` and
+   * font stacks must cite the family with system fallbacks so the theme
+   * degrades offline.
    */
   fonts?: ThemeFonts
   /**
-   * Biblioteca de ícones embutida no CSS exportado como data-URI.
-   * Ausente = `none` (controles nativos com `accent-color`).
+   * Icon library embedded in the exported CSS as a data-URI.
+   * Absent = `none` (native controls with `accent-color`).
    */
   icons?: ThemeIcons
+  /**
+   * Quarto-export-specific settings (e.g. book sidebar tone).
+   * Absent = exporter defaults.
+   */
+  quarto?: ThemeQuarto
 }
 
-/** Uma família hospedada no Google Fonts. */
+/** A family hosted on Google Fonts. */
 export interface ThemeFontFace {
-  /** Nome da família, ex. 'Fraunces'. Validado na emissão; resto é descartado. */
+  /** Family name, e.g. 'Fraunces'. Validated on emit; the rest is discarded. */
   family: string
-  /** Pesos 100–900. Padrão [400, 700]. */
+  /** Weights 100–900. Default [400, 700]. */
   weights?: number[]
-  /** Inclui o eixo itálico. Padrão false. */
+  /** Includes the italic axis. Default false. */
   italic?: boolean
 }
 
@@ -221,9 +300,24 @@ export interface ThemeFonts {
 
 export type FontRole = keyof ThemeFonts
 
-/** Biblioteca de ícones do tema (CSS exportado). `none` = nativo. */
+/** Theme icon library (exported CSS). `none` = native. */
 export interface ThemeIcons {
   library: IconLibraryId
+}
+
+/**
+ * Quarto navigation chrome background in the exported CSS (book sidebar,
+ * breadcrumb bar, website top navbar and footer).
+ * `surface` = slightly raised panel; `background` = same as the page color.
+ */
+export type QuartoSidebarTone = 'surface' | 'background'
+
+/**
+ * Quarto-export-specific settings. Absent = default (`surface`) behavior,
+ * so old themes stay valid without migration.
+ */
+export interface ThemeQuarto {
+  sidebarTone?: QuartoSidebarTone
 }
 
 export type Theme = ThemeV2

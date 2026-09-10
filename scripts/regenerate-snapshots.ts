@@ -1,10 +1,10 @@
 /**
- * Regera os snapshots de CSS dos presets a partir do compilador atual.
+ * Regenerates the preset CSS snapshots from the current compiler.
  *
- * Rodar: npx vite-node scripts/regenerate-snapshots.ts
+ * Run: npx vite-node scripts/regenerate-snapshots.ts
  *
- * Depois de rodar, SEMPRE auditar `git diff tests/snapshots/` antes de
- * commitar: um snapshot regerado sem leitura do diff nao verifica nada.
+ * After running, ALWAYS audit `git diff tests/snapshots/` before committing:
+ * a regenerated snapshot without reading the diff verifies nothing.
  */
 import { writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'

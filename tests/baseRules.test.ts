@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { preCodeNeutraliser, seedBaseRules, seedResponsiveRules } from '../src/theme/baseRules'
+import {
+  preCodeNeutraliser,
+  seedBaseRules,
+  seedResponsiveRules,
+} from '../src/theme/baseRules'
 import { scrollDefaults } from '../src/theme/scrollDefaults'
 
 describe('seedBaseRules', () => {
-  it('semeia as regras que hoje estao hardcoded no compilador', () => {
+  it('seeds the rules that are currently hardcoded in the compiler', () => {
     const base = seedBaseRules()
     expect(Object.keys(base)).toEqual([
       'html',
@@ -17,7 +21,7 @@ describe('seedBaseRules', () => {
     ])
   })
 
-  it('mantem as declaracoes das regras semeadas', () => {
+  it('keeps the seeded rule declarations', () => {
     const base = seedBaseRules()
     expect(base['input, textarea, select, button']).toEqual({
       background: 'var(--color-surface)',
@@ -33,18 +37,18 @@ describe('seedBaseRules', () => {
     })
   })
 
-  it('devolve um objeto novo a cada chamada', () => {
+  it('returns a fresh object on every call', () => {
     const first = seedBaseRules()
-    first.button.background = 'mutado'
+    first.button.background = 'mutated'
     expect(seedBaseRules().button.background).toBe('var(--color-primary)')
   })
 })
 
 describe('seedResponsiveRules', () => {
-  it('usa token no lugar dos literais fixos de hoje', () => {
+  it('uses tokens instead of the current fixed literals', () => {
     const responsive = seedResponsiveRules()
-    // O compilador atual grava --body-padding: 1rem, descartando em silencio
-    // o valor configurado pelo usuario. Agora aponta para um token editavel.
+    // The current compiler writes --body-padding: 1rem, silently discarding
+    // the user-configured value. Now it points at an editable token.
     expect(responsive.tablet[':root']).toEqual({
       '--body-padding': 'var(--body-padding-sm)',
       '--section-spacing': 'var(--section-spacing-sm)',
@@ -55,7 +59,7 @@ describe('seedResponsiveRules', () => {
     })
   })
 
-  it('preserva as regras de elemento de cada breakpoint', () => {
+  it('preserves each breakpoint element rules', () => {
     const responsive = seedResponsiveRules()
     expect(responsive.tablet.table).toEqual({ fontSize: 'var(--font-size-sm)' })
     expect(responsive.mobile.h1).toEqual({ overflowWrap: 'anywhere' })
@@ -63,25 +67,25 @@ describe('seedResponsiveRules', () => {
 })
 
 describe('scrollDefaults', () => {
-  it('nasce com barra visivel e sem rolagem suave', () => {
-    // scroll-behavior fica em auto por padrao: rolagem suave e uma escolha
-    // deliberada, e so faz sentido junto com o bloco de movimento reduzido.
+  it('starts with a visible scrollbar and no smooth scrolling', () => {
+    // scroll-behavior stays auto by default: smooth scrolling is a deliberate
+    // choice, and only makes sense together with the reduced-motion block.
     expect(scrollDefaults.scrollBehavior).toBe('auto')
     expect(scrollDefaults.scrollbarWidth).toBe('auto')
     expect(Object.keys(scrollDefaults)).toHaveLength(10)
   })
 })
 
-describe('a camada base nao abriga sobreposicoes contextuais', () => {
-  // A camada base sai inteira embrulhada em :where(): especificidade 0. Como a
-  // ordem de camadas vence a especificidade, uma regra cuja unica funcao e
-  // desfazer outra regra de elemento perde sempre para a camada `elements`.
-  // `pre code` e o caso concreto: mora em layers.elements, nao aqui.
-  it('nao semeia pre code', () => {
+describe('the base layer holds no contextual overrides', () => {
+  // The base layer is emitted fully wrapped in :where(): 0 specificity. Since
+  // layer order beats specificity, a rule whose only job is undoing another
+  // element rule always loses to the `elements` layer. `pre code` is the
+  // concrete case: it lives in layers.elements, not here.
+  it('does not seed pre code', () => {
     expect(seedBaseRules()['pre code']).toBeUndefined()
   })
 
-  it('expoe a neutralizacao de pre code para a camada elements', () => {
+  it('exposes the pre code neutralisation for the elements layer', () => {
     expect(preCodeNeutraliser).toEqual({
       background: 'transparent',
       color: 'inherit',

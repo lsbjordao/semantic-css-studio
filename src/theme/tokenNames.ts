@@ -1,10 +1,10 @@
 import type { ThemeTokensV2 } from './schema'
 
 /**
- * Prefixo aplicado ao nome kebab de cada grupo. Apenas cores recebem prefixo;
- * os demais grupos já carregam o prefixo na própria chave (`fontSizeBase`,
- * `spaceMd`, `radiusSm`). Uma chave nova em qualquer grupo é nomeada
- * corretamente sem precisar entrar em tabela de exceções.
+ * Prefix applied to each group's kebab name. Only colors get a prefix; the
+ * other groups already carry the prefix in their own key (`fontSizeBase`,
+ * `spaceMd`, `radiusSm`). A new key in any group is named correctly without
+ * needing an exceptions table.
  */
 const groupPrefix: Record<keyof ThemeTokensV2, string> = {
   colors: 'color-',
@@ -17,9 +17,9 @@ const groupPrefix: Record<keyof ThemeTokensV2, string> = {
 }
 
 /**
- * Kebab específico de chave de token. Diferente do kebab de propriedade CSS,
- * este também separa letra de dígito, sem o que `space2xl` produziria
- * `--space2xl` enquanto o resto do tema consome `var(--space-2xl)`.
+ * Token-key-specific kebab. Unlike CSS-property kebab, this also splits
+ * letter-to-digit, without which `space2xl` would produce `--space2xl` while
+ * the rest of the theme consumes `var(--space-2xl)`.
  */
 function kebabToken(value: string): string {
   return value

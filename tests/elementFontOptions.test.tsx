@@ -6,12 +6,12 @@ import { useStudioStore } from '../src/theme/store'
 
 afterEach(() => cleanup())
 
-describe('webfonts nos controles de pilha', () => {
+describe('webfonts in stack controls', () => {
   beforeEach(() => {
     useStudioStore.getState().resetTheme()
   })
 
-  it('oferece a webfont configurada no Font family do elemento', () => {
+  it('offers the configured webfont in the element Font family', () => {
     useStudioStore.getState().applyPreset('Porcelain')
     useStudioStore.getState().setSelectedElement('a')
     render(<ElementEditor />)
@@ -20,7 +20,7 @@ describe('webfonts nos controles de pilha', () => {
     expect(values).toContain('Fraunces, Georgia, serif')
   })
 
-  it('grava a webfont como override do elemento', () => {
+  it('writes the webfont as an element override', () => {
     useStudioStore.getState().applyPreset('Porcelain')
     useStudioStore.getState().setSelectedElement('a')
     render(<ElementEditor />)
@@ -32,7 +32,7 @@ describe('webfonts nos controles de pilha', () => {
     )
   })
 
-  it('oferece a webfont no select do token correspondente', () => {
+  it('offers the webfont in the matching token select', () => {
     useStudioStore.getState().applyPreset('Porcelain')
     render(<TypographyEditor />)
     const select = screen.getByLabelText('Heading font') as HTMLSelectElement
@@ -40,7 +40,7 @@ describe('webfonts nos controles de pilha', () => {
     expect(values).toContain('Fraunces, Georgia, serif')
   })
 
-  it('sem webfont, so ha pilhas portateis', () => {
+  it('without a webfont, only portable stacks exist', () => {
     useStudioStore.getState().setSelectedElement('a')
     render(<ElementEditor />)
     const select = screen.getByLabelText('Font family') as HTMLSelectElement

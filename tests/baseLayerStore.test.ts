@@ -3,63 +3,80 @@ import { compileTheme } from '../src/compiler'
 import { seedBaseRules } from '../src/theme/baseRules'
 import { isBaseRuleModified, useStudioStore } from '../src/theme/store'
 
-// O sujeito e `input, textarea, select, button` de proposito: e uma regra do
-// MEIO da semente, entao apagar e reinserir a chave muda a ordem de emissao.
-// A suite antiga usava `pre code`, que era a ultima chave — o unico seletor
-// para o qual delete-e-reinsere era neutro, e por isso nao pegava o defeito.
+// The subject is `input, textarea, select, button` on purpose: it is a rule
+// from the MIDDLE of the seed, so deleting and reinserting the key changes
+// emission order. The old suite used `pre code`, which was the last key — the
+// only selector for which delete-and-reinsert was neutral, which is why it
+// missed the defect.
 const SUBJECT = 'input, textarea, select, button'
 
-describe('camada base na store', () => {
+describe('base layer in the store', () => {
   beforeEach(() => {
     useStudioStore.getState().resetTheme()
   })
 
-  it('edita uma declaracao da regra base', () => {
-    useStudioStore.getState().setLayerProperty('base', SUBJECT, 'padding', '4px')
-    expect(useStudioStore.getState().theme.layers.base[SUBJECT].padding).toBe('4px')
+  it('edits a base-rule declaration', () => {
+    useStudioStore
+      .getState()
+      .setLayerProperty('base', SUBJECT, 'padding', '4px')
+    expect(useStudioStore.getState().theme.layers.base[SUBJECT].padding).toBe(
+      '4px',
+    )
   })
 
-  it('reconhece uma regra modificada', () => {
+  it('recognises a modified rule', () => {
     const theme = () => useStudioStore.getState().theme
     expect(isBaseRuleModified(theme(), SUBJECT)).toBe(false)
-    useStudioStore.getState().setLayerProperty('base', SUBJECT, 'padding', '4px')
+    useStudioStore
+      .getState()
+      .setLayerProperty('base', SUBJECT, 'padding', '4px')
     expect(isBaseRuleModified(theme(), SUBJECT)).toBe(true)
   })
 
-  it('restaura a regra ao padrao semeado', () => {
-    useStudioStore.getState().setLayerProperty('base', SUBJECT, 'padding', '4px')
+  it('restores the rule to the seeded default', () => {
+    useStudioStore
+      .getState()
+      .setLayerProperty('base', SUBJECT, 'padding', '4px')
     useStudioStore.getState().resetBaseRule(SUBJECT)
-    expect(useStudioStore.getState().theme.layers.base[SUBJECT]).toEqual(seedBaseRules()[SUBJECT])
+    expect(useStudioStore.getState().theme.layers.base[SUBJECT]).toEqual(
+      seedBaseRules()[SUBJECT],
+    )
   })
 
-  it('desliga e religa uma regra sem perder as declaracoes', () => {
+  it('disables and re-enables a rule without losing declarations', () => {
     const store = useStudioStore.getState()
     store.setLayerProperty('base', SUBJECT, 'padding', '4px')
     store.toggleBaseRule(SUBJECT, false)
     expect(useStudioStore.getState().theme.layers.base[SUBJECT]).toBeUndefined()
     useStudioStore.getState().toggleBaseRule(SUBJECT, true)
-    // religar traz de volta o padrao semeado, nao a edicao descartada
-    expect(useStudioStore.getState().theme.layers.base[SUBJECT]).toEqual(seedBaseRules()[SUBJECT])
+    // re-enabling brings back the seeded default, not the discarded edit
+    expect(useStudioStore.getState().theme.layers.base[SUBJECT]).toEqual(
+      seedBaseRules()[SUBJECT],
+    )
   })
 
-  it('registra a mudanca no historico de undo', () => {
-    useStudioStore.getState().setLayerProperty('base', SUBJECT, 'padding', '4px')
+  it('records the change in undo history', () => {
+    useStudioStore
+      .getState()
+      .setLayerProperty('base', SUBJECT, 'padding', '4px')
     useStudioStore.getState().undo()
-    expect(useStudioStore.getState().theme.layers.base[SUBJECT].padding).toBe('0.65rem 0.8rem')
+    expect(useStudioStore.getState().theme.layers.base[SUBJECT].padding).toBe(
+      '0.65rem 0.8rem',
+    )
   })
 })
 
-describe('ordem da camada base ao religar uma regra', () => {
+describe('base-layer order when re-enabling a rule', () => {
   beforeEach(() => {
     useStudioStore.getState().resetTheme()
   })
 
-  // Dentro de @layer base toda regra sai embrulhada em :where(), com
-  // especificidade 0: a ordem do fonte e o UNICO criterio de desempate entre
-  // elas. Religar uma regra reinserindo a chave no fim do objeto muda essa
-  // ordem e troca o resultado — `input, textarea, select, button` passaria a
-  // vir depois de `button` e roubaria a cor primaria de todo botao.
-  it('devolve a regra religada a posicao original da semente', () => {
+  // Inside @layer base every rule is wrapped in :where() with 0 specificity:
+  // source order is the ONLY tiebreaker between them. Re-enabling a rule by
+  // reinserting the key at the end of the object changes that order and flips
+  // the result — `input, textarea, select, button` would come after `button`
+  // and steal the primary color from every button.
+  it('returns the re-enabled rule to its original seed position', () => {
     const selector = SUBJECT
     useStudioStore.getState().toggleBaseRule(selector, false)
     useStudioStore.getState().toggleBaseRule(selector, true)
@@ -76,16 +93,20 @@ describe('ordem da camada base ao religar uma regra', () => {
     expect(fields).toBeLessThan(button)
   })
 
-  it('mantem o botao com a cor primaria depois do ciclo desliga/religa', () => {
+  it('keeps the button in the primary color after the disable/re-enable cycle', () => {
     const selector = SUBJECT
     useStudioStore.getState().toggleBaseRule(selector, false)
     useStudioStore.getState().toggleBaseRule(selector, true)
     const css = compileTheme(useStudioStore.getState().theme)
-    expect(lastBaseDeclarationFor(css, 'button', 'background')).toBe('var(--color-primary)')
-    expect(lastBaseDeclarationFor(css, 'button', 'color')).toBe('var(--color-primary-text)')
+    expect(lastBaseDeclarationFor(css, 'button', 'background')).toBe(
+      'var(--color-primary)',
+    )
+    expect(lastBaseDeclarationFor(css, 'button', 'color')).toBe(
+      'var(--color-primary-text)',
+    )
   })
 
-  it('preserva a posicao das demais regras', () => {
+  it('preserves the position of the other rules', () => {
     useStudioStore.getState().toggleBaseRule('label', false)
     useStudioStore.getState().toggleBaseRule('label', true)
     expect(Object.keys(useStudioStore.getState().theme.layers.base)).toEqual(
@@ -95,11 +116,14 @@ describe('ordem da camada base ao religar uma regra', () => {
 })
 
 /**
- * Ultima declaracao de `property` que, dentro de @layer base, atinge o elemento
- * `element`. Todas as regras da camada tem especificidade 0, entao a ultima a
- * aparecer e a que vence.
+ * Last `property` declaration inside @layer base that hits `element`. Every
+ * rule in the layer has 0 specificity, so the last one to appear wins.
  */
-function lastBaseDeclarationFor(css: string, element: string, property: string): string | undefined {
+function lastBaseDeclarationFor(
+  css: string,
+  element: string,
+  property: string,
+): string | undefined {
   const start = css.indexOf('@layer base {')
   const end = css.indexOf('@layer elements {')
   const base = css.slice(start, end === -1 ? undefined : end)

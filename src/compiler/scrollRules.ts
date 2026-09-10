@@ -1,15 +1,15 @@
 import type { Theme } from '../theme/schema'
 
 /**
- * Regras de rolagem para um alvo. Envolvidas em `:where()` porque vivem na
- * camada base, junto das demais regras-base.
+ * Scroll rules for one target. Wrapped in `:where()` because they live in the
+ * base layer, alongside the other base rules.
  *
- * A separacao entre o que vai no gate e o que nao vai e de compatibilidade,
- * nao de estilo: no Chrome 121+ definir `scrollbar-color` DESATIVA os
- * pseudo-elementos `::-webkit-scrollbar`. Entao as partes ricas vao para
- * Chromium/WebKit, e apenas `scrollbar-color`/`scrollbar-width` ficam atras de
- * `@supports not selector(::-webkit-scrollbar)`, para quem nao tem as partes.
- * As demais propriedades sao padrao em todos os motores e vao sem gate.
+ * The split between gated and ungated output is about compatibility, not
+ * style: on Chrome 121+, setting `scrollbar-color` DISABLES the
+ * `::-webkit-scrollbar` pseudo-elements. So the rich parts go to
+ * Chromium/WebKit, and only `scrollbar-color`/`scrollbar-width` stay behind
+ * `@supports not selector(::-webkit-scrollbar)`, for engines without them.
+ * The remaining properties are standard in every engine and go ungated.
  */
 function rulesForTarget(target: string): string[] {
   const w = `:where(${target})`
@@ -24,10 +24,11 @@ function rulesForTarget(target: string): string[] {
 }
 
 /**
- * Alvo fixo em 'html' nesta entrega. `theme` fica no parametro sem uso porque
- * as regras leem os tokens via `var(...)` no CSS, nao o valor computado — e
- * porque uma entrega futura troca este corpo para ler `theme.scrollTargets`
- * (varios alvos configuraveis) sem mudar a assinatura publica.
+ * Target fixed to 'html' in this delivery. `theme` stays as an unused
+ * parameter because the rules read tokens via `var(...)` in CSS, not the
+ * computed value — and because a future delivery swaps this body to read
+ * `theme.scrollTargets` (multiple configurable targets) without changing the
+ * public signature.
  */
 export function scrollRules(theme: Theme): string[] {
   void theme
