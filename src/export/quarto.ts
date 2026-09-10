@@ -35,6 +35,38 @@ function quartoLayout(theme: Theme): string {
   --bs-code-color: var(--color-code-text);
 }
 
+main.content input:not([type="checkbox"]):not([type="radio"]), #quarto-document-content input:not([type="checkbox"]):not([type="radio"]), main.content textarea, #quarto-document-content textarea, main.content select, #quarto-document-content select, main.content button, #quarto-document-content button {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font: inherit;
+  padding: 0.65rem 0.8rem;
+}
+
+main.content button, #quarto-document-content button {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+}
+
+main.content code, #quarto-document-content code {
+  background-color: var(--color-surface-alt);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  padding: 0.1em 0.35em;
+}
+
+main.content kbd, #quarto-document-content kbd {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-bottom-width: 3px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  padding: 0.12rem 0.4rem;
+}
+
 #title-block-header, .quarto-title-block {
   margin-inline: auto;
   max-width: var(--header-width);
@@ -48,22 +80,6 @@ function quartoLayout(theme: Theme): string {
   font-weight: var(--font-weight-medium);
 }
 
-body > :is(h1, h2, h3, h4, h5, h6, p, ul, ol, dl, blockquote, pre, figure, table, form, details, article) {
-  box-sizing: border-box;
-  margin-inline: auto;
-  max-width: 100%;
-  width: min(100%, var(--quarto-content-width));
-}
-
-body > button {
-  display: block;
-  margin-block: var(--space-lg);
-  margin-inline-end: 0;
-  margin-inline-start: max(0px, calc((100% - var(--quarto-content-width)) / 2));
-  max-width: 100%;
-  width: max-content;
-}
-
 body :is(h1, h2, h3, h4, h5, h6).anchored {
   scroll-margin-block-start: var(--scroll-padding-top);
 }`
@@ -74,6 +90,5 @@ export function quartoCss(theme: Theme): string {
     layers: false,
     omitElements: ['header', 'main', 'nav'],
     scopes: ['main.content', '#quarto-document-content'],
-    directBody: true,
   })}\n${quartoLayout(theme)}\n`
 }
