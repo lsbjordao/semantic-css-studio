@@ -4,6 +4,7 @@ import { Icon } from '../icons/Icon'
 import { migrateThemeV2 } from '../theme/migration'
 import { presets, type PresetName } from '../theme/presets'
 import { useStudioStore } from '../theme/store'
+import { Logo } from './Logo'
 
 export function Topbar() {
   const theme = useStudioStore((s) => s.theme)
@@ -37,7 +38,7 @@ export function Topbar() {
   }
 
   return <header className="topbar">
-    <div className="brand"><span className="brand-mark">S</span><div><strong>Semantic CSS Studio</strong><small>Design the HTML, not the classes.</small></div></div>
+    <div className="brand"><span className="brand-mark"><Logo /></span><div><strong>Semantic CSS Studio</strong><small>Design the HTML, not the classes.</small></div></div>
     <div className="theme-identity">
       <input aria-label="Theme name" value={theme.metadata.name} onChange={(e) => updateMetadata('name', e.target.value)} />
       <select aria-label="Preset" value={presetName in presets ? presetName : ''} onChange={(e) => applyPreset(e.target.value as PresetName)}>
