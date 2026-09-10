@@ -7,6 +7,7 @@ const sections: Array<{ name: EditorSection; icon: string; group: 'TOKENS' | 'RE
   { name: 'Layout', icon: '▦', group: 'TOKENS' },
   { name: 'Radius', icon: '⌒', group: 'TOKENS' },
   { name: 'Shadows', icon: '◫', group: 'TOKENS' },
+  { name: 'Icons', icon: '◈', group: 'TOKENS' },
   { name: 'Base', icon: '▤', group: 'REGRAS' },
   { name: 'Elements', icon: '<>', group: 'REGRAS' },
   { name: 'States', icon: ':-', group: 'REGRAS' },

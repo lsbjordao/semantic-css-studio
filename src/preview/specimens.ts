@@ -59,7 +59,8 @@ const code = `
 const overview = `
 ${intro}<main><h1>Semantic CSS Studio</h1><p>One HTML document, many visual systems.</p><article><h2>Portable by design</h2><p>Edit tokens and elements visually, then export plain CSS.</p><button>Try the button</button></article><blockquote>Design the HTML, not the classes.</blockquote></main>`
 
-const imageData = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='260'%3E%3Crect width='100%25' height='100%25' fill='%23e8e8e8'/%3E%3Ccircle cx='150' cy='130' r='72' fill='%23888'/%3E%3Crect x='280' y='72' width='470' height='116' rx='18' fill='%23bbb'/%3E%3Ctext x='515' y='140' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='30' fill='%23555'%3Esemantic media%3C/text%3E%3C/svg%3E"
+const imageData =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='260'%3E%3Crect width='100%25' height='100%25' fill='%23e8e8e8'/%3E%3Ccircle cx='150' cy='130' r='72' fill='%23888'/%3E%3Crect x='280' y='72' width='470' height='116' rx='18' fill='%23bbb'/%3E%3Ctext x='515' y='140' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='30' fill='%23555'%3Esemantic media%3C/text%3E%3C/svg%3E"
 
 export const allHtml = `
 ${intro}
@@ -82,6 +83,8 @@ ${intro}
 
 <section id="forms"><h2>Forms</h2><form><fieldset><legend>Native controls</legend><label>Text <input type="text" value="Semantic HTML"></label><label>Email <input type="email" value="hello@example.org"></label><label>URL <input type="url" value="https://example.org"></label><label>Telephone <input type="tel" value="+55 21 5555-5555"></label><label>Password <input type="password" value="semantic"></label><label>Search <input type="search" placeholder="Search"></label><label>Number <input type="number" value="16"></label><label>Range <input type="range" min="0" max="100" value="65"></label><label>Date <input type="date"></label><label>Month <input type="month"></label><label>Week <input type="week"></label><label>Time <input type="time"></label><label>Color <input type="color" value="#3157d5"></label><label>File <input type="file"></label><p><label><input type="checkbox" checked> Checkbox</label> <label><input type="radio" name="catalog-mode" checked> Radio A</label> <label><input type="radio" name="catalog-mode"> Radio B</label></p><label>Select <select><optgroup label="Semantic"><option>Article</option><option>Section</option></optgroup><optgroup label="Forms"><option>Input</option></optgroup></select></label><label>Data list <input list="catalog-options" value="Article"><datalist id="catalog-options"><option value="Article"><option value="Button"><option value="Table"></datalist></label><label>Textarea <textarea>Editable multi-line text.</textarea></label><p><button type="button">Button</button> <button type="button" disabled>Disabled</button></p><p>Output: <output>16px</output></p><p>Progress: <progress value="68" max="100">68%</progress></p><p>Meter: <meter min="0" max="100" low="30" high="80" optimum="95" value="86">86</meter></p></fieldset></form></section>
 
+<section id="icons"><h2>Icons</h2><p>When an icon library is selected in the Icons panel, these native controls render its glyphs — embedded in the stylesheet, no runtime.</p><form><fieldset><legend>Control states</legend><p><label><input type="checkbox" checked> Checked</label> <label><input type="checkbox"> Unchecked</label></p><p><label><input type="radio" name="icon-mode" checked> Selected</label> <label><input type="radio" name="icon-mode"> Unselected</label></p><label>Glyph voice <select><option>Check</option><option>Chevron</option></select></label><details><summary>Disclosure glyph</summary><p>The marker follows the icon library.</p></details></fieldset></form></section>
+
 <section><h2>Media</h2><figure><picture><source media="(max-width: 500px)" srcset="${imageData}"><img src="${imageData}" alt="Semantic placeholder"></picture><figcaption>Picture, source, image and figcaption.</figcaption></figure><p><audio controls aria-label="Audio control specimen"></audio></p><video controls width="480" poster="${imageData}" aria-label="Video control specimen"><track kind="captions" srclang="en" label="English"></video><p><iframe title="Inline frame specimen" srcdoc="<p style='font-family:sans-serif;padding:1rem'>iframe content</p>"></iframe></p><p><object type="text/html" data="data:text/html,%3Cp%3EObject%20content%3C%2Fp%3E">Object fallback text</object></p><p><embed type="image/svg+xml" src="${imageData}" width="260" height="90"></p><canvas width="320" height="90" aria-label="Canvas specimen">Canvas fallback text.</canvas><p><img src="${imageData}" usemap="#catalog-map" alt="Image map specimen"><map name="catalog-map"><area shape="rect" coords="0,0,450,260" href="#content" alt="Mapped area"></map></p></section>
 
 <section><h2>Interactive and annotation</h2><details open><summary>Disclosure summary</summary><p>Details content.</p></details><dialog open><p>Non-modal open dialog.</p><form method="dialog"><button>Close</button></form></dialog><p><ruby>漢<rp>(</rp><rt>kan</rt><rp>)</rp>字<rp>(</rp><rt>ji</rt><rp>)</rp></ruby></p></section>
@@ -91,17 +94,26 @@ export const kitchenSink = allHtml
 
 const contextualStories: Record<string, string> = {
   body: '<main><h1>Body selector</h1><p>The entire preview document is the target. Change background, font, color, spacing or width-related properties to see the effect globally.</p></main>',
-  header: '<header><nav><strong>Header</strong><a href="#">Home</a><a href="#">Docs</a></nav></header><main><p>Content below the header.</p></main>',
+  header:
+    '<header><nav><strong>Header</strong><a href="#">Home</a><a href="#">Docs</a></nav></header><main><p>Content below the header.</p></main>',
   nav: '<header><nav><a href="#">Home</a><a href="#">Components</a><a href="#">About</a></nav></header>',
   main: '<main><h1>Main content</h1><p>This is the document main landmark.</p></main>',
-  section: '<main><section><h2>Section</h2><p>A thematic grouping of content.</p></section></main>',
-  article: '<main><article><h2>Article</h2><p>A self-contained composition rendered as a native element.</p><button>Action</button></article></main>',
-  aside: '<main><aside><h2>Aside</h2><p>Complementary content.</p></aside></main>',
-  footer: '<main><p>Page content.</p></main><footer><p>Footer information and links.</p></footer>',
-  address: '<main><address>Semantic CSS Studio<br>Rio de Janeiro<br><a href="mailto:hello@example.org">hello@example.org</a></address></main>',
-  search: '<main><search><form><label>Search <input type="search" value="semantic css"></label><button type="button">Go</button></form></search></main>',
-  hgroup: '<main><hgroup><h1>Primary heading</h1><p>Subtitle grouped with the heading.</p></hgroup></main>',
-  blockquote: '<main><blockquote><p>A selected block quotation with enough text to inspect indentation, borders, background and typography.</p></blockquote></main>',
+  section:
+    '<main><section><h2>Section</h2><p>A thematic grouping of content.</p></section></main>',
+  article:
+    '<main><article><h2>Article</h2><p>A self-contained composition rendered as a native element.</p><button>Action</button></article></main>',
+  aside:
+    '<main><aside><h2>Aside</h2><p>Complementary content.</p></aside></main>',
+  footer:
+    '<main><p>Page content.</p></main><footer><p>Footer information and links.</p></footer>',
+  address:
+    '<main><address>Semantic CSS Studio<br>Rio de Janeiro<br><a href="mailto:hello@example.org">hello@example.org</a></address></main>',
+  search:
+    '<main><search><form><label>Search <input type="search" value="semantic css"></label><button type="button">Go</button></form></search></main>',
+  hgroup:
+    '<main><hgroup><h1>Primary heading</h1><p>Subtitle grouped with the heading.</p></hgroup></main>',
+  blockquote:
+    '<main><blockquote><p>A selected block quotation with enough text to inspect indentation, borders, background and typography.</p></blockquote></main>',
   ul: '<main><ul><li>First unordered item</li><li>Second unordered item</li></ul></main>',
   ol: '<main><ol><li>First ordered item</li><li>Second ordered item</li></ol></main>',
   li: '<main><ul><li>Target list item</li><li>Another item</li></ul></main>',
@@ -130,27 +142,35 @@ const contextualStories: Record<string, string> = {
   optgroup: forms,
   option: forms,
   datalist: forms,
-  button: '<main><p><button type="button">Default button</button> <button type="button" disabled>Disabled button</button></p></main>',
+  button:
+    '<main><p><button type="button">Default button</button> <button type="button" disabled>Disabled button</button></p></main>',
   output: forms,
   progress: forms,
   meter: forms,
   img: `<main><img src="${imageData}" alt="Image selector specimen"></main>`,
   picture: `<main><picture><source media="(max-width:500px)" srcset="${imageData}"><img src="${imageData}" alt="Picture specimen"></picture></main>`,
   source: `<main><p><strong>source</strong> is contextual and does not render a box by itself. It is shown here inside <code>picture</code>.</p><picture><source media="(max-width:500px)" srcset="${imageData}"><img src="${imageData}" alt="Source context"></picture></main>`,
-  audio: '<main><audio controls aria-label="Audio selector specimen"></audio></main>',
+  audio:
+    '<main><audio controls aria-label="Audio selector specimen"></audio></main>',
   video: `<main><video controls width="480" poster="${imageData}" aria-label="Video selector specimen"><track kind="captions" srclang="en" label="English"></video></main>`,
   track: `<main><p><strong>track</strong> is contextual and not independently visible. It is mounted inside this video element.</p><video controls width="480" poster="${imageData}"><track kind="captions" srclang="en" label="English"></video></main>`,
   figure: `<main><figure><img src="${imageData}" alt="Figure selector specimen"><figcaption>Figure caption.</figcaption></figure></main>`,
   figcaption: `<main><figure><img src="${imageData}" alt="Caption selector specimen"><figcaption>This caption is the selected element.</figcaption></figure></main>`,
-  iframe: '<main><iframe title="Inline frame selector specimen" srcdoc="<p style=\'font-family:sans-serif;padding:1rem\'>iframe content</p>"></iframe></main>',
+  iframe:
+    '<main><iframe title="Inline frame selector specimen" srcdoc="<p style=\'font-family:sans-serif;padding:1rem\'>iframe content</p>"></iframe></main>',
   embed: `<main><embed type="image/svg+xml" src="${imageData}" width="360" height="110"></main>`,
-  object: '<main><object type="text/html" data="data:text/html,%3Ch2%3EObject%3C%2Fh2%3E%3Cp%3EEmbedded%20HTML%20content.%3C%2Fp%3E">Object fallback.</object></main>',
-  canvas: '<main><canvas width="420" height="140" aria-label="Canvas selector specimen">Canvas fallback.</canvas><p>Canvas has no painted content without script, but its box can be styled here.</p></main>',
+  object:
+    '<main><object type="text/html" data="data:text/html,%3Ch2%3EObject%3C%2Fh2%3E%3Cp%3EEmbedded%20HTML%20content.%3C%2Fp%3E">Object fallback.</object></main>',
+  canvas:
+    '<main><canvas width="420" height="140" aria-label="Canvas selector specimen">Canvas fallback.</canvas><p>Canvas has no painted content without script, but its box can be styled here.</p></main>',
   map: `<main><img src="${imageData}" usemap="#story-map" alt="Image map"><map name="story-map"><area shape="rect" coords="0,0,450,260" href="#" alt="Area"></map><p><code>map</code> is a contextual container and has no independent visual box by default.</p></main>`,
   area: `<main><img src="${imageData}" usemap="#area-map" alt="Image map"><map name="area-map"><area shape="rect" coords="0,0,450,260" href="#" alt="Area"></map><p><code>area</code> defines a hit region and has no independent visual box.</p></main>`,
-  details: '<main><details open><summary>Details summary</summary><p>Expandable native disclosure content.</p></details></main>',
-  summary: '<main><details open><summary>Selected summary</summary><p>Details content.</p></details></main>',
-  dialog: '<main><dialog open><p>Open dialog selector specimen.</p><button>Action</button></dialog></main>',
+  details:
+    '<main><details open><summary>Details summary</summary><p>Expandable native disclosure content.</p></details></main>',
+  summary:
+    '<main><details open><summary>Selected summary</summary><p>Details content.</p></details></main>',
+  dialog:
+    '<main><dialog open><p>Open dialog selector specimen.</p><button>Action</button></dialog></main>',
   ruby: '<main><p><ruby>漢<rp>(</rp><rt>kan</rt><rp>)</rp>字<rp>(</rp><rt>ji</rt><rp>)</rp></ruby></p></main>',
   rt: '<main><p><ruby>漢<rt>kan</rt>字<rt>ji</rt></ruby></p></main>',
   rp: '<main><p><ruby>漢<rp>(</rp><rt>kan</rt><rp>)</rp></ruby></p></main>',
@@ -190,7 +210,8 @@ const inlineSamples: Record<string, string> = {
 }
 
 export function selectorStory(element: string): string {
-  if (/^h[1-6]$/.test(element)) return `<main><${element}>Selected &lt;${element}&gt; heading</${element}><p>Supporting paragraph for scale comparison.</p></main>`
+  if (/^h[1-6]$/.test(element))
+    return `<main><${element}>Selected &lt;${element}&gt; heading</${element}><p>Supporting paragraph for scale comparison.</p></main>`
   const context = contextualStories[element]
   if (context) return context
   const inline = inlineSamples[element]
@@ -198,16 +219,28 @@ export function selectorStory(element: string): string {
   return `<main><h1>&lt;${element}&gt;</h1><p>This selector is available for direct CSS overrides.</p></main>`
 }
 
-export function specimenHtml(name: SpecimenName, selectedElement = 'article'): string {
+export function specimenHtml(
+  name: SpecimenName,
+  selectedElement = 'article',
+): string {
   switch (name) {
-    case 'Overview': return overview
-    case 'Typography': return intro + typography
-    case 'Content': return intro + content
-    case 'Forms': return intro + forms
-    case 'Tables': return intro + tables
-    case 'Code': return intro + code
-    case 'All HTML': return allHtml
-    case 'Kitchen Sink': return kitchenSink
-    case 'Selector': return selectorStory(selectedElement)
+    case 'Overview':
+      return overview
+    case 'Typography':
+      return intro + typography
+    case 'Content':
+      return intro + content
+    case 'Forms':
+      return intro + forms
+    case 'Tables':
+      return intro + tables
+    case 'Code':
+      return intro + code
+    case 'All HTML':
+      return allHtml
+    case 'Kitchen Sink':
+      return kitchenSink
+    case 'Selector':
+      return selectorStory(selectedElement)
   }
 }

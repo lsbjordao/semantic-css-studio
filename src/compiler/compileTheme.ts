@@ -1,4 +1,5 @@
 import { supportedElements, type CssPropertyMap, type Theme, type ThemeTokensV2 } from '../theme/schema'
+import { iconControlRules } from '../icons/css'
 import { tokenName } from '../theme/tokenNames'
 import { scrollRules } from './scrollRules'
 import { webfontImportRule } from './webfonts'
@@ -40,6 +41,30 @@ function rule(selector: string, styles: CssPropertyMap): string {
   return body ? `${selector} {\n${body}\n}` : ''
 }
 
+function scopeSelector(
+  selector: string,
+  scopes: readonly string[],
+  directBody = false,
+): string {
+  if (!scopes.length && !directBody) return selector
+  return selector
+    .split(',')
+    .flatMap((part) => {
+      const trimmed = part.trim()
+      if (
+        trimmed === ':root' ||
+        trimmed.startsWith(':root[') ||
+        trimmed === 'html' ||
+        trimmed === 'body'
+      ) return [trimmed]
+      return [
+        ...scopes.map((scope) => `${scope} ${trimmed}`),
+        ...(directBody ? [`body > ${trimmed}`] : []),
+      ]
+    })
+    .join(', ')
+}
+
 const tokenGroups: Array<keyof ThemeTokensV2> = [
   'colors', 'typography', 'spacing', 'radius', 'shadow', 'layout', 'scroll',
 ]
@@ -79,10 +104,21 @@ function resetRules(theme: Theme): string[] {
     : []
 }
 
-function baseRules(theme: Theme): string[] {
+export interface CompileThemeOptions {
+  layers?: boolean
+  omitElements?: string[]
+  scopes?: string[]
+  directBody?: boolean
+}
+
+function baseRules(
+  theme: Theme,
+  scopes: readonly string[] = [],
+  directBody = false,
+): string[] {
   const rules: string[] = [rootVariables(theme)]
   for (const [selector, styles] of Object.entries(theme.layers.base)) {
-    const emitted = rule(`:where(${selector})`, styles)
+    const emitted = rule(`:where(${scopeSelector(selector, scopes, directBody)})`, styles)
     if (emitted) rules.push(emitted)
   }
   rules.push(...scrollRules(theme))
@@ -95,11 +131,46 @@ function baseRules(theme: Theme): string[] {
   return rules
 }
 
-function elementRules(theme: Theme): string[] {
+function elementRules(
+  theme: Theme,
+  omittedElements: ReadonlySet<string> = new Set(),
+  scopes: readonly string[] = [],
+  directBody = false,
+): string[] {
   const elements = theme.layers.elements
-  const known = elementOrder.filter((key) => elements[key])
-  const extras = Object.keys(elements).filter((key) => !elementOrder.includes(key)).sort()
-  return [...known, ...extras].map((selector) => rule(selector, elements[selector])).filter(Boolean)
+  const known = elementOrder.filter((key) => elements[key] && !omittedElements.has(key))
+  const extras = Object.keys(elements)
+    .filter((key) => !elementOrder.includes(key) && !omittedElements.has(key))
+    .sort()
+  return [...known]
+    .concat(extras)
+    .map((selector) => rule(scopeSelector(selector, scopes, directBody), elements[selector]))
+    .filter(Boolean)
+    .concat(iconControlRules(theme, scopes, directBody), taskListRules(scopes, directBody))
+}
+
+function taskListRules(scopes: readonly string[] = [], directBody = false): string[] {
+  return [
+    rule(scopeSelector('.task-list, .task-list-item', scopes, directBody), {
+      listStyle: 'none',
+      paddingInlineStart: '0',
+    }),
+    rule(scopeSelector('.task-list input[type="checkbox"]', scopes, directBody), {
+      accentColor: 'var(--color-primary)',
+      background: 'transparent',
+      border: '0',
+      inlineSize: 'auto',
+      marginBlock: '0 !important',
+      marginInline: '0 var(--space-sm) !important',
+      padding: '0',
+      width: 'auto',
+    }),
+    rule(scopeSelector('.task-list-item', scopes, directBody), {
+      alignItems: 'baseline',
+      display: 'flex',
+      gap: 'var(--space-sm)',
+    }),
+  ]
 }
 
 /**
@@ -119,7 +190,11 @@ function stateRank(state: string): number {
   return index === -1 ? stateOrder.length : index
 }
 
-function stateRules(theme: Theme): string[] {
+function stateRules(
+  theme: Theme,
+  scopes: readonly string[] = [],
+  directBody = false,
+): string[] {
   const states = theme.layers.states
   const selectors = Object.keys(states).sort((a, b) => {
     const [aElement, aState] = splitState(a)
@@ -137,10 +212,14 @@ function stateRules(theme: Theme): string[] {
     if (as !== bs) return as - bs
     return a.localeCompare(b)
   })
-  return selectors.map((selector) => rule(selector, states[selector])).filter(Boolean)
+  return selectors.map((selector) => rule(scopeSelector(selector, scopes, directBody), states[selector])).filter(Boolean)
 }
 
-function responsiveRules(theme: Theme): string[] {
+function responsiveRules(
+  theme: Theme,
+  scopes: readonly string[] = [],
+  directBody = false,
+): string[] {
   const order = ['tablet', 'mobile']
   const keys = [
     ...order.filter((key) => key in theme.layers.responsive),
@@ -151,7 +230,8 @@ function responsiveRules(theme: Theme): string[] {
       const body = Object.entries(theme.layers.responsive[key])
         .map(([selector, styles]) => {
           const inner = declarations(styles, '    ')
-          return inner ? `  ${selector} {\n${inner}\n  }` : ''
+          const scoped = scopeSelector(selector, scopes, directBody)
+          return inner ? `  ${scoped} {\n${inner}\n  }` : ''
         })
         .filter(Boolean)
         .join('\n')
@@ -172,17 +252,31 @@ function darkModeRule(theme: Theme): string {
   return `${manual}\n\n${automatic}`
 }
 
-export function compileTheme(theme: Theme): string {
+export function compileTheme(theme: Theme, options: CompileThemeOptions = {}): string {
+  const layers = options.layers ?? true
+  const omittedElements = new Set(options.omitElements)
+  const scopes = options.scopes ?? []
+  const directBody = options.directBody ?? false
   const blocks = [
     `/* ${theme.metadata.name} v${theme.metadata.version} — generated by Semantic CSS Studio */`,
     // O @import precede a declaração de camadas: fora isso o CSS o ignoraria.
     webfontImportRule(theme.fonts),
-    `@layer ${LAYER_ORDER.join(', ')};`,
-    layerBlock('reset', resetRules(theme)),
-    layerBlock('base', baseRules(theme)),
-    layerBlock('elements', elementRules(theme)),
-    layerBlock('states', stateRules(theme)),
-    layerBlock('responsive', responsiveRules(theme)),
+    ...(layers
+      ? [
+          `@layer ${LAYER_ORDER.join(', ')};`,
+          layerBlock('reset', resetRules(theme)),
+          layerBlock('base', baseRules(theme, scopes, directBody)),
+          layerBlock('elements', elementRules(theme, omittedElements, scopes, directBody)),
+          layerBlock('states', stateRules(theme, scopes, directBody)),
+          layerBlock('responsive', responsiveRules(theme, scopes, directBody)),
+        ]
+      : [
+          ...resetRules(theme),
+          ...baseRules(theme, scopes, directBody),
+          ...elementRules(theme, omittedElements, scopes, directBody),
+          ...stateRules(theme, scopes, directBody),
+          ...responsiveRules(theme, scopes, directBody),
+        ]),
   ].filter(Boolean)
   return `${blocks.join('\n\n')}\n`
 }

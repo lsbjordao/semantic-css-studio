@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
-import { exportCss, exportDemo, exportJson, exportMinCss, exportPackage } from '../export/exporters'
+import { exportCss, exportDemo, exportJson, exportMinCss, exportPackage, exportQuarto } from '../export/exporters'
+import { Icon } from '../icons/Icon'
 import { migrateThemeV2 } from '../theme/migration'
 import { presets, type PresetName } from '../theme/presets'
 import { useStudioStore } from '../theme/store'
@@ -18,6 +19,8 @@ export function Topbar() {
   const futureCount = useStudioStore((s) => s.future.length)
   const includeReset = useStudioStore((s) => s.theme.options.includeMinimalReset)
   const setReset = useStudioStore((s) => s.setReset)
+  const uiIconLibrary = useStudioStore((s) => s.uiIconLibrary)
+  const previewMode = useStudioStore((s) => s.previewMode)
   const inputRef = useRef<HTMLInputElement>(null)
   const [exportOpen, setExportOpen] = useState(false)
 
@@ -42,8 +45,8 @@ export function Topbar() {
       </select>
     </div>
     <div className="topbar-actions">
-      <button className="icon-button" title="Undo (Ctrl+Z)" disabled={!pastCount} onClick={undo}>↶</button>
-      <button className="icon-button" title="Redo (Ctrl+Shift+Z)" disabled={!futureCount} onClick={redo}>↷</button>
+      <button className="icon-button" title="Undo (Ctrl+Z)" aria-label="Undo" disabled={!pastCount} onClick={undo}><Icon library={uiIconLibrary} name="undo" size={16} /></button>
+      <button className="icon-button" title="Redo (Ctrl+Shift+Z)" aria-label="Redo" disabled={!futureCount} onClick={redo}><Icon library={uiIconLibrary} name="redo" size={16} /></button>
       <label className="reset-toggle" title="Include a minimal box-sizing reset"><input type="checkbox" checked={includeReset} onChange={(e) => setReset(e.target.checked)} /> reset</label>
       <button onClick={() => inputRef.current?.click()}>Import</button>
       <input ref={inputRef} hidden type="file" accept="application/json,.json" onChange={(e) => void handleImport(e.target.files?.[0])} />
@@ -55,8 +58,9 @@ export function Topbar() {
           <button onClick={() => { exportCss(theme); setExportOpen(false) }}>CSS <small>Readable stylesheet</small></button>
           <button onClick={() => { exportMinCss(theme); setExportOpen(false) }}>Minified CSS <small>Production size</small></button>
           <button onClick={() => { exportJson(theme); setExportOpen(false) }}>Theme JSON <small>Editable source</small></button>
-          <button onClick={() => { exportDemo(theme); setExportOpen(false) }}>Demo HTML <small>Kitchen Sink page</small></button>
-          <button onClick={() => { void exportPackage(theme); setExportOpen(false) }}>Complete package <small>CSS + JSON + demo ZIP</small></button>
+          <button onClick={() => { exportQuarto(theme); setExportOpen(false) }}>Quarto <small>theme.css only</small></button>
+          <button onClick={() => { exportDemo(theme, previewMode); setExportOpen(false) }}>Demo HTML <small>Kitchen Sink page</small></button>
+          <button onClick={() => { void exportPackage(theme, previewMode); setExportOpen(false) }}>Complete package <small>CSS + JSON + demo ZIP</small></button>
         </div>}
       </div>
     </div>

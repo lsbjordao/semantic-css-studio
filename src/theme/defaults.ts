@@ -384,6 +384,9 @@ export const defaultTheme = {
     tablet: 768,
     desktop: 1440,
   },
+  icons: {
+    library: 'none',
+  },
   options: {
     includeMinimalReset: true,
     reducedMotion: true,

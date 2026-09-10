@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { isIconLibraryId, type IconLibraryId } from '../icons/types'
 import { seedBaseRules } from './baseRules'
 import { defaultTheme } from './defaults'
 import { presets, type PresetName } from './presets'
@@ -13,7 +14,21 @@ export type ThemeModeName = 'light' | 'dark'
 export type PreviewMode = 'light' | 'dark' | 'auto'
 export type ViewportName = 'desktop' | 'tablet' | 'mobile' | 'custom'
 export type SpecimenName = 'Selector' | 'Overview' | 'Typography' | 'Content' | 'Forms' | 'Tables' | 'Code' | 'All HTML' | 'Kitchen Sink'
-export type EditorSection = 'Colors' | 'Typography' | 'Spacing' | 'Layout' | 'Radius' | 'Shadows' | 'Base' | 'Elements' | 'States' | 'Accessibility'
+export type EditorSection = 'Colors' | 'Typography' | 'Spacing' | 'Layout' | 'Radius' | 'Shadows' | 'Icons' | 'Base' | 'Elements' | 'States' | 'Accessibility'
+
+export type UiIconLibrary = Exclude<IconLibraryId, 'none'>
+
+const UI_ICON_STORAGE_KEY = 'semantic-css-studio/ui-icon-library'
+
+function readUiIconLibrary(): UiIconLibrary {
+  try {
+    const raw = localStorage.getItem(UI_ICON_STORAGE_KEY)
+    if (raw && isIconLibraryId(raw) && raw !== 'none') return raw
+  } catch {
+    // localStorage indisponível (SSR/testes): cai no padrão.
+  }
+  return 'lucide'
+}
 
 interface StudioState {
   theme: Theme
@@ -29,12 +44,15 @@ interface StudioState {
   selectedElement: string
   selectedState: InteractionState
   notice: string | null
+  uiIconLibrary: UiIconLibrary
   updateMetadata: (key: 'name' | 'version' | 'description', value: string) => void
   setColor: (key: ColorTokenKey, value: string) => void
   setToken: <K extends Exclude<keyof ThemeTokens, 'colors'>>(category: K, key: keyof ThemeTokens[K], value: string) => void
   setLayerProperty: (layer: LayerName, selector: string, property: string, value: string) => void
   removeLayerProperty: (layer: LayerName, selector: string, property: string) => void
   setFontFace: (role: FontRole, face: ThemeFontFace | null, stack?: string) => void
+  setIconLibrary: (library: IconLibraryId) => void
+  setUiIconLibrary: (library: UiIconLibrary) => void
   resetBaseRule: (selector: string) => void
   toggleBaseRule: (selector: string, enabled: boolean) => void
   setElementTargets: (targets: Array<{ selector: string; property: string }>, value: string) => void
@@ -138,6 +156,7 @@ export const useStudioStore = create<StudioState>((set) => ({
   selectedElement: 'article',
   selectedState: 'hover',
   notice: null,
+  uiIconLibrary: typeof window !== 'undefined' ? readUiIconLibrary() : 'lucide',
 
   updateMetadata: (key, value) => set((state) => {
     const next = clone(state.theme)
@@ -193,6 +212,21 @@ export const useStudioStore = create<StudioState>((set) => ({
     }
     return commit(state, next)
   }),
+
+  setIconLibrary: (library) => set((state) => {
+    const next = clone(state.theme)
+    next.icons = { library }
+    return commit(state, next)
+  }),
+
+  setUiIconLibrary: (library) => {
+    try {
+      localStorage.setItem(UI_ICON_STORAGE_KEY, library)
+    } catch {
+      // Sem persistência: a troca vale só para a sessão.
+    }
+    return set({ uiIconLibrary: library })
+  },
 
   resetBaseRule: (selector) => set((state) => {
     const seeded = seedBaseRules()[selector]

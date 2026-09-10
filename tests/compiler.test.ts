@@ -20,6 +20,14 @@ describe('CSS compiler', () => {
     expect(css).toContain(':root[data-theme="dark"]')
   })
 
+  it('keeps task-list checkboxes inside the content margin', () => {
+    const css = compileTheme(presets.Minimal)
+
+    expect(css).toContain('.task-list, .task-list-item {')
+    expect(css).toContain('.task-list input[type="checkbox"] {')
+    expect(css).toContain('margin-inline: 0 var(--space-sm) !important;')
+  })
+
   it('minifies generated CSS', () => {
     const readable = compileTheme(presets.Minimal)
     const minified = minifyCss(readable)

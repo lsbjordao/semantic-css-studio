@@ -1,3 +1,5 @@
+import type { IconLibraryId } from '../icons/types'
+
 export const SCHEMA_VERSION = 2 as const
 
 export const colorTokenKeys = [
@@ -194,6 +196,11 @@ export interface ThemeV2 {
    * do sistema, para o tema degradar offline.
    */
   fonts?: ThemeFonts
+  /**
+   * Biblioteca de ícones embutida no CSS exportado como data-URI.
+   * Ausente = `none` (controles nativos com `accent-color`).
+   */
+  icons?: ThemeIcons
 }
 
 /** Uma família hospedada no Google Fonts. */
@@ -213,5 +220,10 @@ export interface ThemeFonts {
 }
 
 export type FontRole = keyof ThemeFonts
+
+/** Biblioteca de ícones do tema (CSS exportado). `none` = nativo. */
+export interface ThemeIcons {
+  library: IconLibraryId
+}
 
 export type Theme = ThemeV2

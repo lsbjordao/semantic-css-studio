@@ -13,7 +13,10 @@ describe('HTML specimens', () => {
     expect(supportedElements).toHaveLength(100)
     const container = mount(allHtml)
     for (const element of supportedElements.filter((tag) => tag !== 'body')) {
-      expect(container.querySelector(element), `missing <${element}>`).not.toBeNull()
+      expect(
+        container.querySelector(element),
+        `missing <${element}>`,
+      ).not.toBeNull()
     }
   })
 
@@ -26,5 +29,15 @@ describe('HTML specimens', () => {
       const story = selectorStory(element)
       expect(story.length, `empty story for <${element}>`).toBeGreaterThan(20)
     }
+  })
+
+  it('shows icon-bearing controls in an Icons section of All HTML', () => {
+    const container = mount(allHtml)
+    const section = container.querySelector('section#icons')
+    expect(section).not.toBeNull()
+    expect(section?.querySelector('input[type="checkbox"]')).not.toBeNull()
+    expect(section?.querySelector('input[type="radio"]')).not.toBeNull()
+    expect(section?.querySelector('select')).not.toBeNull()
+    expect(section?.querySelector('details > summary')).not.toBeNull()
   })
 })

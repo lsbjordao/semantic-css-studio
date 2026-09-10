@@ -1,4 +1,5 @@
 import { isValidSelector } from '../compiler/selectorValidation'
+import { isIconLibraryId } from '../icons/types'
 import { preCodeNeutraliser, seedBaseRules, seedResponsiveRules } from './baseRules'
 import { scrollDefaults } from './scrollDefaults'
 import {
@@ -98,6 +99,13 @@ export function validateThemeV2(candidate: unknown): asserts candidate is ThemeV
   }
   if (typeof options.reducedMotion !== 'boolean') {
     invalidTheme('"options.reducedMotion" precisa ser true ou false.')
+  }
+
+  const icons = candidate.icons
+  if (icons !== undefined) {
+    if (!isRecord(icons) || !isIconLibraryId((icons as { library?: unknown }).library)) {
+      invalidTheme('"icons.library" precisa ser uma das bibliotecas suportadas (ou "none").')
+    }
   }
 }
 

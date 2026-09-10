@@ -396,6 +396,28 @@
     color: inherit;
     padding: 0;
   }
+
+  .task-list, .task-list-item {
+    list-style: none;
+    padding-inline-start: 0;
+  }
+
+  .task-list input[type="checkbox"] {
+    accent-color: var(--color-primary);
+    background: transparent;
+    border: 0;
+    inline-size: auto;
+    margin-block: 0 !important;
+    margin-inline: 0 var(--space-sm) !important;
+    padding: 0;
+    width: auto;
+  }
+
+  .task-list-item {
+    align-items: baseline;
+    display: flex;
+    gap: var(--space-sm);
+  }
 }
 
 @layer states {

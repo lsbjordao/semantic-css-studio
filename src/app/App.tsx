@@ -3,6 +3,7 @@ import { AccessibilityEditor } from '../editor/AccessibilityEditor'
 import { BaseRulesEditor } from '../editor/BaseRulesEditor'
 import { EditorSidebar } from '../editor/EditorSidebar'
 import { ElementEditor } from '../editor/ElementEditor'
+import { IconsEditor } from '../editor/IconsEditor'
 import { StateEditor } from '../editor/StateEditor'
 import { ColorsEditor, LayoutEditor, RadiusEditor, ShadowsEditor, SpacingEditor, TypographyEditor } from '../editor/TokenEditors'
 import { PreviewFrame } from '../preview/PreviewFrame'
@@ -19,6 +20,7 @@ function ActiveEditor() {
     case 'Layout': return <LayoutEditor />
     case 'Radius': return <RadiusEditor />
     case 'Shadows': return <ShadowsEditor />
+    case 'Icons': return <IconsEditor />
     case 'Base': return <BaseRulesEditor />
     case 'Elements': return <ElementEditor />
     case 'States': return <StateEditor />
