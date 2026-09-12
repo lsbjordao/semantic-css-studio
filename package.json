@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "preview:quarto": "node scripts/build-quarto-preview.mjs"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^7.3.1",

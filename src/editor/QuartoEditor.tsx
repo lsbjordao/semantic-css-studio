@@ -84,6 +84,7 @@ function SidebarMock() {
 }
 
 export function QuartoEditor() {
+  const setSpecimen = useStudioStore((s) => s.setSpecimen)
   const theme = useStudioStore((s) => s.theme)
   const editMode = useStudioStore((s) => s.editMode)
   const tone = theme.quarto?.sidebarTone ?? 'surface'
@@ -133,6 +134,18 @@ export function QuartoEditor() {
       </div>
 
       <div className="field">
+        <button
+          className="primary-button"
+          onClick={() => setSpecimen('Quarto')}
+        >
+          Open Quarto reference
+        </button>
+        <p className="field-hint">
+          A document rendered with Quarto 1.8.26 and Cosmo, with your exported
+          CSS applied live. Includes a website navbar, table of contents,
+          callout, citation and footnote. Interactive Quarto scripts are
+          disabled in this visual reference.
+        </p>
         <span className="field-label">Tone preview ({editMode} mode)</span>
         <SidebarMock />
         <p className="field-hint">

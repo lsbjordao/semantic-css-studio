@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { compileTheme } from '../compiler'
+import { quartoCss } from '../export/quarto'
+import { quartoPartAt } from '../theme/quartoParts'
 import { specimenHtml } from './specimens'
 import { supportedElements } from '../theme/schema'
 import { useStudioStore } from '../theme/store'
@@ -26,9 +28,14 @@ function setDocumentThemeMode(doc: Document, mode: 'light' | 'dark' | 'auto') {
 }
 
 function markSelectedElement(doc: Document, selector: string) {
-  doc.querySelectorAll('[data-studio-selected]').forEach((node) => node.removeAttribute('data-studio-selected'))
+  doc
+    .querySelectorAll('[data-studio-selected]')
+    .forEach((node) => node.removeAttribute('data-studio-selected'))
   try {
-    doc.querySelectorAll(selector).forEach((node) => node.setAttribute('data-studio-selected', 'true'))
+    if (!selector) return
+    doc
+      .querySelectorAll(selector)
+      .forEach((node) => node.setAttribute('data-studio-selected', 'true'))
   } catch {
     // The current catalog uses tag selectors, but keeping this defensive makes
     // future custom selectors harmless to the inspector.
@@ -46,13 +53,19 @@ export function PreviewFrame() {
   const customWidth = useStudioStore((state) => state.customWidth)
   const specimen = useStudioStore((state) => state.specimen)
   const selectedElement = useStudioStore((state) => state.selectedElement)
+  const section = useStudioStore((state) => state.section)
+  const outlinedElement = section === 'Elements' ? selectedElement : ''
   const setSelectedElement = useStudioStore((state) => state.setSelectedElement)
   const setSection = useStudioStore((state) => state.setSection)
 
-  selectedElementRef.current = selectedElement
+  selectedElementRef.current = outlinedElement
 
   const width = viewport === 'custom' ? customWidth : viewportWidths[viewport]
-  const css = useMemo(() => compileTheme(theme), [theme])
+  const isQuarto = specimen === 'Quarto'
+  const css = useMemo(
+    () => (isQuarto ? quartoCss(theme, previewMode) : compileTheme(theme)),
+    [theme, isQuarto, previewMode],
+  )
 
   // The document structure deliberately does NOT contain the compiled theme.
   // Theme edits are injected into #studio-theme below, so numeric/color changes
@@ -75,10 +88,21 @@ export function PreviewFrame() {
       const target = event.target as Element | null
       if (!target || typeof target.tagName !== 'string') return
 
+      const part = isQuarto ? quartoPartAt(target) : undefined
+      if (part) {
+        event.preventDefault()
+        event.stopPropagation()
+        setSelectedElement(part.selector)
+        setSection('Elements')
+        return
+      }
+
       let current: Element | null = target
       while (current) {
         const tag = current.tagName.toLowerCase()
-        if (supportedElements.includes(tag as (typeof supportedElements)[number])) {
+        if (
+          supportedElements.includes(tag as (typeof supportedElements)[number])
+        ) {
           // Inspector clicks select the element; they do not navigate, submit,
           // toggle a disclosure, or change the current story/scroll position.
           event.preventDefault()
@@ -92,8 +116,9 @@ export function PreviewFrame() {
     }
 
     doc.addEventListener('click', onClick, true)
-    documentCleanupRef.current = () => doc.removeEventListener('click', onClick, true)
-  }, [setSection, setSelectedElement])
+    documentCleanupRef.current = () =>
+      doc.removeEventListener('click', onClick, true)
+  }, [isQuarto, setSection, setSelectedElement])
 
   const syncFrame = useCallback(() => {
     const doc = iframeRef.current?.contentDocument
@@ -101,6 +126,8 @@ export function PreviewFrame() {
 
     const themeStyle = doc.getElementById('studio-theme')
     if (themeStyle) themeStyle.textContent = css
+    const inspectorStyle = doc.getElementById('studio-inspector')
+    if (inspectorStyle) inspectorStyle.textContent = inspectorCss
     setDocumentThemeMode(doc, previewMode)
     markSelectedElement(doc, selectedElementRef.current)
     installInspector()
@@ -123,20 +150,25 @@ export function PreviewFrame() {
   // alter the document structure, so the user's current scroll position stays put.
   useEffect(() => {
     const doc = iframeRef.current?.contentDocument
-    if (doc) markSelectedElement(doc, selectedElement)
-  }, [selectedElement])
+    if (doc) markSelectedElement(doc, outlinedElement)
+  }, [outlinedElement])
 
   useEffect(() => () => documentCleanupRef.current?.(), [])
 
   return (
     <div className="preview-stage" aria-label="Theme preview">
       <div className="preview-width-label">{Math.round(width)} px</div>
-      <div className="preview-shell" style={{ width: `min(100%, ${width}px)` }}>
+      <div className="preview-shell" style={{ width: `${width}px` }}>
         <iframe
           ref={iframeRef}
           title={`${theme.metadata.name} ${specimen} preview`}
           sandbox="allow-same-origin"
-          srcDoc={documentHtml}
+          src={
+            isQuarto
+              ? `${import.meta.env.BASE_URL}previews/quarto.html`
+              : undefined
+          }
+          srcDoc={isQuarto ? undefined : documentHtml}
           onLoad={syncFrame}
         />
       </div>

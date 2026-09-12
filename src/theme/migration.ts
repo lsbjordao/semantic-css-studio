@@ -117,6 +117,11 @@ export function validateThemeV2(
       invalidTheme(`"layers.${layer}" is missing or not a rule object.`)
     }
   }
+  // `print` is optional: absent means "no print layer", which keeps every
+  // theme written before the document package valid without migration.
+  if (layers.print !== undefined && !isRecord(layers.print)) {
+    invalidTheme('"layers.print" must be a rule object when present.')
+  }
 
   if (!isRecord(candidate.breakpoints)) {
     invalidTheme(
@@ -270,6 +275,7 @@ export function migrateThemeV2(input: unknown): ThemeV2 {
   assertSelectors(upgraded.layers.base, 'base')
   assertSelectors(upgraded.layers.elements, 'elements')
   assertSelectors(upgraded.layers.states, 'states')
+  if (upgraded.layers.print) assertSelectors(upgraded.layers.print, 'print')
   for (const [breakpoint, rules] of Object.entries(
     upgraded.layers.responsive,
   )) {

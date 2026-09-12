@@ -20,7 +20,11 @@ export function themeJson(theme: Theme): string {
 
 export type DemoColorMode = QuartoColorMode
 
-export function demoHtml(theme: Theme, mode: DemoColorMode = 'auto'): string {
+export function demoHtml(
+  theme: Theme,
+  mode: DemoColorMode = 'auto',
+  stylesheet = 'theme.css',
+): string {
   const title = theme.metadata.name.replace(/[&<>"']/g, '')
   // Exported CSS applies dark via `@media (prefers-color-scheme: dark)` when
   // there is no `data-theme`. Without pinning the mode here, an exported demo
@@ -36,7 +40,7 @@ ${htmlTag}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${title} — Semantic CSS demo</title>
-  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="${stylesheet.replace(/[&<>"']/g, '')}">
 </head>
 <body>
 ${kitchenSink}
@@ -94,7 +98,11 @@ export function exportJson(theme: Theme): void {
 }
 
 export function exportDemo(theme: Theme, mode: DemoColorMode = 'auto'): void {
-  downloadText('demo.html', demoHtml(theme, mode), 'text/html;charset=utf-8')
+  downloadText(
+    'demo.html',
+    demoHtml(theme, mode, `${safeName(theme.metadata.name)}.css`),
+    'text/html;charset=utf-8',
+  )
 }
 
 export async function exportPackage(

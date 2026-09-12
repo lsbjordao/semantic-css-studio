@@ -44,6 +44,16 @@ function quartoLayout(theme: Theme): string {
   --bs-code-color: var(--color-code-text);
 }
 
+section.footnotes {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+div.callout.callout-style-default .callout-header {
+  background-color: var(--color-surface-alt);
+  color: var(--color-text);
+}
+
 main.content input:not([type="checkbox"]):not([type="radio"]), #quarto-document-content input:not([type="checkbox"]):not([type="radio"]), main.content textarea, #quarto-document-content textarea, main.content select, #quarto-document-content select, main.content button, #quarto-document-content button {
   background: var(--color-surface);
   border: 1px solid var(--color-border);

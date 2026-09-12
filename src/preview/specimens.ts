@@ -1,3 +1,9 @@
+import {
+  articleDocument,
+  essayDocument,
+  documentationDocument,
+  websiteDocument,
+} from './documents'
 import type { SpecimenName } from '../theme/store'
 
 const intro = `
@@ -224,6 +230,16 @@ export function specimenHtml(
   selectedElement = 'article',
 ): string {
   switch (name) {
+    case 'Article':
+      return articleDocument
+    case 'Essay':
+      return essayDocument
+    case 'Documentation':
+      return documentationDocument
+    case 'Website':
+      return websiteDocument
+    case 'Quarto':
+      return '' // The generated reference is loaded by PreviewFrame.
     case 'Overview':
       return overview
     case 'Typography':

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { selectorGroups } from '../theme/schema'
+import { quartoParts, quartoPartFor } from '../theme/quartoParts'
 import { useStudioStore } from '../theme/store'
 import { swatchColor } from './colorPreview'
 import { controlValueFor } from './controlValue'
@@ -95,6 +96,7 @@ export function ElementEditor() {
   const [query, setQuery] = useState('')
   const theme = useStudioStore((s) => s.theme)
   const element = useStudioStore((s) => s.selectedElement)
+  const quartoPart = quartoPartFor(element)
   const setElement = useStudioStore((s) => s.setSelectedElement)
   const setSpecimen = useStudioStore((s) => s.setSpecimen)
   const setTargets = useStudioStore((s) => s.setElementTargets)
@@ -117,13 +119,18 @@ export function ElementEditor() {
     setElement(tag)
   }
 
-  const valueFor = (definition: PropertyDef) =>
-    controlValueFor(
-      theme,
-      element,
-      definition.property,
-      effectiveValueFor(theme, element, definition),
+  // Pseudo-element rules have no shorthand of their own to decompose, and
+  // bridging them (`::selection` background falling back to the element's
+  // `background`) would display a value the control cannot clear.
+  const valueFor = (definition: PropertyDef) => {
+    const effective = effectiveValueFor(theme, element, definition)
+    const isPseudo = targetList(element, definition).some((target) =>
+      target.selector.includes('::'),
     )
+    return isPseudo
+      ? effective
+      : controlValueFor(theme, element, definition.property, effective)
+  }
 
   // Only an explicitly written longhand is a clearable override. A value
   // merely inherited from shorthand keeps being shown, but gets no × button
@@ -165,9 +172,13 @@ export function ElementEditor() {
       <div className="selected-selector-card">
         <div>
           <small>SELECTED SELECTOR</small>
-          <code>&lt;{element}&gt;</code>
+          <code>{quartoPart ? quartoPart.label : `<${element}>`}</code>
+          {quartoPart && <small>{element}</small>}
         </div>
-        <button type="button" onClick={() => setSpecimen('Selector')}>
+        <button
+          type="button"
+          onClick={() => setSpecimen(quartoPart ? 'Quarto' : 'Selector')}
+        >
           Open story
         </button>
       </div>
@@ -182,6 +193,35 @@ export function ElementEditor() {
         />
       </label>
       <div className="selector-catalog" aria-label="HTML selector catalog">
+        {quartoParts.some((part) =>
+          `${part.label} ${part.selector}`
+            .toLowerCase()
+            .includes(query.toLowerCase()),
+        ) && (
+          <section className="selector-group">
+            <h3>Quarto components</h3>
+            <div className="selector-buttons">
+              {quartoParts
+                .filter((part) =>
+                  `${part.label} ${part.selector}`
+                    .toLowerCase()
+                    .includes(query.toLowerCase()),
+                )
+                .map((part) => (
+                  <button
+                    key={part.selector}
+                    className={element === part.selector ? 'active' : ''}
+                    onClick={() => {
+                      chooseSelector(part.selector)
+                      setSpecimen('Quarto')
+                    }}
+                  >
+                    {part.label}
+                  </button>
+                ))}
+            </div>
+          </section>
+        )}
         {filteredGroups.map(({ group, tags }) => (
           <section key={group} className="selector-group">
             <h3>{group}</h3>

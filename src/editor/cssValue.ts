@@ -1,4 +1,5 @@
-export const numericCssPattern = /^(-?(?:\d+\.?\d*|\.\d+))(px|rem|em|ch|%|vh|vw|vmin|vmax|pt|pc|cm|mm|in|ex)?$/i
+export const numericCssPattern =
+  /^(-?(?:\d+\.?\d*|\.\d+))(px|rem|em|ch|%|vh|vw|vmin|vmax|pt|pc|cm|mm|in|ex)?$/i
 
 function precisionFor(step: number) {
   const text = String(step)
@@ -27,8 +28,14 @@ export function adjustCssNumericValue(
   const unit = match?.[2] ?? defaultUnit
   const current = match ? Number(match[1]) : 0
   const step = inferredStep(unit, explicitStep)
-  const precision = Math.max(precisionFor(step), match?.[1]?.split('.')[1]?.length ?? 0)
+  const precision = Math.max(
+    precisionFor(step),
+    match?.[1]?.split('.')[1]?.length ?? 0,
+  )
   const next = current + direction * step
-  const normalized = Math.abs(next) < 1e-10 ? 0 : Number(next.toFixed(Math.min(6, precision + 1)))
+  const normalized =
+    Math.abs(next) < 1e-10
+      ? 0
+      : Number(next.toFixed(Math.min(6, precision + 1)))
   return `${normalized}${unit}`
 }

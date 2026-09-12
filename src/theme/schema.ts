@@ -250,6 +250,12 @@ export interface ThemeLayers {
   elements: RuleMap
   states: RuleMap
   responsive: Record<string, RuleMap>
+  /**
+   * Optional print-only rules, emitted inside `@media print` in a `print`
+   * layer created after every other layer. Absent = the theme has no print
+   * layer, so existing themes and preset snapshots stay byte-identical.
+   */
+  print?: RuleMap
 }
 
 export interface ThemeV2 {

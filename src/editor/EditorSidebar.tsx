@@ -2,9 +2,12 @@ import { useStudioStore, type EditorSection } from '../theme/store'
 
 const sections: Array<{
   name: EditorSection
+  label?: string
   icon: string
-  group: 'TOKENS' | 'RULES' | 'CHECKS' | 'QUARTO'
+  group: 'WRITE' | 'TOKENS' | 'RULES' | 'CHECKS' | 'QUARTO'
 }> = [
+  { name: 'Reading', label: 'Reading', icon: '¶', group: 'WRITE' },
+  { name: 'Site layout', icon: '▦', group: 'WRITE' },
   { name: 'Colors', icon: '◐', group: 'TOKENS' },
   { name: 'Typography', icon: 'Aa', group: 'TOKENS' },
   { name: 'Spacing', icon: '↕', group: 'TOKENS' },
@@ -15,11 +18,12 @@ const sections: Array<{
   { name: 'Base', icon: '▤', group: 'RULES' },
   { name: 'Elements', icon: '<>', group: 'RULES' },
   { name: 'States', icon: ':-', group: 'RULES' },
+  { name: 'Print', icon: '⎙', group: 'RULES' },
   { name: 'Accessibility', icon: '✓', group: 'CHECKS' },
   { name: 'Quarto', icon: 'Q', group: 'QUARTO' },
 ]
 
-const groups = ['TOKENS', 'RULES', 'CHECKS', 'QUARTO'] as const
+const groups = ['WRITE', 'TOKENS', 'RULES', 'CHECKS', 'QUARTO'] as const
 
 export function EditorSidebar() {
   const section = useStudioStore((s) => s.section)
@@ -34,13 +38,14 @@ export function EditorSidebar() {
             .filter((item) => item.group === group)
             .map((item) => (
               <button
-                key={item.name}
+                key={item.label ?? item.name}
+                aria-label={item.label ?? item.name}
                 className={section === item.name ? 'active' : ''}
                 aria-current={section === item.name ? 'page' : undefined}
                 onClick={() => setSection(item.name)}
               >
                 <span>{item.icon}</span>
-                {item.name}
+                {item.label ?? item.name}
               </button>
             ))}
         </div>

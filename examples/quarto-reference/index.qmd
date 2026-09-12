@@ -1,0 +1,74 @@
+---
+title: "The shape of a readable page"
+subtitle: "A field guide to rhythm, evidence and attention"
+author: "Semantic CSS Studio"
+date: 2026-09-12
+abstract: "A reference article for comparing typography, long-form prose and the supporting structure of a Quarto website. The observations and citation below are illustrative."
+references:
+  - id: sample-notes
+    type: report
+    title: "Notes on reading environments (illustrative reference)"
+    author:
+      - literal: Semantic CSS Studio
+    issued:
+      year: 2026
+---
+
+# Reading as a sequence
+
+A page unfolds over time. The reader finds a title, follows an opening paragraph and gradually learns which details deserve attention. Typography supports that sequence through small, repeatable choices: the width of a line, the distance between paragraphs and the contrast between a heading and the words beneath it.
+
+This document gives those choices somewhere to meet. Read several paragraphs before changing a value, then return to the same passage. A setting that looks pleasing in a short sample may feel very different after a full screen of continuous prose. These examples are demonstrations rather than research findings [@sample-notes].
+
+> The task of a reading page is to make it easy to continue, and equally easy to find the way back.
+
+A quotation interrupts the main voice without leaving the argument. Its border, indentation and line spacing should make that relationship visible. A footnote offers a smaller departure, allowing the reader to follow a detail and return.[^reading]
+
+[^reading]: This is an illustrative note. It tests the size, spacing and link treatment of supporting text in the exported theme.
+
+# Methods {#methods}
+
+## Compare the same passage
+
+Choose a baseline, adjust one property and compare the result. The page should retain a clear hierarchy when the viewport changes, when a long title wraps or when a reader switches to a dark palette.
+
+1. Start with the body font, its size and its line height.
+2. Adjust the reading column and the space between paragraphs.
+3. Compare section headings, quotations and notes with the main text.
+
+::: {.callout-note}
+## Keep the context visible
+
+The preview includes Quarto's generated structure and Bootstrap theme. Your exported CSS is applied after that baseline, so you can inspect how the two work together.
+:::
+
+## Record the settings
+
+A small table can carry the practical details without interrupting the prose for long.
+
+| Property | Example | What to inspect |
+|:--|:--|:--|
+| Reading width | 68ch | Line length |
+| Body size | 18px | Comfort at normal zoom |
+| Line height | 1.65 | Separation between lines |
+
+: An illustrative comparison sheet.
+
+```css
+article p {
+  margin-block-end: 1.2em;
+}
+```
+
+Code has its own rhythm. Keep indentation and punctuation distinct, while allowing the surrounding explanation to retain its ordinary measure. Inline expressions such as `margin-block-end` should remain legible inside a sentence.
+
+# Discussion
+
+A website adds a second kind of structure. Navigation identifies the publication, a table of contents describes the current document and the footer marks its end. These elements can share colors and type with the article while keeping their own spacing and dimensions.
+
+The final check is a continuous reading pass. Move from the opening paragraph to the notes, inspect a narrow viewport, then compare light and dark. The value of a theme lies in how consistently these parts support the text.
+
+# References
+
+::: {#refs}
+:::

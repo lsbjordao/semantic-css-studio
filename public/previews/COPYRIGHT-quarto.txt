@@ -1,16 +1,8 @@
-# Third-party notices
+Quarto
+Copyright (C) 2020-2024 Posit Software, PBC
 
-## Simple.css preset
-
-The `Simple.css` preset in Semantic CSS Studio is based on the Simple.css project by Kev Quirk and contributors.
-
-- Project: https://simplecss.org/
-- Source: https://github.com/kevquirk/simple.css
-- License: MIT
-
-MIT License
-
-Copyright (c) 2020 Simple.css (Kev Quirk)
+With the exceptions noted below, this code is released under the
+[MIT License](https://opensource.org/license/mit/):
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,15 +22,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-## Quarto visual reference
-
-`public/previews/quarto.html` is generated from the original sample in
-`examples/quarto-reference/` with Quarto 1.8.26. It contains Quarto's HTML
-styling, Bootstrap, Bootstrap Icons and the Bootswatch Cosmo theme. Upstream
-CSS license notices are retained in the generated file. Quarto's copyright
-notice is distributed alongside it as `public/previews/COPYRIGHT-quarto.txt`.
-
-- Quarto: https://github.com/quarto-dev/quarto-cli
-- Bootstrap: https://github.com/twbs/bootstrap
-- Bootstrap Icons: https://github.com/twbs/icons
-- Bootswatch: https://github.com/thomaspark/bootswatch
+Quarto's source code is at https://github.com/quarto-dev/quarto-cli

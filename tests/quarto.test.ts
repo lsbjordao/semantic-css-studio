@@ -58,7 +58,10 @@ describe('Quarto CSS export', () => {
       '.sidebar nav[role="doc-toc"] ul > li > a:hover',
     )
     expect(tocRuleStart).toBeGreaterThan(-1)
-    const tocRule = css.slice(tocRuleStart, css.indexOf('\n}', tocRuleStart) + 2)
+    const tocRule = css.slice(
+      tocRuleStart,
+      css.indexOf('\n}', tocRuleStart) + 2,
+    )
     expect(tocRule).toContain(
       '.sidebar nav[role="doc-toc"] ul > li > a.active,',
     )
@@ -94,16 +97,17 @@ describe('Quarto CSS export', () => {
     expect(hoverRule).toContain('color: var(--color-primary);')
 
     const activeStart = css.indexOf('div.sidebar-item-container .active {')
-    const activeRule = css.slice(activeStart, css.indexOf('\n}', activeStart) + 2)
+    const activeRule = css.slice(
+      activeStart,
+      css.indexOf('\n}', activeStart) + 2,
+    )
     expect(activeRule).toContain('color: var(--color-primary);')
   })
 
   it('styles the book navigation sidebar with theme tokens', () => {
     const css = quartoCss(presets.Minimal)
 
-    expect(css).toContain(
-      'nav.sidebar.sidebar-navigation:not(.rollup) {',
-    )
+    expect(css).toContain('nav.sidebar.sidebar-navigation:not(.rollup) {')
     expect(css).toContain('background-color: var(--color-surface);')
 
     const containerStart = css.indexOf('div.sidebar-item-container {')
@@ -114,28 +118,19 @@ describe('Quarto CSS export', () => {
     )
     expect(containerRule).toContain('color: var(--color-text-muted);')
 
-    expect(css).toContain(
-      'div.sidebar-item-container .show > .nav-link,',
-    )
-    expect(css).toContain(
-      'div.sidebar-item-container .sidebar-link > code {',
-    )
+    expect(css).toContain('div.sidebar-item-container .show > .nav-link,')
+    expect(css).toContain('div.sidebar-item-container .sidebar-link > code {')
     expect(css).toContain('.sidebar-item .chapter-number {')
     expect(css).toContain('.sidebar-title a {')
     expect(css).toContain('.sidebar-title a:hover {')
     expect(css).toContain('.sidebar .sidebar-footer {')
-    expect(css).toContain(
-      '.sidebar .quarto-alternate-notebooks a:hover {',
-    )
+    expect(css).toContain('.sidebar .quarto-alternate-notebooks a:hover {')
     expect(css).toContain('#quarto-content .quarto-sidebar-toggle {')
     expect(css).toContain('#quarto-content .quarto-sidebar-toggle-title {')
     expect(css).toContain('.quarto-sidebar-toggle-icon {')
 
     const titleStart = css.indexOf('.sidebar-title a {')
-    const titleRule = css.slice(
-      titleStart,
-      css.indexOf('\n}', titleStart) + 2,
-    )
+    const titleRule = css.slice(titleStart, css.indexOf('\n}', titleStart) + 2)
     expect(titleRule).toContain('color: var(--color-text);')
     expect(titleRule).toContain('font-family: var(--font-heading);')
   })
@@ -150,26 +145,20 @@ describe('Quarto CSS export', () => {
       secondaryStart,
       css.indexOf('\n}', secondaryStart) + 2,
     )
-    expect(secondaryRule).toContain(
-      'background-color: var(--color-surface);',
-    )
+    expect(secondaryRule).toContain('background-color: var(--color-surface);')
     expect(secondaryRule).toContain(
       'border-bottom: 1px solid var(--color-border);',
     )
 
     expect(css).toContain('.quarto-secondary-nav .quarto-btn-toggle {')
-    expect(css).toContain(
-      '.quarto-secondary-nav .quarto-btn-toggle:hover {',
-    )
-    expect(css).toContain(
-      '.quarto-secondary-nav nav.quarto-page-breadcrumbs,',
-    )
+    expect(css).toContain('.quarto-secondary-nav .quarto-btn-toggle:hover {')
+    expect(css).toContain('.quarto-secondary-nav nav.quarto-page-breadcrumbs,')
     expect(css).toContain(
       '.quarto-secondary-nav nav.quarto-page-breadcrumbs a:hover {',
     )
   })
 
-    it('locks the exported Quarto CSS to the selected color mode', () => {
+  it('locks the exported Quarto CSS to the selected color mode', () => {
     const light = quartoCss(presets.Minimal, 'light')
     expect(light).toContain(':root { color-scheme: light; }')
     expect(light).not.toContain('@media (prefers-color-scheme: dark)')
@@ -194,9 +183,7 @@ describe('Quarto CSS export', () => {
       secondaryStart,
       css.indexOf('\n}', secondaryStart) + 2,
     )
-    expect(secondaryRule).toContain(
-      'background-color: var(--color-surface);',
-    )
+    expect(secondaryRule).toContain('background-color: var(--color-surface);')
 
     const toggleStart = css.indexOf('#quarto-content .quarto-sidebar-toggle {')
     const toggleRule = css.slice(
@@ -249,7 +236,9 @@ describe('Quarto CSS export', () => {
     const varsStart = css.indexOf('#quarto-header .navbar {')
     const varsRule = css.slice(varsStart, css.indexOf('\n}', varsStart) + 2)
     expect(varsRule).toContain('--bs-navbar-color: var(--color-text-muted);')
-    expect(varsRule).toContain('--bs-navbar-active-color: var(--color-primary);')
+    expect(varsRule).toContain(
+      '--bs-navbar-active-color: var(--color-primary);',
+    )
     expect(varsRule).toContain('--bs-navbar-brand-color: var(--color-text);')
 
     const activeStart = css.indexOf(

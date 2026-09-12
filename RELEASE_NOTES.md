@@ -1,3 +1,14 @@
+## Unreleased
+
+### Document package
+
+- added a **Long-form** group to text elements with `hyphens`, `text-wrap`, `text-indent`, `word-spacing`, `font-variant`, `font-feature-settings`, `orphans` and `widows`;
+- added a **Columns** group to block containers with `column-count`, `column-width` and `column-rule`;
+- added editable pseudo-elements: `::first-letter` (including `float` for drop caps), `::first-line`, `::selection` and `::marker`;
+- added an optional **Print** layer: seed rules for paper/PDF (white page, underlined links, external-link URL, avoid breaks inside figures, pre, blockquotes and tables) emitted inside `@media print` in `@layer print`;
+- the print layer is absent until a rule is enabled, so existing themes and preset snapshots compile byte-identically;
+- pseudo-elements and print rules are validated by the same selector grammar as every other layer.
+
 ## 0.1.5
 
 - replaced raw-only shadow token editing with a structured visual shadow editor;
@@ -26,7 +37,6 @@
 - choosing a selector in the Elements catalog also keeps All HTML/Kitchen Sink in place; `Open story` is now the explicit way to switch to the isolated selector story;
 - light/dark/auto changes are applied in place;
 - selector highlighting is updated in place without rebuilding the preview.
-
 
 ## 0.1.2
 
@@ -63,7 +73,6 @@ Metadata and non-rendering document elements such as `meta`, `title`, `link`, `s
 First complete MVP release of Semantic CSS Studio.
 
 ### Highlights
-
 
 - visual editing of global design tokens;
 - semantic element and pseudo-state overrides;

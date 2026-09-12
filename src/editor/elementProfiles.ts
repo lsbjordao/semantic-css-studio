@@ -1,5 +1,6 @@
 import type { CssPropertyMap, Theme } from '../theme/schema'
 import { fontStackOptions } from './fontOptions'
+import { quartoPartFor } from '../theme/quartoParts'
 
 export type PropertyTarget = {
   selector: string
@@ -87,6 +88,101 @@ const typography: PropertyGroup = {
       label: 'Text transform',
       kind: 'select',
       options: ['none', 'uppercase', 'lowercase', 'capitalize'],
+    },
+  ],
+}
+
+const longForm: PropertyGroup = {
+  title: 'Long-form',
+  properties: [
+    {
+      property: 'hyphens',
+      label: 'Hyphens',
+      kind: 'select',
+      options: ['manual', 'auto', 'none'],
+      hint: 'Automatic hyphenation needs the lang attribute on the document.',
+    },
+    {
+      property: 'textWrap',
+      label: 'Text wrap',
+      kind: 'select',
+      options: ['wrap', 'nowrap', 'balance', 'pretty'],
+      hint: 'Use balance on headings and pretty on paragraphs.',
+    },
+    {
+      property: 'textIndent',
+      label: 'Text indent',
+      kind: 'size',
+      defaultUnit: 'em',
+      step: 0.25,
+    },
+    {
+      property: 'wordSpacing',
+      label: 'Word spacing',
+      kind: 'size',
+      defaultUnit: 'em',
+      step: 0.05,
+    },
+    {
+      property: 'fontVariant',
+      label: 'Font variant',
+      kind: 'select',
+      options: [
+        'normal',
+        'small-caps',
+        'all-small-caps',
+        'petite-caps',
+        'unicase',
+        'titling-caps',
+      ],
+    },
+    {
+      property: 'fontFeatureSettings',
+      label: 'Font features',
+      kind: 'text',
+      hint: 'Advanced OpenType string, e.g. "liga" 1, "kern" 1.',
+    },
+    {
+      property: 'orphans',
+      label: 'Orphans',
+      kind: 'size',
+      defaultUnit: '',
+      step: 1,
+      hint: 'Minimum lines kept at the bottom of a page or column.',
+    },
+    {
+      property: 'widows',
+      label: 'Widows',
+      kind: 'size',
+      defaultUnit: '',
+      step: 1,
+      hint: 'Minimum lines kept at the top of a page or column.',
+    },
+  ],
+}
+
+const columns: PropertyGroup = {
+  title: 'Columns',
+  properties: [
+    {
+      property: 'columnCount',
+      label: 'Column count',
+      kind: 'size',
+      defaultUnit: '',
+      step: 1,
+    },
+    {
+      property: 'columnWidth',
+      label: 'Column width',
+      kind: 'size',
+      defaultUnit: 'em',
+      step: 1,
+    },
+    {
+      property: 'columnRule',
+      label: 'Column rule',
+      kind: 'text',
+      hint: 'CSS shorthand, e.g. 1px solid var(--color-border).',
     },
   ],
 }
@@ -409,6 +505,125 @@ function meterColors(element: string): PropertyGroup {
   }
 }
 
+/**
+ * Pseudo-element controls write to the same `layers.elements` map as regular
+ * elements, under the full selector (`p::first-letter`). The compiler already
+ * emits arbitrary keys from that map, so no new layer or schema field is
+ * needed — and the editor reuses override/clear/history semantics unchanged.
+ */
+function pseudoGroup(
+  element: string,
+  title: string,
+  suffix: string,
+  properties: PropertyDef[],
+): PropertyGroup {
+  return {
+    title,
+    properties: properties.map((definition) => ({
+      ...definition,
+      targets: [
+        { selector: `${element}${suffix}`, property: definition.property },
+      ],
+    })),
+  }
+}
+
+const firstLetterProperties: PropertyDef[] = [
+  { property: 'color', label: 'Letter color', kind: 'color' },
+  {
+    property: 'fontFamily',
+    label: 'Letter font',
+    kind: 'select',
+    options: [...fontStackOptions],
+  },
+  { property: 'fontSize', label: 'Letter size', kind: 'size' },
+  {
+    property: 'fontWeight',
+    label: 'Letter weight',
+    kind: 'select',
+    options: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  },
+  {
+    property: 'lineHeight',
+    label: 'Letter line height',
+    kind: 'size',
+    defaultUnit: '',
+    step: 0.05,
+  },
+  {
+    property: 'float',
+    label: 'Letter float',
+    kind: 'select',
+    options: ['none', 'left', 'right'],
+    hint: 'Use left for a drop cap and add a margin for spacing.',
+  },
+  { property: 'margin', label: 'Letter margin', kind: 'size' },
+]
+
+const firstLineProperties: PropertyDef[] = [
+  { property: 'color', label: 'First-line color', kind: 'color' },
+  {
+    property: 'fontVariant',
+    label: 'First-line variant',
+    kind: 'select',
+    options: ['normal', 'small-caps', 'all-small-caps', 'petite-caps'],
+  },
+  {
+    property: 'letterSpacing',
+    label: 'First-line letter spacing',
+    kind: 'size',
+    defaultUnit: 'em',
+    step: 0.05,
+  },
+  {
+    property: 'textTransform',
+    label: 'First-line transform',
+    kind: 'select',
+    options: ['none', 'uppercase', 'lowercase', 'capitalize'],
+  },
+  {
+    property: 'wordSpacing',
+    label: 'First-line word spacing',
+    kind: 'size',
+    defaultUnit: 'em',
+    step: 0.05,
+  },
+]
+
+const selectionProperties: PropertyDef[] = [
+  { property: 'backgroundColor', label: 'Selection background', kind: 'color' },
+  { property: 'color', label: 'Selection text', kind: 'color' },
+]
+
+const markerProperties: PropertyDef[] = [
+  { property: 'color', label: 'Marker color', kind: 'color' },
+  { property: 'fontSize', label: 'Marker size', kind: 'size' },
+  {
+    property: 'fontWeight',
+    label: 'Marker weight',
+    kind: 'select',
+    options: [
+      'normal',
+      'bold',
+      '100',
+      '200',
+      '300',
+      '400',
+      '500',
+      '600',
+      '700',
+      '800',
+      '900',
+    ],
+  },
+  {
+    property: 'content',
+    label: 'Marker content',
+    kind: 'text',
+    hint: 'Custom bullet, e.g. "→ " or counter(list-item) ". ".',
+  },
+]
+
 const textElements = new Set([
   'body',
   'p',
@@ -573,6 +788,7 @@ const mediaElements = new Set([
   'canvas',
 ])
 const formElements = new Set(['input', 'textarea', 'select', 'button'])
+const columnElements = new Set(['body', 'main', 'article', 'section', 'aside'])
 const interactiveElements = new Set([
   'a',
   'button',
@@ -586,13 +802,16 @@ const interactiveElements = new Set([
 ])
 
 export function propertyGroupsForElement(element: string): PropertyGroup[] {
+  if (quartoPartFor(element)) return [surface, typography, spacing, border]
   const groups: PropertyGroup[] = []
 
   if (textElements.has(element)) groups.push(typography)
+  if (textElements.has(element)) groups.push(longForm)
   if (blockElements.has(element) || formElements.has(element))
     groups.push(spacing)
   if (sizedElements.has(element)) groups.push(size)
   if (blockElements.has(element)) groups.push(layout)
+  if (columnElements.has(element)) groups.push(columns)
 
   if (formElements.has(element)) groups.push(formControl)
   else {
@@ -637,6 +856,23 @@ export function propertyGroupsForElement(element: string): PropertyGroup[] {
   }
 
   if (groups.length === 0) groups.push(typography)
+
+  if (textElements.has(element)) {
+    groups.push(
+      pseudoGroup(
+        element,
+        'First letter',
+        '::first-letter',
+        firstLetterProperties,
+      ),
+      pseudoGroup(element, 'First line', '::first-line', firstLineProperties),
+      pseudoGroup(element, 'Selection', '::selection', selectionProperties),
+    )
+  }
+  if (element === 'li' || element === 'summary') {
+    groups.push(pseudoGroup(element, 'Marker', '::marker', markerProperties))
+  }
+
   return groups
 }
 
@@ -728,6 +964,10 @@ export function effectiveValueFor(
     }
     if (found) return maybeResolveFontToken(theme, target.property, found)
   }
+  const quartoPart = quartoPartFor(element)
+  if (quartoPart && definition.property === 'backgroundColor')
+    return quartoPart.background
+  if (quartoPart && definition.property === 'color') return 'var(--color-text)'
   if (definition.property === 'fontFamily') {
     if (MONO_ELEMENTS.has(element)) return theme.tokens.typography.fontMono
     if (HEADING_ELEMENTS.has(element))

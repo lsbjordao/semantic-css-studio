@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { isIconLibraryId, type IconLibraryId } from '../icons/types'
 import { seedBaseRules } from './baseRules'
+import { seedPrintRules } from './printRules'
 import { defaultTheme } from './defaults'
 import { presets, type PresetName } from './presets'
 import { migrateThemeV2 } from './migration'
@@ -24,6 +25,11 @@ export type ThemeModeName = 'light' | 'dark'
 export type PreviewMode = 'light' | 'dark' | 'auto'
 export type ViewportName = 'desktop' | 'tablet' | 'mobile' | 'custom'
 export type SpecimenName =
+  | 'Article'
+  | 'Essay'
+  | 'Documentation'
+  | 'Website'
+  | 'Quarto'
   | 'Selector'
   | 'Overview'
   | 'Typography'
@@ -34,6 +40,8 @@ export type SpecimenName =
   | 'All HTML'
   | 'Kitchen Sink'
 export type EditorSection =
+  | 'Reading'
+  | 'Site layout'
   | 'Colors'
   | 'Typography'
   | 'Spacing'
@@ -45,6 +53,7 @@ export type EditorSection =
   | 'Base'
   | 'Elements'
   | 'States'
+  | 'Print'
   | 'Accessibility'
 
 export type UiIconLibrary = Exclude<IconLibraryId, 'none'>
@@ -74,6 +83,7 @@ interface StudioState {
   section: EditorSection
   selectedElement: string
   selectedState: InteractionState
+  saveError: string | null
   notice: string | null
   uiIconLibrary: UiIconLibrary
   updateMetadata: (
@@ -107,6 +117,9 @@ interface StudioState {
   setUiIconLibrary: (library: UiIconLibrary) => void
   resetBaseRule: (selector: string) => void
   toggleBaseRule: (selector: string, enabled: boolean) => void
+  setPrintProperty: (selector: string, property: string, value: string) => void
+  resetPrintRule: (selector: string) => void
+  togglePrintRule: (selector: string, enabled: boolean) => void
   setElementTargets: (
     targets: Array<{ selector: string; property: string }>,
     value: string,
@@ -154,6 +167,14 @@ export function isBaseRuleModified(theme: Theme, selector: string): boolean {
   return JSON.stringify(current) !== JSON.stringify(seeded)
 }
 
+export function isPrintRuleModified(theme: Theme, selector: string): boolean {
+  const seeded = seedPrintRules()[selector]
+  const current = theme.layers.print?.[selector]
+  if (!seeded) return true
+  if (!current) return true
+  return JSON.stringify(current) !== JSON.stringify(seeded)
+}
+
 /**
  * Reinserts `selector` into `base` at the position it occupies in the seed.
  *
@@ -172,8 +193,8 @@ function withSeedPosition(
   base: RuleMap,
   selector: string,
   rules: CssPropertyMap,
+  seedKeys: string[],
 ): RuleMap {
-  const seedKeys = Object.keys(seedBaseRules())
   const target = seedKeys.indexOf(selector)
   const remaining = { ...base }
   delete remaining[selector]
@@ -212,13 +233,14 @@ export const useStudioStore = create<StudioState>((set) => ({
   presetName: 'Custom',
   editMode: 'light',
   previewMode: 'light',
-  viewport: 'desktop',
+  viewport: 'tablet',
   customWidth: 980,
-  specimen: 'All HTML',
-  section: 'Colors',
+  specimen: 'Article',
+  section: 'Reading',
   selectedElement: 'article',
   selectedState: 'hover',
   notice: null,
+  saveError: null,
   uiIconLibrary: typeof window !== 'undefined' ? readUiIconLibrary() : 'lucide',
 
   updateMetadata: (key, value) =>
@@ -328,11 +350,66 @@ export const useStudioStore = create<StudioState>((set) => ({
       if (enabled) {
         const seeded = seedBaseRules()[selector]
         if (!seeded) return state
-        next.layers.base = withSeedPosition(next.layers.base, selector, {
-          ...seeded,
-        })
+        next.layers.base = withSeedPosition(
+          next.layers.base,
+          selector,
+          { ...seeded },
+          Object.keys(seedBaseRules()),
+        )
       } else {
         delete next.layers.base[selector]
+      }
+      return commit(state, next)
+    }),
+
+  setPrintProperty: (selector, property, value) =>
+    set((state) => {
+      const next = clone(state.theme)
+      next.layers.print ??= {}
+      if (value) {
+        next.layers.print[selector] ??= {}
+        next.layers.print[selector][property] = value
+      } else {
+        delete next.layers.print[selector]?.[property]
+        if (
+          next.layers.print[selector] &&
+          Object.keys(next.layers.print[selector]).length === 0
+        ) {
+          delete next.layers.print[selector]
+        }
+        if (Object.keys(next.layers.print).length === 0)
+          delete next.layers.print
+      }
+      return commit(state, next)
+    }),
+
+  resetPrintRule: (selector) =>
+    set((state) => {
+      const seeded = seedPrintRules()[selector]
+      if (!seeded) return state
+      const next = clone(state.theme)
+      next.layers.print ??= {}
+      next.layers.print[selector] = { ...seeded }
+      return commit(state, next, 'Print rule restored.')
+    }),
+
+  togglePrintRule: (selector, enabled) =>
+    set((state) => {
+      const next = clone(state.theme)
+      next.layers.print ??= {}
+      if (enabled) {
+        const seeded = seedPrintRules()[selector]
+        if (!seeded) return state
+        next.layers.print = withSeedPosition(
+          next.layers.print,
+          selector,
+          { ...seeded },
+          Object.keys(seedPrintRules()),
+        )
+      } else {
+        delete next.layers.print[selector]
+        if (Object.keys(next.layers.print).length === 0)
+          delete next.layers.print
       }
       return commit(state, next)
     }),
@@ -429,7 +506,16 @@ export const useStudioStore = create<StudioState>((set) => ({
 }))
 
 if (typeof window !== 'undefined') {
-  useStudioStore.subscribe((state) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.theme))
+  useStudioStore.subscribe((state, previous) => {
+    if (state.theme === previous.theme) return
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.theme))
+      if (state.saveError) useStudioStore.setState({ saveError: null })
+    } catch {
+      useStudioStore.setState({
+        saveError:
+          'Changes could not be saved in this browser. Export Theme JSON to keep a backup before closing.',
+      })
+    }
   })
 }

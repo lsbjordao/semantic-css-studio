@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { adjustCssNumericValue, isSteppableCssNumericValue } from '../src/editor/cssValue'
+import {
+  adjustCssNumericValue,
+  isSteppableCssNumericValue,
+} from '../src/editor/cssValue'
 
 describe('CSS numeric steppers', () => {
   it('preserves px units', () => {
