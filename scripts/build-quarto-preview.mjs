@@ -13,12 +13,13 @@ import { fileURLToPath } from 'node:url'
 import { JSDOM } from 'jsdom'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const expectedVersion = '1.10.18'
 const version = execFileSync('quarto', ['--version'], {
   encoding: 'utf8',
 }).trim()
-if (version !== '1.8.26') {
+if (version !== expectedVersion) {
   throw new Error(
-    `Expected Quarto 1.8.26, received ${version}. Update the reference version labels and validate before regenerating with a different version.`,
+    `Expected Quarto ${expectedVersion}, received ${version}. Update the reference version labels and validate before regenerating with a different version.`,
   )
 }
 const staging = mkdtempSync(join(tmpdir(), 'studio-quarto-'))

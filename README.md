@@ -162,9 +162,9 @@ The editor opens on **Text & reading**, with an article preview at a 768 px view
 
 **Site layout** groups header/footer widths, page gutters and section spacing. The advanced token and element editors use the same theme state, so there is no separate document format to migrate. Element-specific overrides can take precedence over body tokens.
 
-The Story selector separates complete documents from individual element specimens. **Quarto** loads a real, pre-rendered Quarto 1.8.26 website article using Cosmo, then applies the same CSS produced by the Quarto exporter. It includes navigation, a table of contents, a callout, code, a table, citation and footnote. This is a visual reference: Quarto JavaScript is removed and the iframe remains sandboxed. Other Quarto versions, themes and extensions should also be checked in the target project.
+The Story selector separates complete documents from individual element specimens. **Quarto** loads a real website article pre-rendered with Quarto 1.10.18 and Cosmo, then applies the same CSS produced by the Quarto exporter. It includes navigation, a table of contents, a callout, code, a table, citation and footnote. The pinned version makes this visual fixture reproducible; it is not a compatibility target or a claim that generated themes depend on that Quarto release. Quarto JavaScript is removed and the iframe remains sandboxed. Other Quarto versions, themes and extensions should also be checked in the target project.
 
-The generated reference is checked in at `public/previews/quarto.html` and loaded only when selected. Normal development and hosting do not need Quarto. To regenerate it after editing `examples/quarto-reference/`, install Quarto 1.8.26 and run:
+The generated reference is checked in at `public/previews/quarto.html` and loaded only when selected. Normal development and hosting do not need Quarto. To regenerate it after editing `examples/quarto-reference/`, install Quarto 1.10.18 and run:
 
 ```bash
 npm run preview:quarto

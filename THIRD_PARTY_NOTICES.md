@@ -33,7 +33,7 @@ SOFTWARE.
 ## Quarto visual reference
 
 `public/previews/quarto.html` is generated from the original sample in
-`examples/quarto-reference/` with Quarto 1.8.26. It contains Quarto's HTML
+`examples/quarto-reference/` with Quarto 1.10.18. It contains Quarto's HTML
 styling, Bootstrap, Bootstrap Icons and the Bootswatch Cosmo theme. Upstream
 CSS license notices are retained in the generated file. Quarto's copyright
 notice is distributed alongside it as `public/previews/COPYRIGHT-quarto.txt`.

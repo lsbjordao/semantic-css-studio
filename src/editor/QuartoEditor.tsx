@@ -141,10 +141,11 @@ export function QuartoEditor() {
           Open Quarto reference
         </button>
         <p className="field-hint">
-          A document rendered with Quarto 1.8.26 and Cosmo, with your exported
-          CSS applied live. Includes a website navbar, table of contents,
-          callout, citation and footnote. Interactive Quarto scripts are
-          disabled in this visual reference.
+          A visual fixture rendered with Quarto 1.10.18 and Cosmo, with your
+          exported CSS applied live. The pinned version keeps the preview
+          reproducible; it is not a compatibility target. Includes a website
+          navbar, table of contents, callout, citation and footnote. Interactive
+          Quarto scripts are disabled.
         </p>
         <span className="field-label">Tone preview ({editMode} mode)</span>
         <SidebarMock />
