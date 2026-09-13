@@ -67,7 +67,7 @@ export function PreviewToolbar() {
       )}
       <div className="preview-hint">
         {specimen === 'Quarto'
-          ? 'Quarto 1.8.26 · Cosmo baseline. Visual reference; scripts are disabled.'
+          ? 'Quarto 1.10.18 · Cosmo fixture. Reproducible visual reference; scripts are disabled.'
           : 'Click an element to refine its style.'}
       </div>
       <div className="segmented" aria-label="Preview viewport">
