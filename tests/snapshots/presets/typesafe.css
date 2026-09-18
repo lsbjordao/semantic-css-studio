@@ -14,21 +14,21 @@
 
 @layer base {
   :root {
-    --color-background: #f1e7d5;
-    --color-surface: #fffaf1;
-    --color-surface-alt: #e6dac6;
-    --color-text: #171713;
-    --color-text-muted: #625e55;
-    --color-primary: #171713;
-    --color-primary-hover: #36362f;
-    --color-primary-text: #f7efe2;
-    --color-secondary: #7a725f;
-    --color-border: #bdb3a2;
-    --color-success: #31715f;
-    --color-warning: #8a650f;
-    --color-danger: #a33a2b;
-    --color-code-background: #171713;
-    --color-code-text: #f7efe2;
+    --color-background: #f7e6ed;
+    --color-surface: #fff9f5;
+    --color-surface-alt: #efbfd1;
+    --color-text: #181418;
+    --color-text-muted: #655a62;
+    --color-primary: #181418;
+    --color-primary-hover: #473640;
+    --color-primary-text: #fff8fb;
+    --color-secondary: #6e84b3;
+    --color-border: #c89bb0;
+    --color-success: #5c7a34;
+    --color-warning: #8d6411;
+    --color-danger: #a33655;
+    --color-code-background: #181418;
+    --color-code-text: #fff8fb;
     --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-heading: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -54,9 +54,9 @@
     --radius-md: 0.25rem;
     --radius-lg: 0.375rem;
     --radius-full: 999px;
-    --shadow-sm: 0 1px 0 rgb(23 23 19 / 0.12);
-    --shadow-md: 0 3px 0 rgb(23 23 19 / 0.10);
-    --shadow-lg: 0 6px 0 rgb(23 23 19 / 0.08);
+    --shadow-sm: 0 1px 0 rgb(24 20 24 / 0.14);
+    --shadow-md: 0 3px 0 rgb(24 20 24 / 0.11);
+    --shadow-lg: 0 6px 0 rgb(24 20 24 / 0.09);
     --content-width: 76ch;
     --wide-width: 1180px;
     --body-padding: 1.5rem;
@@ -158,40 +158,40 @@
   :root[data-theme="dark"] { color-scheme: dark; }
 
   :root[data-theme="dark"] {
-    --color-background: #0c0c0a;
-    --color-border: #48463e;
-    --color-code-background: #050504;
-    --color-code-text: #f3eadc;
-    --color-danger: #e08372;
-    --color-primary: #f3eadc;
-    --color-primary-hover: #ffffff;
-    --color-primary-text: #0c0c0a;
-    --color-secondary: #b8ad93;
-    --color-success: #7fc4aa;
-    --color-surface: #151512;
-    --color-surface-alt: #20201b;
-    --color-text: #f3eadc;
-    --color-text-muted: #a9a392;
-    --color-warning: #d5b55d;
+    --color-background: #171014;
+    --color-border: #70455a;
+    --color-code-background: #0c080a;
+    --color-code-text: #fff4f8;
+    --color-danger: #ef8ca7;
+    --color-primary: #f1a6c4;
+    --color-primary-hover: #ffc4dc;
+    --color-primary-text: #171014;
+    --color-secondary: #9db4dc;
+    --color-success: #9bc96a;
+    --color-surface: #21171d;
+    --color-surface-alt: #3a202e;
+    --color-text: #f8eef3;
+    --color-text-muted: #b8a6b0;
+    --color-warning: #e2bd62;
   }
 
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --color-background: #0c0c0a;
-      --color-border: #48463e;
-      --color-code-background: #050504;
-      --color-code-text: #f3eadc;
-      --color-danger: #e08372;
-      --color-primary: #f3eadc;
-      --color-primary-hover: #ffffff;
-      --color-primary-text: #0c0c0a;
-      --color-secondary: #b8ad93;
-      --color-success: #7fc4aa;
-      --color-surface: #151512;
-      --color-surface-alt: #20201b;
-      --color-text: #f3eadc;
-      --color-text-muted: #a9a392;
-      --color-warning: #d5b55d;
+      --color-background: #171014;
+      --color-border: #70455a;
+      --color-code-background: #0c080a;
+      --color-code-text: #fff4f8;
+      --color-danger: #ef8ca7;
+      --color-primary: #f1a6c4;
+      --color-primary-hover: #ffc4dc;
+      --color-primary-text: #171014;
+      --color-secondary: #9db4dc;
+      --color-success: #9bc96a;
+      --color-surface: #21171d;
+      --color-surface-alt: #3a202e;
+      --color-text: #f8eef3;
+      --color-text-muted: #b8a6b0;
+      --color-warning: #e2bd62;
     }
   }
 }

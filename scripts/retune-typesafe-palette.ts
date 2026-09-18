@@ -31,9 +31,18 @@ const replacements: Array<[string, string]> = [
   ["danger: '#a33a2b'", "danger: '#a33655'"],
   ["codeBackground: '#171713'", "codeBackground: '#181418'"],
   ["codeText: '#f7efe2'", "codeText: '#fff8fb'"],
-  ["shadowSm: '0 1px 0 rgb(23 23 19 / 0.12)'", "shadowSm: '0 1px 0 rgb(24 20 24 / 0.14)'"],
-  ["shadowMd: '0 3px 0 rgb(23 23 19 / 0.10)'", "shadowMd: '0 3px 0 rgb(24 20 24 / 0.11)'"],
-  ["shadowLg: '0 6px 0 rgb(23 23 19 / 0.08)'", "shadowLg: '0 6px 0 rgb(24 20 24 / 0.09)'"],
+  [
+    "shadowSm: '0 1px 0 rgb(23 23 19 / 0.12)'",
+    "shadowSm: '0 1px 0 rgb(24 20 24 / 0.14)'",
+  ],
+  [
+    "shadowMd: '0 3px 0 rgb(23 23 19 / 0.10)'",
+    "shadowMd: '0 3px 0 rgb(24 20 24 / 0.11)'",
+  ],
+  [
+    "shadowLg: '0 6px 0 rgb(23 23 19 / 0.08)'",
+    "shadowLg: '0 6px 0 rgb(24 20 24 / 0.09)'",
+  ],
   ["background: '#0c0c0a'", "background: '#171014'"],
   ["surface: '#151512'", "surface: '#21171d'"],
   ["surfaceAlt: '#20201b'", "surfaceAlt: '#3a202e'"],
@@ -59,4 +68,6 @@ for (const [from, to] of replacements) {
 }
 
 writeFileSync(target, source)
-console.log('Retuned TypeSafe generator to the pink / powder-blue brand palette.')
+console.log(
+  'Retuned TypeSafe generator to the pink / powder-blue brand palette.',
+)

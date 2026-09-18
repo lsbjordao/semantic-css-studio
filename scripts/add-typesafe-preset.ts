@@ -1,6 +1,6 @@
 /**
  * One-shot codemod: creates the TypeSafe preset by cloning Minimal and applying
- * a warm, code-native visual system inspired by the public TypeSafe.ai brand.
+ * a pink-forward, code-native visual system inspired by the public TypeSafe.ai brand.
  *
  * The codemod is intentionally re-runnable: an existing generated TypeSafe
  * block is replaced, WCAG contrast is checked, CSS is compiled deterministically,
@@ -62,7 +62,7 @@ theme.metadata = {
   ...theme.metadata,
   name: 'TypeSafe',
   description:
-    'Warm parchment, Space Mono headings and precise code-native surfaces inspired by TypeSafe.ai.',
+    'Soft pink, powder-blue accents, Space Mono headings and precise code-native surfaces inspired by TypeSafe.ai.',
   version: '1.0.0',
 }
 
@@ -75,21 +75,21 @@ theme.fonts = {
 
 deepMerge(theme.tokens as unknown as Record<string, unknown>, {
   colors: {
-    background: '#f1e7d5',
-    surface: '#fffaf1',
-    surfaceAlt: '#e6dac6',
-    text: '#171713',
-    textMuted: '#625e55',
-    primary: '#171713',
-    primaryHover: '#36362f',
-    primaryText: '#f7efe2',
-    secondary: '#7a725f',
-    border: '#bdb3a2',
-    success: '#31715f',
-    warning: '#8a650f',
-    danger: '#a33a2b',
-    codeBackground: '#171713',
-    codeText: '#f7efe2',
+    background: '#f7e6ed',
+    surface: '#fff9f5',
+    surfaceAlt: '#efbfd1',
+    text: '#181418',
+    textMuted: '#655a62',
+    primary: '#181418',
+    primaryHover: '#473640',
+    primaryText: '#fff8fb',
+    secondary: '#6e84b3',
+    border: '#c89bb0',
+    success: '#5c7a34',
+    warning: '#8d6411',
+    danger: '#a33655',
+    codeBackground: '#181418',
+    codeText: '#fff8fb',
   },
   typography: {
     fontBody:
@@ -112,9 +112,9 @@ deepMerge(theme.tokens as unknown as Record<string, unknown>, {
     radiusFull: '999px',
   },
   shadow: {
-    shadowSm: '0 1px 0 rgb(23 23 19 / 0.12)',
-    shadowMd: '0 3px 0 rgb(23 23 19 / 0.10)',
-    shadowLg: '0 6px 0 rgb(23 23 19 / 0.08)',
+    shadowSm: '0 1px 0 rgb(24 20 24 / 0.14)',
+    shadowMd: '0 3px 0 rgb(24 20 24 / 0.11)',
+    shadowLg: '0 6px 0 rgb(24 20 24 / 0.09)',
   },
   spacing: {
     spaceXs: '0.25rem',
@@ -154,21 +154,21 @@ theme.modes.light = { colors: {} }
 theme.modes.dark = {
   colors: {
     ...(minimalPreset as unknown as Theme).modes.dark?.colors,
-    background: '#0c0c0a',
-    surface: '#151512',
-    surfaceAlt: '#20201b',
-    text: '#f3eadc',
-    textMuted: '#a9a392',
-    primary: '#f3eadc',
-    primaryHover: '#ffffff',
-    primaryText: '#0c0c0a',
-    secondary: '#b8ad93',
-    border: '#48463e',
-    success: '#7fc4aa',
-    warning: '#d5b55d',
-    danger: '#e08372',
-    codeBackground: '#050504',
-    codeText: '#f3eadc',
+    background: '#171014',
+    surface: '#21171d',
+    surfaceAlt: '#3a202e',
+    text: '#f8eef3',
+    textMuted: '#b8a6b0',
+    primary: '#f1a6c4',
+    primaryHover: '#ffc4dc',
+    primaryText: '#171014',
+    secondary: '#9db4dc',
+    border: '#70455a',
+    success: '#9bc96a',
+    warning: '#e2bd62',
+    danger: '#ef8ca7',
+    codeBackground: '#0c080a',
+    codeText: '#fff4f8',
   },
 }
 
