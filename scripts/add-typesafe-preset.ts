@@ -69,9 +69,12 @@ deepMerge(theme.tokens as unknown as Record<string, unknown>, {
     codeText: '#f7efe2',
   },
   typography: {
-    fontBody: 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-    fontHeading: '"Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
-    fontMono: '"Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+    fontBody:
+      'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    fontHeading:
+      '"Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+    fontMono:
+      '"Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
     fontSizeBase: '16px',
     lineHeightBody: '1.62',
     lineHeightHeading: '1.04',
@@ -147,7 +150,10 @@ theme.modes.dark = {
 }
 
 const elements = theme.layers.elements
-const mergeElement = (selector: string, declarations: Record<string, string>) => {
+const mergeElement = (
+  selector: string,
+  declarations: Record<string, string>,
+) => {
   elements[selector] = {
     ...(elements[selector] ?? {}),
     ...declarations,
@@ -365,22 +371,25 @@ theme.layers.states = {
 const validated = migrateThemeV2(theme)
 const light = validated.tokens.colors as unknown as Record<string, string>
 const dark = (validated.modes.dark?.colors ?? {}) as Record<string, string>
-const checks: Array<[string, string | undefined, string | undefined, number]> = [
-  ['text/bg', light.text, light.background, 4.5],
-  ['muted/bg', light.textMuted, light.background, 4.5],
-  ['text/surface', light.text, light.surface, 4.5],
-  ['primaryText/primary', light.primaryText, light.primary, 4.5],
-  ['dark text/bg', dark.text, dark.background, 4.5],
-  ['dark muted/bg', dark.textMuted, dark.background, 4.5],
-  ['dark primaryText/primary', dark.primaryText, dark.primary, 4.5],
-]
+const checks: Array<[string, string | undefined, string | undefined, number]> =
+  [
+    ['text/bg', light.text, light.background, 4.5],
+    ['muted/bg', light.textMuted, light.background, 4.5],
+    ['text/surface', light.text, light.surface, 4.5],
+    ['primaryText/primary', light.primaryText, light.primary, 4.5],
+    ['dark text/bg', dark.text, dark.background, 4.5],
+    ['dark muted/bg', dark.textMuted, dark.background, 4.5],
+    ['dark primaryText/primary', dark.primaryText, dark.primary, 4.5],
+  ]
 
 for (const [label, fg, bg, min] of checks) {
   if (!fg || !bg) continue
   const ratio = contrastRatio(fg, bg)
   console.log(`  ${ratio.toFixed(2)} (min ${min}) ${label}`)
   if (ratio < min)
-    throw new Error(`TypeSafe: contrast ${ratio.toFixed(2)} < ${min} on ${label}`)
+    throw new Error(
+      `TypeSafe: contrast ${ratio.toFixed(2)} < ${min} on ${label}`,
+    )
 }
 
 const css = compileTheme(validated)

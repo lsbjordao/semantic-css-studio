@@ -14815,7 +14815,451 @@ export const ebanoPreset = {
   },
 } satisfies Theme
 
+export const typeSafePreset = {
+  schemaVersion: 2,
+  metadata: {
+    name: 'TypeSafe',
+    description:
+      'Warm parchment, Space Mono headings and precise code-native surfaces inspired by TypeSafe.ai.',
+    version: '1.0.0',
+  },
+  tokens: {
+    colors: {
+      background: '#f1e7d5',
+      surface: '#fffaf1',
+      surfaceAlt: '#e6dac6',
+      text: '#171713',
+      textMuted: '#625e55',
+      primary: '#171713',
+      primaryHover: '#36362f',
+      primaryText: '#f7efe2',
+      secondary: '#7a725f',
+      border: '#bdb3a2',
+      success: '#31715f',
+      warning: '#8a650f',
+      danger: '#a33a2b',
+      codeBackground: '#171713',
+      codeText: '#f7efe2',
+    },
+    typography: {
+      fontBody:
+        'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      fontHeading:
+        '"Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontMono:
+        '"Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSizeBase: '16px',
+      fontSizeXs: '0.75rem',
+      fontSizeSm: '0.875rem',
+      fontSizeMd: '1rem',
+      fontSizeLg: '1.25rem',
+      fontSizeXl: '2.25rem',
+      lineHeightBody: '1.62',
+      lineHeightHeading: '1.04',
+      fontWeightNormal: '400',
+      fontWeightMedium: '600',
+      fontWeightBold: '700',
+    },
+    radius: {
+      radiusSm: '0.125rem',
+      radiusMd: '0.25rem',
+      radiusLg: '0.375rem',
+      radiusFull: '999px',
+    },
+    shadow: {
+      shadowSm: '0 1px 0 rgb(23 23 19 / 0.12)',
+      shadowMd: '0 3px 0 rgb(23 23 19 / 0.10)',
+      shadowLg: '0 6px 0 rgb(23 23 19 / 0.08)',
+    },
+    spacing: {
+      spaceXs: '0.25rem',
+      spaceSm: '0.5rem',
+      spaceMd: '1rem',
+      spaceLg: '1.5rem',
+      spaceXl: '2.5rem',
+      space2xl: '4.5rem',
+      space2xlXs: '2.75rem',
+    },
+    layout: {
+      contentWidth: '76ch',
+      wideWidth: '1180px',
+      bodyPadding: '1.5rem',
+      sectionSpacing: '4rem',
+      headerWidth: '1180px',
+      footerWidth: '1180px',
+      bodyPaddingSm: '1rem',
+      bodyPaddingXs: '0.8rem',
+      sectionSpacingSm: '2.75rem',
+    },
+    scroll: {
+      scrollbarWidth: 'thin',
+      scrollbarSize: '10px',
+      scrollbarTrack: 'var(--color-background)',
+      scrollbarThumb: 'var(--color-text)',
+      scrollbarThumbHover: 'var(--color-primary-hover)',
+      scrollbarRadius: '0',
+      scrollbarGutter: 'stable',
+      scrollBehavior: 'smooth',
+      scrollPaddingTop: '1rem',
+      overscrollBehavior: 'contain',
+    },
+  },
+  modes: {
+    light: {
+      colors: {},
+    },
+    dark: {
+      colors: {
+        background: '#0c0c0a',
+        surface: '#151512',
+        surfaceAlt: '#20201b',
+        text: '#f3eadc',
+        textMuted: '#a9a392',
+        primary: '#f3eadc',
+        primaryHover: '#ffffff',
+        primaryText: '#0c0c0a',
+        border: '#48463e',
+        codeBackground: '#050504',
+        codeText: '#f3eadc',
+        secondary: '#b8ad93',
+        success: '#7fc4aa',
+        warning: '#d5b55d',
+        danger: '#e08372',
+      },
+    },
+  },
+  layers: {
+    base: {
+      html: {
+        colorScheme: 'light dark',
+        background: 'var(--color-background)',
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        fontFamily: 'var(--font-heading)',
+        fontWeight: 'var(--font-weight-bold)',
+        lineHeight: 'var(--line-height-heading)',
+        marginBlock: '1.25em 0.5em',
+      },
+      'p, ul, ol, dl, blockquote, pre, figure, table, form, details': {
+        marginBlock: '0 var(--space-lg)',
+      },
+      'th, td': {
+        padding: 'var(--space-sm) var(--space-md)',
+        verticalAlign: 'top',
+      },
+      label: {
+        display: 'block',
+        marginBlock: 'var(--space-sm)',
+      },
+      'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
+        width: '100%',
+      },
+      'input, textarea, select, button': {
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--color-text)',
+        font: 'inherit',
+        padding: '0.65rem 0.8rem',
+      },
+      button: {
+        background: 'var(--color-primary)',
+        color: 'var(--color-primary-text)',
+      },
+    },
+    elements: {
+      'pre code': {
+        background: 'transparent',
+        border: '0',
+        color: 'inherit',
+        padding: '0',
+      },
+      body: {
+        margin: '0',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-base)',
+        lineHeight: 'var(--line-height-body)',
+      },
+      header: {
+        maxWidth: 'var(--header-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-lg) var(--body-padding)',
+        borderBottom: '1px solid var(--color-border)',
+      },
+      nav: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        fontFamily: 'var(--font-mono)',
+        fontSize: 'var(--font-size-sm)',
+        letterSpacing: '0.02em',
+      },
+      main: {
+        maxWidth: 'var(--content-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding) var(--space-2xl)',
+      },
+      section: {
+        marginBlock: 'var(--section-spacing)',
+      },
+      article: {
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        padding: 'clamp(var(--space-lg), 4vw, var(--space-xl))',
+        boxShadow: 'none',
+      },
+      aside: {
+        borderInlineStart: '4px solid var(--color-text)',
+        backgroundColor: 'var(--color-surface-alt)',
+        padding: 'var(--space-md) var(--space-lg)',
+        border: '1px solid var(--color-border)',
+      },
+      footer: {
+        maxWidth: 'var(--footer-width)',
+        marginInline: 'auto',
+        padding: 'var(--space-xl) var(--body-padding)',
+        color: 'var(--color-text-muted)',
+        borderTop: '1px solid var(--color-border)',
+        fontFamily: 'var(--font-mono)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      h1: {
+        fontSize: 'clamp(2.6rem, 8vw, 5.6rem)',
+        letterSpacing: '-0.055em',
+        maxWidth: '14ch',
+      },
+      h2: {
+        fontSize: 'clamp(1.9rem, 5vw, 3.4rem)',
+        letterSpacing: '-0.045em',
+      },
+      h3: {
+        fontSize: 'clamp(1.35rem, 3vw, 1.8rem)',
+        letterSpacing: '-0.025em',
+      },
+      h4: {
+        fontSize: '1.25rem',
+      },
+      h5: {
+        fontSize: '1.05rem',
+      },
+      h6: {
+        fontSize: '0.95rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.11em',
+        fontFamily: 'var(--font-mono)',
+      },
+      a: {
+        color: 'var(--color-text)',
+        textUnderlineOffset: '0.22em',
+        textDecorationThickness: '1px',
+      },
+      mark: {
+        backgroundColor:
+          'color-mix(in srgb, var(--color-warning) 25%, transparent)',
+        color: 'inherit',
+      },
+      blockquote: {
+        marginInline: '0',
+        padding: 'var(--space-sm) var(--space-lg)',
+        borderInlineStart: '2px solid var(--color-text)',
+        color: 'var(--color-text)',
+        fontStyle: 'normal',
+      },
+      hr: {
+        border: '0',
+        borderTop: '1px solid var(--color-text)',
+        marginBlock: 'var(--space-xl)',
+      },
+      code: {
+        fontFamily: 'var(--font-mono)',
+        backgroundColor: 'var(--color-surface-alt)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.08em 0.3em',
+        border: '1px solid var(--color-border)',
+      },
+      pre: {
+        backgroundColor: 'var(--color-code-background)',
+        color: 'var(--color-code-text)',
+        padding: 'var(--space-lg)',
+        borderRadius: 'var(--radius-sm)',
+        overflowX: 'auto',
+        border: '1px solid var(--color-text)',
+        boxShadow: 'none',
+      },
+      kbd: {
+        fontFamily: 'var(--font-mono)',
+        border: '1px solid var(--color-text)',
+        borderBottomWidth: '2px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.12rem 0.4rem',
+        backgroundColor: 'var(--color-surface)',
+        boxShadow: 'none',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBlock: 'var(--space-lg)',
+        borderTop: '1px solid var(--color-text)',
+        borderBottom: '1px solid var(--color-text)',
+      },
+      th: {
+        textAlign: 'left',
+        backgroundColor: 'var(--color-surface-alt)',
+        fontFamily: 'var(--font-mono)',
+        fontSize: 'var(--font-size-sm)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.04em',
+      },
+      td: {
+        borderTop: '1px solid var(--color-border)',
+      },
+      caption: {
+        color: 'var(--color-text-muted)',
+        marginBottom: 'var(--space-sm)',
+        textAlign: 'left',
+      },
+      fieldset: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-lg)',
+      },
+      input: {
+        boxSizing: 'border-box',
+        borderRadius: 'var(--radius-sm)',
+      },
+      textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        minHeight: '7rem',
+        resize: 'vertical',
+        borderRadius: 'var(--radius-sm)',
+      },
+      select: {
+        width: '100%',
+        boxSizing: 'border-box',
+        borderRadius: 'var(--radius-sm)',
+      },
+      button: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-bold)',
+        fontFamily: 'var(--font-mono)',
+        letterSpacing: '0.025em',
+        borderRadius: 'var(--radius-sm)',
+        boxShadow: 'none',
+      },
+      img: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: '0',
+      },
+      figure: {
+        marginInline: '0',
+      },
+      figcaption: {
+        color: 'var(--color-text-muted)',
+        fontSize: 'var(--font-size-sm)',
+      },
+      details: {
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        padding: 'var(--space-md)',
+        backgroundColor: 'var(--color-surface)',
+      },
+      summary: {
+        cursor: 'pointer',
+        fontWeight: 'var(--font-weight-bold)',
+        fontFamily: 'var(--font-mono)',
+      },
+      progress: {
+        accentColor: 'var(--color-text)',
+        borderRadius: '0',
+      },
+      meter: {
+        accentColor: 'var(--color-text)',
+      },
+    },
+    states: {
+      'a:hover': {
+        color: 'var(--color-primary-hover)',
+        textDecorationThickness: '2px',
+      },
+      'a:focus-visible': {
+        outline: '2px solid var(--color-text)',
+        outlineOffset: '4px',
+      },
+      'button:hover': {
+        backgroundColor: 'var(--color-primary-hover)',
+      },
+      'button:focus-visible': {
+        outline: '2px solid var(--color-text)',
+        outlineOffset: '3px',
+      },
+      'button:active': {
+        transform: 'none',
+      },
+      'button:disabled': {
+        opacity: '0.55',
+        cursor: 'not-allowed',
+      },
+      'input:focus-visible': {
+        outline: '2px solid var(--color-text)',
+        outlineOffset: '2px',
+        borderColor: 'var(--color-text)',
+      },
+      'input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      'input:checked': {
+        accentColor: 'var(--color-primary)',
+      },
+      'textarea:focus-visible': {
+        outline: '2px solid var(--color-text)',
+        outlineOffset: '2px',
+      },
+      'select:focus-visible': {
+        outline: '2px solid var(--color-text)',
+        outlineOffset: '2px',
+      },
+    },
+    responsive: {
+      tablet: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-sm)',
+          '--section-spacing': 'var(--section-spacing-sm)',
+        },
+        table: {
+          fontSize: 'var(--font-size-sm)',
+        },
+      },
+      mobile: {
+        ':root': {
+          '--body-padding': 'var(--body-padding-xs)',
+          '--space-2xl': 'var(--space-2xl-xs)',
+        },
+        h1: {
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+  },
+  breakpoints: {
+    mobile: 390,
+    tablet: 768,
+    desktop: 1440,
+  },
+  options: {
+    includeMinimalReset: true,
+    reducedMotion: true,
+  },
+} as unknown as Theme
+
 export const presets = {
+  TypeSafe: typeSafePreset,
   Minimal: minimalPreset,
   Editorial: editorialPreset,
   Documentation: documentationPreset,
