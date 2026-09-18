@@ -15256,6 +15256,16 @@ export const typeSafePreset = {
     includeMinimalReset: true,
     reducedMotion: true,
   },
+  fonts: {
+    heading: {
+      family: 'Space Mono',
+      weights: [400, 700],
+    },
+    mono: {
+      family: 'Space Mono',
+      weights: [400, 700],
+    },
+  },
 } as unknown as Theme
 
 export const presets = {

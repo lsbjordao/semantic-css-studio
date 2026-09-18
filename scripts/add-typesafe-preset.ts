@@ -392,22 +392,25 @@ theme.layers.states = {
 const validated = migrateThemeV2(theme)
 const light = validated.tokens.colors as unknown as Record<string, string>
 const dark = (validated.modes.dark?.colors ?? {}) as Record<string, string>
-const checks: Array<[string, string | undefined, string | undefined, number]> = [
-  ['text/bg', light.text, light.background, 4.5],
-  ['muted/bg', light.textMuted, light.background, 4.5],
-  ['text/surface', light.text, light.surface, 4.5],
-  ['primaryText/primary', light.primaryText, light.primary, 4.5],
-  ['dark text/bg', dark.text, dark.background, 4.5],
-  ['dark muted/bg', dark.textMuted, dark.background, 4.5],
-  ['dark primaryText/primary', dark.primaryText, dark.primary, 4.5],
-]
+const checks: Array<[string, string | undefined, string | undefined, number]> =
+  [
+    ['text/bg', light.text, light.background, 4.5],
+    ['muted/bg', light.textMuted, light.background, 4.5],
+    ['text/surface', light.text, light.surface, 4.5],
+    ['primaryText/primary', light.primaryText, light.primary, 4.5],
+    ['dark text/bg', dark.text, dark.background, 4.5],
+    ['dark muted/bg', dark.textMuted, dark.background, 4.5],
+    ['dark primaryText/primary', dark.primaryText, dark.primary, 4.5],
+  ]
 
 for (const [label, fg, bg, min] of checks) {
   if (!fg || !bg) continue
   const ratio = contrastRatio(fg, bg)
   console.log(`  ${ratio.toFixed(2)} (min ${min}) ${label}`)
   if (ratio < min)
-    throw new Error(`TypeSafe: contrast ${ratio.toFixed(2)} < ${min} on ${label}`)
+    throw new Error(
+      `TypeSafe: contrast ${ratio.toFixed(2)} < ${min} on ${label}`,
+    )
 }
 
 const css = compileTheme(validated)
@@ -428,4 +431,6 @@ next = next.replace(
 writeFileSync(presetFile, next)
 writeFileSync(snapshotFile, css)
 
-console.log(`TypeSafe preset refreshed; snapshot written (${css.length} bytes).`)
+console.log(
+  `TypeSafe preset refreshed; snapshot written (${css.length} bytes).`,
+)
