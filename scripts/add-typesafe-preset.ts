@@ -2,10 +2,11 @@
  * One-shot codemod: creates the TypeSafe preset by cloning Minimal and applying
  * a warm, code-native visual system inspired by the public TypeSafe.ai brand.
  *
- * The codemod validates WCAG contrast, compiles deterministic CSS, inserts the
- * preset into the registry and writes its CSS snapshot.
+ * The codemod is intentionally re-runnable: an existing generated TypeSafe
+ * block is replaced, WCAG contrast is checked, CSS is compiled deterministically,
+ * and the snapshot is refreshed.
  *
- * Run once: npx vite-node scripts/add-typesafe-preset.ts
+ * Run: npx vite-node scripts/add-typesafe-preset.ts
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -19,6 +20,7 @@ import { contrastRatio } from '../src/validators/contrast'
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const presetFile = join(root, 'src', 'theme', 'presets', 'index.ts')
 const snapshotFile = join(root, 'tests', 'snapshots', 'presets', 'typesafe.css')
+const registryAnchor = 'export const presets = {'
 
 function deepMerge(
   target: Record<string, unknown>,
@@ -34,11 +36,25 @@ function deepMerge(
   }
 }
 
-const source = readFileSync(presetFile, 'utf8')
-if (source.includes('export const typeSafePreset =')) {
-  console.log('TypeSafe preset is already present; nothing to do.')
-  process.exit(0)
+function withoutExistingTypeSafe(input: string): string {
+  const start = input.indexOf('export const typeSafePreset =')
+  const registry = input.indexOf(registryAnchor, Math.max(0, start))
+  let next = input
+
+  if (start >= 0 && registry > start) {
+    next = `${input.slice(0, start)}${input.slice(registry)}`
+  }
+
+  next = next.replace(
+    `${registryAnchor}\n  TypeSafe: typeSafePreset,`,
+    registryAnchor,
+  )
+  return next
 }
+
+const source = withoutExistingTypeSafe(readFileSync(presetFile, 'utf8'))
+if (!source.includes(registryAnchor))
+  throw new Error('preset registry anchor not found')
 
 const theme = structuredClone(minimalPreset) as unknown as Theme
 
@@ -48,6 +64,13 @@ theme.metadata = {
   description:
     'Warm parchment, Space Mono headings and precise code-native surfaces inspired by TypeSafe.ai.',
   version: '1.0.0',
+}
+
+// Register the webfont in the Theme itself so preview and exported CSS both
+// load the real family instead of silently falling back to the local mono font.
+theme.fonts = {
+  heading: { family: 'Space Mono', weights: [400, 700] },
+  mono: { family: 'Space Mono', weights: [400, 700] },
 }
 
 deepMerge(theme.tokens as unknown as Record<string, unknown>, {
@@ -324,7 +347,6 @@ mergeElement('meter', {
   accentColor: 'var(--color-text)',
 })
 
-// Keep nested code visually clean inside pre.
 theme.layers.elements['pre code'] = {
   background: 'transparent',
   border: '0',
@@ -332,7 +354,6 @@ theme.layers.elements['pre code'] = {
   padding: '0',
 }
 
-// TypeSafe-like interactions stay mechanical: no floating cards or bounce.
 theme.layers.states = {
   ...theme.layers.states,
   'a:hover': {
@@ -371,42 +392,40 @@ theme.layers.states = {
 const validated = migrateThemeV2(theme)
 const light = validated.tokens.colors as unknown as Record<string, string>
 const dark = (validated.modes.dark?.colors ?? {}) as Record<string, string>
-const checks: Array<[string, string | undefined, string | undefined, number]> =
-  [
-    ['text/bg', light.text, light.background, 4.5],
-    ['muted/bg', light.textMuted, light.background, 4.5],
-    ['text/surface', light.text, light.surface, 4.5],
-    ['primaryText/primary', light.primaryText, light.primary, 4.5],
-    ['dark text/bg', dark.text, dark.background, 4.5],
-    ['dark muted/bg', dark.textMuted, dark.background, 4.5],
-    ['dark primaryText/primary', dark.primaryText, dark.primary, 4.5],
-  ]
+const checks: Array<[string, string | undefined, string | undefined, number]> = [
+  ['text/bg', light.text, light.background, 4.5],
+  ['muted/bg', light.textMuted, light.background, 4.5],
+  ['text/surface', light.text, light.surface, 4.5],
+  ['primaryText/primary', light.primaryText, light.primary, 4.5],
+  ['dark text/bg', dark.text, dark.background, 4.5],
+  ['dark muted/bg', dark.textMuted, dark.background, 4.5],
+  ['dark primaryText/primary', dark.primaryText, dark.primary, 4.5],
+]
 
 for (const [label, fg, bg, min] of checks) {
   if (!fg || !bg) continue
   const ratio = contrastRatio(fg, bg)
   console.log(`  ${ratio.toFixed(2)} (min ${min}) ${label}`)
   if (ratio < min)
-    throw new Error(
-      `TypeSafe: contrast ${ratio.toFixed(2)} < ${min} on ${label}`,
-    )
+    throw new Error(`TypeSafe: contrast ${ratio.toFixed(2)} < ${min} on ${label}`)
 }
 
 const css = compileTheme(validated)
 if (!css.includes('/* TypeSafe v1.0.0'))
   throw new Error('TypeSafe: unexpected header in CSS')
+if (!css.includes('family=Space+Mono'))
+  throw new Error('TypeSafe: Space Mono webfont import was not emitted')
 if (compileTheme(structuredClone(validated)) !== css)
   throw new Error('TypeSafe: compiler output is not deterministic')
 
-const anchor = 'export const presets = {'
-if (!source.includes(anchor))
-  throw new Error('preset registry anchor not found')
-
 const block = `export const typeSafePreset = ${JSON.stringify(validated, null, 2)} as unknown as Theme\n`
-let next = source.replace(anchor, `${block}\n${anchor}`)
-next = next.replace(anchor, `${anchor}\n  TypeSafe: typeSafePreset,`)
+let next = source.replace(registryAnchor, `${block}\n${registryAnchor}`)
+next = next.replace(
+  registryAnchor,
+  `${registryAnchor}\n  TypeSafe: typeSafePreset,`,
+)
 
 writeFileSync(presetFile, next)
 writeFileSync(snapshotFile, css)
 
-console.log(`TypeSafe preset inserted; snapshot written (${css.length} bytes).`)
+console.log(`TypeSafe preset refreshed; snapshot written (${css.length} bytes).`)
