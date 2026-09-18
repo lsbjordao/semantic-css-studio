@@ -59,6 +59,12 @@ export const googleFontOptions: GoogleFontOption[] = [
     defaultWeights: [400, 500, 700],
   },
   {
+    family: 'Space Mono',
+    roles: ['heading', 'mono'],
+    fallbacks: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+    defaultWeights: [400, 700],
+  },
+  {
     family: 'IBM Plex Mono',
     roles: ['mono'],
     fallbacks: 'ui-monospace, monospace',
